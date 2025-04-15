@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="426.0" prefWidth="818.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label alignment="TOP_CENTER" layoutX="160.0" layoutY="27.0" prefHeight="54.0" prefWidth="497.0" text="Resource Codes Management" textAlignment="CENTER" textFill="#4a0303">
+         <font>
+            <Font size="37.0" />
+         </font>
+      </Label>
+      <GridPane fx:id="gp" layoutX="32.0" layoutY="100.0" prefHeight="150.0" prefWidth="755.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="128.0" minWidth="-Infinity" prefWidth="111.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="400.0" minWidth="-Infinity" prefWidth="175.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="460.0" minWidth="10.0" prefWidth="460.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="Code Categories" />
+            <Label fx:id="fieldLabel_0" text="Category Options" GridPane.rowIndex="1" />
+            <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.valignment="CENTER">
+               <children>
+                  <ComboBox fx:id="codeCategory" prefHeight="25.0" prefWidth="159.0" promptText="Select Category" />
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <children>
+                  <ComboBox fx:id="codeValue" prefHeight="25.0" prefWidth="159.0" promptText="Select Option" />
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+               <children>
+                  <Button fx:id="deleteCodeButton" mnemonicParsing="false" onAction="#deleteSelectedCode" prefWidth="100.0" text="Delete Option" />
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="6.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+               <children>
+                  <TextField fx:id="updateValue" prefWidth="230.0" promptText="New Option Value" />
+                  <Button fx:id="updateCodeButton" mnemonicParsing="false" onAction="#updateSelectedCode" prefWidth="100.0" text="Update Option" />
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="6.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
+               <children>
+                  <TextField fx:id="newCode" prefWidth="130.0" promptText="New Option Code" />
+                  <Label prefWidth="12.0" text="=" />
+                  <TextField fx:id="newValue" prefWidth="210.0" promptText="New Option Value" />
+                  <Button fx:id="insertCodeButton" mnemonicParsing="false" onAction="#insertNewCode" prefWidth="100.0" text="Add Option" />
+               </children>
+            </HBox>
+            <Label text="(for example, westval = West Valley Vineyards)" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+         </children>
+      </GridPane>
+      <Button layoutX="717.0" layoutY="370.0" mnemonicParsing="false" onAction="#returnToMain" text="Back" />
+      <TextArea fx:id="statusDisplay" layoutX="60.0" layoutY="303.0" prefHeight="54.0" prefWidth="707.0" />
+      <HBox fx:id="hb1" alignment="CENTER_LEFT" layoutX="32.0" layoutY="14.0" prefHeight="25.0" prefWidth="301.0" spacing="20.0" />
+   </children>
+</AnchorPane>

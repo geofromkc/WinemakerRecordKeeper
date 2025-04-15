@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="ap" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="642.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label alignment="TOP_CENTER" layoutX="136.0" layoutY="30.0" prefHeight="54.0" prefWidth="307.0" text="New Batch Details" textAlignment="CENTER" textFill="#4a0303">
+         <font>
+            <Font size="37.0" />
+         </font>
+      </Label>
+      <GridPane fx:id="gp" layoutX="56.0" layoutY="130.0" prefHeight="417.0" prefWidth="489.0" vgap="8.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="227.0" minWidth="10.0" prefWidth="116.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="373.0" minWidth="10.0" prefWidth="373.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label fx:id="batchGrapeLabel" text="Batch Grape" GridPane.rowIndex="2" />
+            <Label fx:id="unitCountLabel" text="Item Count" GridPane.rowIndex="5" />
+            <Label fx:id="unitPriceLabel" text="Item Price" GridPane.rowIndex="6" />
+            <Label fx:id="unitPerItemLabel" text="Weight per Item" GridPane.rowIndex="7" />
+            <Label fx:id="unitMeasureLabel" text="Measuring System" visible="false" GridPane.rowIndex="8" />
+            <Label fx:id="batchVendorLabel" text="Vendor Name" GridPane.rowIndex="11" />
+            <Label fx:id="batchNotesLabel" text="Notes" GridPane.rowIndex="12" />
+            <Label fx:id="batchVineyardLabel" text="Vineyard" GridPane.rowIndex="4" />
+            <Label fx:id="batchQualityLabel" text="Quality Rating (1-10)" GridPane.rowIndex="9" />
+            <Label fx:id="batchWasteLabel" text="Waste Percent" GridPane.rowIndex="10" />
+            <Label fx:id="blendGrapeLabel" text="Blend Grape" GridPane.rowIndex="3" />
+            <ComboBox fx:id="vineyardSelect" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <TextField fx:id="itemCount" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="90.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <TextField fx:id="itemPrice" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="90.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <TextField fx:id="itemUnits" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="90.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <TextField fx:id="qualityRating" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="90.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+            <TextField fx:id="wastePercent" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="90.0" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+            <HBox fx:id="hb_BatchVendor" alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="301.0" spacing="20.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="11" GridPane.valignment="CENTER">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <padding>
+                  <Insets left="8.0" />
+               </padding>
+            </HBox>
+            <TextArea fx:id="vendorNotes" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="12">
+               <GridPane.margin>
+                  <Insets top="12.0" />
+               </GridPane.margin></TextArea>
+            <Label fx:id="blendTypeLabel" text="Blend Type" GridPane.rowIndex="1" />
+            <ComboBox fx:id="grapeSelectBlend" prefWidth="150.0" visibleRowCount="20" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <ComboBox fx:id="grapeSelect" prefWidth="150.0" visibleRowCount="20" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <HBox fx:id="hb_BatchMeasurement" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="8" GridPane.valignment="CENTER" />
+            <DatePicker fx:id="batchDate" GridPane.columnIndex="1" />
+            <Label fx:id="batchDateLabel" text="Batch Date" />
+            <ChoiceBox fx:id="blendType" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+         </children>
+      </GridPane>
+      <Button fx:id="submitBatch" layoutX="55.0" layoutY="597.0" mnemonicParsing="false" onAction="#submitBatch" text="Submit" />
+      <Button fx:id="addBlendGrape" layoutX="120.0" layoutY="597.0" mnemonicParsing="false" onAction="#addBlendButton" text="Add" />
+      <Button fx:id="doneBlendMix" layoutX="166.0" layoutY="597.0" mnemonicParsing="false" onAction="#doneBuildingBlend" text="Done" />
+      <Button layoutX="520.0" layoutY="596.0" mnemonicParsing="false" onAction="#returnToMain" text="Home" />
+      <TextArea fx:id="statusUpdates" editable="false" layoutX="234.0" layoutY="556.0" prefHeight="66.0" prefWidth="276.0" />
+      <Label fx:id="batchTitle" alignment="CENTER" layoutX="31.0" layoutY="80.0" prefHeight="30.0" prefWidth="534.0" text="title" textAlignment="CENTER">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <CheckBox fx:id="blendTypeCheckBox" layoutX="23.0" layoutY="72.0" mnemonicParsing="false" onAction="#blendCheckboxProcess" text="Field Blend" visible="false" />
+   </children>
+</AnchorPane>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="431.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label alignment="TOP_CENTER" layoutX="169.0" layoutY="24.0" prefHeight="54.0" prefWidth="263.0" text="Test Data" textAlignment="CENTER" textFill="#4a0303">
+         <font>
+            <Font size="37.0" />
+         </font>
+      </Label>
+      <GridPane layoutX="55.0" layoutY="100.0" prefHeight="231.0" prefWidth="490.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="116.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="374.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="Test Date" />
+            <Label text="Test Name" GridPane.rowIndex="1" />
+            <Label text="Temperature" GridPane.rowIndex="4" />
+            <Label text="Test Value" GridPane.rowIndex="3" />
+            <HBox fx:id="dateHBox" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
+               <children>
+                  <DatePicker fx:id="activityDate" prefWidth="150.0" />
+                  <Label text=" / " />
+                  <TextField fx:id="entryTime" promptText="Entry time (h:m am|pm)" />
+               </children>
+            </HBox>
+            <ComboBox fx:id="testSelect" prefHeight="25.0" prefWidth="150.0" promptText="Select the Test" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="testValue" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="90.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <TextField fx:id="testTemp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="90.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Label text="Container" GridPane.rowIndex="2" />
+            <ComboBox fx:id="containerSelect" prefHeight="25.0" prefWidth="200.0" promptText="Select Container" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextArea fx:id="testNotes" prefHeight="200.0" prefWidth="200.0" promptText="testNotes" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+         </children>
+      </GridPane>
+      <Button layoutX="55.0" layoutY="388.0" mnemonicParsing="false" onAction="#submitNewTestData" text="Submit" />
+      <Button layoutX="518.0" layoutY="388.0" mnemonicParsing="false" onAction="#returnToMain" text="Back" />
+      <TextArea fx:id="statusDisplay" editable="false" layoutX="126.0" layoutY="377.0" prefHeight="37.0" prefWidth="377.0" />
+   </children>
+</AnchorPane>

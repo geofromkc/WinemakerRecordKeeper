@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="645.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox alignment="TOP_CENTER" layoutX="3.0" prefHeight="712.0" prefWidth="600.0" spacing="8.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <children>
+            <Label alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" minWidth="300.0" prefHeight="54.0" prefWidth="398.0" text="Asset Management" textAlignment="CENTER" textFill="#4a0303" VBox.vgrow="ALWAYS">
+               <font>
+                  <Font size="37.0" />
+               </font>
+            </Label>
+            <GridPane fx:id="gp" hgap="2.0" prefHeight="407.0" prefWidth="491.0" vgap="8.0" VBox.vgrow="ALWAYS">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="110.0" minWidth="90.0" prefWidth="116.0" />
+                  <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="320.0" prefWidth="373.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="24.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="24.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="24.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="24.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="24.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="24.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="24.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="24.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="24.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="24.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="24.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="24.0" prefHeight="34.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <Label fx:id="labelItemSelections" text="Item Name / ID" />
+                  <ComboBox fx:id="itemExistingSelections" maxWidth="-Infinity" prefWidth="180.0" promptText="Select existing item" visibleRowCount="20" GridPane.columnIndex="1" />
+                  <Label fx:id="labelStockOnHand" text="Qty on Hand" GridPane.rowIndex="1" />
+                  <TextField fx:id="itemStockOnHand" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="90.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label fx:id="labelRemoveStock" text="Remove from Stock" GridPane.rowIndex="2" />
+                  <TextField fx:id="itemRemoveFromStock" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="90.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label fx:id="labelRemoveReason" text="Update Reason" GridPane.rowIndex="3" />
+                  <ChoiceBox fx:id="itemRemovalReason" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <Label fx:id="labelPurchaseType" text="Type" GridPane.rowIndex="5" />
+                  <ComboBox fx:id="itemAvailablePurchaseTypes" maxWidth="-Infinity" prefWidth="180.0" promptText="Select type for purchase" visibleRowCount="20" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                  <Label fx:id="labelPurchaseDate" text="Purchase Date" GridPane.rowIndex="6" />
+                  <DatePicker fx:id="itemPurchasedDate" promptText="Purchase Date" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                  <Label fx:id="labelItemID" text="ID (optional)" GridPane.rowIndex="7" />
+                  <TextField fx:id="itemID" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="90.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                  <Label fx:id="labelPurchaseCount" text="Count" GridPane.rowIndex="8" />
+                  <TextField fx:id="itemPurchaseCount" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="90.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                  <Label fx:id="labelPurchaseCost" text="Cost" GridPane.rowIndex="9" />
+                  <TextField fx:id="itemPurchaseCost" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="90.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                  <Label fx:id="labelSize" text="Sizing (optional)" GridPane.rowIndex="10" />
+                  <TextField fx:id="itemSize" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="90.0" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                  <Label fx:id="labelSupplier" text="Supplier" GridPane.rowIndex="11" />
+                  <ComboBox fx:id="itemSupplierSelections" prefWidth="150.0" promptText="Select Supplier" visibleRowCount="20" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                  <Button fx:id="buttonDisplaySwitch" mnemonicParsing="false" onAction="#switchFunctionUI" text="+" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Button>
+               </children>
+               <VBox.margin>
+                  <Insets left="2.0" right="2.0" top="4.0" />
+               </VBox.margin>
+               <padding>
+                  <Insets left="2.0" right="2.0" />
+               </padding>
+            </GridPane>
+            <HBox maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="85.0" prefWidth="506.0" spacing="8.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <Button maxWidth="60.0" minWidth="60.0" mnemonicParsing="false" onAction="#submitBatch" text="Submit" />
+                  <TextArea fx:id="statusUpdates" editable="false" maxHeight="160.0" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="83.0" prefWidth="451.0" HBox.hgrow="ALWAYS" />
+                  <Button maxWidth="60.0" minWidth="50.0" mnemonicParsing="false" onAction="#returnToMain" text="Home">
+                     <HBox.margin>
+                        <Insets right="4.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+               <padding>
+                  <Insets top="12.0" />
+               </padding>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+         </padding>
+      </VBox>
+   </children>
+</AnchorPane>

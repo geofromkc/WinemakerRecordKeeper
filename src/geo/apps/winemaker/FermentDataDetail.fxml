@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="ap" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="753.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox prefHeight="735.0" prefWidth="600.0" spacing="8.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <children>
+            <Label fx:id="bannerText" alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" prefHeight="54.0" prefWidth="263.0" text="Ferment Task" textAlignment="CENTER" textFill="#4a0303" VBox.vgrow="ALWAYS">
+               <font>
+                  <Font size="37.0" />
+               </font>
+            </Label>
+            <Label fx:id="batchTitle" alignment="CENTER" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="30.0" prefWidth="500.0" textAlignment="CENTER" VBox.vgrow="ALWAYS">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <GridPane fx:id="gp" hgap="2.0" prefHeight="420.0" prefWidth="489.0" vgap="8.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="ALWAYS" maxWidth="128.0" minWidth="100.0" prefWidth="128.0" />
+                <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="300.0" prefWidth="362.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" valignment="CENTER" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" />
+                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" />
+                  <RowConstraints minHeight="-Infinity" prefHeight="30.0" />
+              </rowConstraints>
+               <children>
+                  <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.valignment="CENTER">
+                     <children>
+                        <ComboBox fx:id="activitySelect" prefHeight="25.0" prefWidth="159.0" promptText="Select Activity" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <children>
+                        <DatePicker fx:id="activityDate" maxWidth="-Infinity" prefWidth="150.0">
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                        </DatePicker>
+                        <Label text=" / " />
+                        <TextField fx:id="entryTime" promptText="'now' or (h:m am|pm)">
+                           <effect>
+                              <DropShadow />
+                           </effect>
+                        </TextField>
+                     </children>
+                  </HBox>
+                  <Label text="Task" />
+                  <Label text="Task Date &amp; Time" GridPane.rowIndex="1" />
+                  <Label fx:id="fieldLabel_0" text="    " GridPane.rowIndex="2" />
+                  <Label fx:id="fieldLabel_1" text="    " GridPane.rowIndex="3" />
+                  <Label fx:id="fieldLabel_2" text="    " GridPane.rowIndex="4" />
+                  <Label fx:id="fieldLabel_3" text="    " GridPane.rowIndex="5" />
+                  <Label fx:id="fieldLabel_4" text="    " GridPane.rowIndex="6" />
+                  <Label fx:id="fieldLabel_5" text="    " GridPane.rowIndex="7" />
+                  <Label fx:id="fieldLabel_6" layoutX="12.0" layoutY="283.0" text="    " GridPane.rowIndex="8" />
+                  <Label fx:id="fieldLabel_7" text="    " GridPane.rowIndex="9" />
+                  <Label fx:id="fieldLabel_8" text="    " GridPane.rowIndex="10" />
+                  <Label fx:id="fieldLabel_9" text="    " GridPane.rowIndex="11" />
+                  <Label fx:id="fieldLabel_10" layoutX="10.0" layoutY="362.0" text="    " GridPane.rowIndex="12" />
+               </children>
+               <VBox.margin>
+                  <Insets left="2.0" right="2.0" top="4.0" />
+               </VBox.margin>
+               <padding>
+                  <Insets bottom="4.0" left="2.0" right="2.0" />
+               </padding>
+            </GridPane>
+            <HBox maxWidth="1.7976931348623157E308" minHeight="50.0" prefHeight="40.0" prefWidth="572.0" spacing="8.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <Button minWidth="66.0" mnemonicParsing="false" onAction="#submitNewFermentDataLog" text="Submit" />
+                  <TextArea fx:id="statusDisplay" editable="false" maxHeight="200.0" maxWidth="1.7976931348623157E308" minHeight="30.0" prefHeight="40.0" prefWidth="463.0" HBox.hgrow="ALWAYS" />
+                  <Button minWidth="66.0" mnemonicParsing="false" onAction="#returnToMain" text="Home" />
+               </children>
+               <padding>
+                  <Insets top="4.0" />
+               </padding>
+               <VBox.margin>
+                  <Insets top="22.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+         </padding>
+      </VBox>
+   </children>
+</AnchorPane>
