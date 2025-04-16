@@ -210,7 +210,7 @@ public class WineMakerController implements Initializable {
 			statusDisplay.setText("Successfully created primary Batch table");
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.createKeyTable(ActionEvent e)"), debugLogging);
-	}
+	} // end of createKeyTable()
 
 	@FXML
 	private void createTestingTable(ActionEvent e)
@@ -230,7 +230,7 @@ public class WineMakerController implements Initializable {
 			statusDisplay.setText("Successfully created Test table");
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.createTestingTable(ActionEvent e)"), debugLogging);
-	}
+	} // end of createTestingTable()
 
 	@FXML
 	private void createFermentTable(ActionEvent e)
@@ -250,7 +250,7 @@ public class WineMakerController implements Initializable {
 			statusDisplay.setText("Successfully created Ferment table");
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.createFermentTable(ActionEvent e)"), debugLogging);
-	}
+	} // end of createFermentTable()
 
 	@FXML
 	private void createCodesTable(ActionEvent e)
@@ -269,7 +269,7 @@ public class WineMakerController implements Initializable {
 			statusDisplay.setText("Successfully created Codes table");
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.createCodesTable(ActionEvent e)"), debugLogging);
-	}
+	} // end of createCodesTable()
 
 	@FXML
 	private void createInventoryTable(ActionEvent e)
@@ -288,7 +288,7 @@ public class WineMakerController implements Initializable {
 			statusDisplay.setText("Successfully created Inventory table");
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.createInventoryTable(ActionEvent e)"), debugLogging);
-	}
+	} // end of createInventoryTable()
 
 	/*
 	 * ===================== Event Handlers for the database table DROP buttons =====================
@@ -307,7 +307,7 @@ public class WineMakerController implements Initializable {
 		}		
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.dropBatchTable(ActionEvent e)"), debugLogging);
-	}
+	} // end of dropBatchTable()
 
 	@FXML
 	private void dropTestingTable(ActionEvent e)
@@ -323,7 +323,7 @@ public class WineMakerController implements Initializable {
 		}
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.dropTestingTable(ActionEvent e)"), debugLogging);
-	}
+	} // end of dropTestingTable()
 
 	@FXML
 	private void dropFermentTable(ActionEvent e)
@@ -339,7 +339,7 @@ public class WineMakerController implements Initializable {
 		}
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.dropFermentTable(ActionEvent e)"), debugLogging);
-	}
+	} // end of dropFermentTable()
 
 	@FXML
 	private void dropCodesTable(ActionEvent e)
@@ -355,7 +355,7 @@ public class WineMakerController implements Initializable {
 		}
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.dropCodesTable(ActionEvent e)"), debugLogging);
-	}
+	} // end of dropCodesTable()
 
 	@FXML
 	private void dropInventoryTable(ActionEvent e)
@@ -371,7 +371,7 @@ public class WineMakerController implements Initializable {
 		}		
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.dropInventoryTable(ActionEvent e)"), debugLogging);
-	}
+	} // end of dropInventoryTable()
 
 	@FXML
 	private void backUpDatabase(ActionEvent e)
@@ -417,7 +417,7 @@ public class WineMakerController implements Initializable {
 			winemakerLogger.writeLog("   WineMakerController.restoreDatabase(): user cancelled the restore operation", debugLogging);
 
 		winemakerLogger.writeLog("<< WineMakerController.restoreDatabase()", debugLogging);
-	}
+	} // end of restoreDatabase()
 
 	/**
 	 * Move database to new user-specified location
@@ -467,7 +467,7 @@ public class WineMakerController implements Initializable {
 
 		statusDisplay.setText(taskMsg);
 		winemakerLogger.writeLog("<< WineMakerController.moveDatabase(ActionEvent e)", debugLogging);
-	}
+	} // end of moveDatabase()
 
 	/*
 	 * Drop and recreate all of the tables
@@ -483,7 +483,7 @@ public class WineMakerController implements Initializable {
 			statusDisplay.appendText("Failure to reset all tables, check log for errors");
 
 		winemakerLogger.writeLog("<< WineMakerController.tableReset()", debugLogging);
-	}
+	} // end of tableReset()
 
 	/*
 	 * Generic method to prompt user for location of an input file
@@ -501,7 +501,7 @@ public class WineMakerController implements Initializable {
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.filePrompt('%s')", promptTitle), debugLogging);
 		return selectedFile;
-	}
+	} // end of filePrompt()
 
 	/*
 	 * Generic method to prompt user for location of an output directory
@@ -527,20 +527,7 @@ public class WineMakerController implements Initializable {
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.directoryPrompt('%s', '%s'): Set to %s", promptTitle, terminalDir, newDir), debugLogging);
 		return newDir;
-	}
-
-	/*
-	 * 
-	private File getOutputDir()
-	{
-		winemakerLogger.writeLog(">> WineMakerController.getOutputDir()", debugLogging);
-
-		File logDir = directoryPrompt("WineMaker Batch Data Export Selection", "");
-
-		winemakerLogger.writeLog("<< WineMakerController.getOutputDir() return", debugLogging);
-		return logDir;
-	} // end of getOutputDir()
-	 */
+	} // end of directoryPrompt()
 
 	/*
 	 * Create an updated properties file
@@ -580,7 +567,7 @@ public class WineMakerController implements Initializable {
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.writePropsFile()"), true);
 		return writeStatus;
-	}
+	} // end of writePropsFile()
 
 	/*
 	 * Switch scene to the batch create/update scene.
@@ -634,7 +621,7 @@ public class WineMakerController implements Initializable {
 		}
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.switchBatchScene(ActionEvent, processMode '%s', batchType '%s'", processMode.toString(), batchType.toString()), debugLogging);
-	}
+	} // end of switchBatchScene()
 
 	/*
 	 * Open a new Scene and Controller to process new test data
@@ -690,8 +677,8 @@ public class WineMakerController implements Initializable {
 			winemakerLogger.showIOException(e2, "Error calling Test Data Module");
 		}
 
-		winemakerLogger.writeLog("<< WineMakerController.addNewTesttData(ActionEvent e)", debugLogging);
-	}
+		winemakerLogger.writeLog("<< WineMakerController.addNewTestData(ActionEvent e)", debugLogging);
+	} // end of addNewTestData()
 
 	/*
 	 * Open a new Scene and Controller to process new ferment data
@@ -754,7 +741,7 @@ public class WineMakerController implements Initializable {
 		}
 
 		winemakerLogger.writeLog("<< WineMakerController.addNewFermentData(ActionEvent e)", debugLogging);
-	}
+	} // end of addNewFermentData()
 
 	/**
 	 * Open a new Scene and Controller for resource codes management
@@ -793,7 +780,7 @@ public class WineMakerController implements Initializable {
 		}
 
 		winemakerLogger.writeLog("<< WineMakerController.updateCodesTable(ActionEvent e)", debugLogging);
-	}
+	} // end of updateCodesTable()
 
 	/*
 	 * Open a new Scene and Controller for inventory management
@@ -835,7 +822,7 @@ public class WineMakerController implements Initializable {
 		}
 
 		winemakerLogger.writeLog("<< WineMakerController.openInventoryManagement(ActionEvent e)", debugLogging);
-	}
+	} // end of openInventoryManagement()
 
 	/*
 	 * Open a new Scene and Controller to process new batch data
@@ -857,40 +844,11 @@ public class WineMakerController implements Initializable {
 		switchBatchScene(e, BatchScene.CREATE, selectedBlend);
 
 		winemakerLogger.writeLog("<< WineMakerController.createNewBatch(ActionEvent e)", debugLogging);
-	}
+	} // end of createNewBatch()
 
 	/*
-	 * Open a new Scene and Controller to process new blend batch data
+	 * Write inventory records to file
 	 */
-	@FXML
-	private void createNewBlend(ActionEvent e)
-	{
-		winemakerLogger.writeLog(">> WineMakerController.createNewBlend(ActionEvent e)", debugLogging);
-
-		switchBatchScene(e, BatchScene.CREATE, Blend.JUICEBLEND);
-
-		winemakerLogger.writeLog("<< WineMakerController.createNewBlend(ActionEvent e)", debugLogging);
-	}
-
-	/*
-	 * Open a new Scene and Controller to update existing batch data
-	 */
-	@FXML
-	private void updateExistingBatch(ActionEvent e)
-	{
-		if (batchSets.getValue() == null)
-		{
-			statusDisplay.setText("No batch has been selected");
-			return;
-		}
-
-		winemakerLogger.writeLog(">> WineMakerController.updateExistingBatch(ActionEvent e)", debugLogging);
-
-		switchBatchScene(e, BatchScene.UPDATE, Blend.NOTBLEND);
-
-		winemakerLogger.writeLog("<< WineMakerController.updateExistingBatch(ActionEvent e)", debugLogging);
-	}
-
 	private void writeInventoryExportFile(File inventoryOutputFile, ArrayList<String> inventorySet)
 	{
 		winemakerLogger.writeLog(String.format(">> WineMakerController.writeInventoryExportFile(inventoryOutputFile, inventorySet)"), debugLogging);
@@ -909,7 +867,7 @@ public class WineMakerController implements Initializable {
 		}
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.writeInventoryExportFile(inventoryOutputFile, inventorySet) return"), debugLogging);
-	}
+	} // end of writeInventoryExportFile()
 
 	/*
 	 * Write operations for export files
@@ -934,7 +892,7 @@ public class WineMakerController implements Initializable {
 		}
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.writeBatchExportFile(File batchOutputFile, File fermentOutputFile, ArrayList<String> batchSet, ArrayList<String> fermentSet) return"), debugLogging);
-	} // end of writeBatchExportFile(File batchOutputFile, File fermentOutputFile, ArrayList<String> batchSet, ArrayList<String> fermentSet)
+	} // end of writeBatchExportFile()
 
 	/*
 	 * Delete an existing batch and its associated ferment and testing records.
@@ -980,7 +938,7 @@ public class WineMakerController implements Initializable {
 		loadBatchSets();
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.deleteExistingBatch('%s')", batchSets.getValue()), debugLogging);
-	} // end of deleteExistingBatch
+	} // end of deleteExistingBatch()
 
 	/*
 	 * Delete Fermentation table record, then redisplay the batch
@@ -1007,7 +965,7 @@ public class WineMakerController implements Initializable {
 			statusDisplay.setText(String.format("%n%nFailed to delete entry '%s'", fermentationEntries.getValue()));
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.deleteFermentRecord()"), debugLogging);
-	}
+	} // end of deleteFermentRecord()
 
 	/*
 	 * Delete Test table record
@@ -1034,10 +992,10 @@ public class WineMakerController implements Initializable {
 			statusDisplay.setText(String.format("%n%nFailed to delete entry '%s'", testingEntries.getValue()));
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.deleteTestRecord()"), debugLogging);
-	}
+	} // end of deleteTestRecord()
 
 	/*
-	 * Common routine to delete record from any table using a Timestamp key field
+	 * Common routine to delete record from any table using a TimeStamp key field
 	 */
 	private boolean deleteRecordByDate(ComboBox<String> tableEntries, String tableName, String tableType)
 	{
@@ -1078,7 +1036,7 @@ public class WineMakerController implements Initializable {
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.deleteRecordByDate('%s')", tableEntries.getValue()), debugLogging);
 		return winemakerModel.deleteDateRecord(extractTimestamp, tableName);
-	}
+	} // end of deleteRecordByDate()
 
 	/**
 	 * From the pre-loaded set of records, extract the selected record.
@@ -1098,7 +1056,7 @@ public class WineMakerController implements Initializable {
 		loadBatchDisplay(wmk.get());
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.getBatchData('%s') return", currentBatchKey), debugLogging);
-	} // end of getBatchData(String currentBatchKey)
+	} // end of getBatchData()
 
 	/**
 	 * Use content in the selected record to populate the UI.  If this is a blend batch, then additional queries will be made
@@ -1142,7 +1100,7 @@ public class WineMakerController implements Initializable {
 			batchDisplay.appendText(df.displayVendorNotesLine(wmk));
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.loadBatchDisplay(WineMakerLog %s): return", wmk.get_batchKey()), debugLogging);
-	} // end of loadBatchDisplay(WineMakerLog wmk)
+	} // end of loadBatchDisplay()
 
 	/**
 	 * Get set of the batch's ferment log entries for populating the selection ComboBox.
@@ -1187,7 +1145,7 @@ public class WineMakerController implements Initializable {
 		fermentationEntries.setVisible(true);
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.loadBatchFermentData('%s')", batchKey), debugLogging);
-	} // end of loadBatchFermentData(String batchKey)
+	} // end of loadBatchFermentData()
 
 	/*
 	 * Get set of the batch's test log entries for populating the selection ComboBox.
@@ -1224,7 +1182,7 @@ public class WineMakerController implements Initializable {
 		testingEntries.setVisible(true);
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.loadBatchTestData('%s') return", batchKey), debugLogging);
-	}
+	} // end of loadBatchTestData()
 
 	private void showPrimaryBatchData(WineMakerLog wmk, boolean isBlendBatch)
 	{
@@ -1261,7 +1219,7 @@ public class WineMakerController implements Initializable {
 		summarizeAdditives(wmk.get_batchKey());
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.showPrimarybatchData('%b') return", isBlendBatch), debugLogging);
-	} // end of showPrimarybatchData(WineMakerLog wmk, boolean isBlendBatch)
+	} // end of showPrimarybatchData()
 
 	private void showBlendBatchData(WineMakerLog wmkBlend)
 	{
@@ -1287,7 +1245,7 @@ public class WineMakerController implements Initializable {
 		}
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.showBlendBatchData()"), debugLogging);
-	} // end of showBlendBatchData(WineMakerLog wmkBlend)
+	} // end of showBlendBatchData()
 
 	/*
 	 * Display summary of fermentation additives used for the batch
@@ -1326,7 +1284,7 @@ public class WineMakerController implements Initializable {
 		.forEach(chemName -> batchDisplay.appendText(String.format("\t%s: %1.2f%s%n", chemKeyMap.get(chemName), chemKeySumMap.get(chemName), chemKeyScaleMap.get(chemName))));
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.summarizeAdditives(%s)", uiRecordKey), debugLogging);
-	}
+	} // end of summarizeAdditives()
 
 	/*
 	 * Using the provided key, extract the record from the batch's current set of Ferment records.
@@ -1356,7 +1314,7 @@ public class WineMakerController implements Initializable {
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.getFermentEntryData('%s')", uiRecordKey), debugLogging);
 		return wmf;
-	}
+	} // end of getFermentEntryData()
 
 	/*
 	 * Using the provided key, extract the record from the batch's current set of Test records.
@@ -1384,7 +1342,7 @@ public class WineMakerController implements Initializable {
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.getTestEntryData('%s')", uiRecordKey), debugLogging);
 		return wmt;
-	}
+	} // end of getTestEntryData()
 
 	/*
 	 * Display the current batch's selected Fermentation entry
@@ -1431,7 +1389,7 @@ public class WineMakerController implements Initializable {
 		batchDisplay.setText(fermentActivity.apply(wmf));
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.displayBatchFermentEntry('%s') ", uiRecordKey), debugLogging);
-	}	
+	} // end of displayBatchFermentEntry()
 
 	/*
 	 * Display selected Test record
@@ -1456,7 +1414,7 @@ public class WineMakerController implements Initializable {
 		batchDisplay.appendText(String.format("%n%s", wmt.get_testNotes()));
 		
 		winemakerLogger.writeLog(String.format("<< WineMakerController.displayBatchTestEntry('%s') ", uiRecordKey), debugLogging);
-	}
+	} // end of displayBatchTestEntry()
 
 	/**
 	 * Prompt user for output file location, then query database for all resource codes and write to file
@@ -1467,7 +1425,6 @@ public class WineMakerController implements Initializable {
 		winemakerLogger.writeLog(String.format(">> WineMakerController.exportCodesFile()"), debugLogging);
 
 		File codesOutputFile = null;
-
 		File logDir = directoryPrompt("WineMaker Resource Codes Export Selection", "");
 
 		if (logDir != null)
@@ -1545,7 +1502,7 @@ public class WineMakerController implements Initializable {
 		statusDisplay.appendText(String.format("Inventory data exported to %s%n", inventoryOutputFile.getPath()));
 		
 		winemakerLogger.writeLog(String.format("<< WineMakerController.exportInventory(): %s contains %d rows", inventoryOutputFile.toPath(), inventoryExportSet.size()), debugLogging);
-	}
+	} // end of exportInventory()
 
 	/*
 	 * Export inventory data.   
@@ -1577,7 +1534,6 @@ public class WineMakerController implements Initializable {
 		HashMap<String, String> containerAssets = HelperFunctions.getCodeKeyMappings().get(FamilyCode.CONTAINERFAMILY.getValue());
 		HashMap<String, String> additiveAssets = HelperFunctions.getCodeKeyMappings().get(FamilyCode.ADDITIVEFAMILY.getValue());
 		HashMap<String, String> yeastAssets = HelperFunctions.getCodeKeyMappings().get(FamilyCode.YEASTFAMILY.getValue());
-
 
 		winemakerLogger.writeLog(String.format("   WineMakerController.reportInventory(): export file %s exporting %d records", inventoryOutputFile.getPath(), wmiQuerySet.size()), debugLogging);
 
@@ -1619,7 +1575,7 @@ public class WineMakerController implements Initializable {
 		writeInventoryExportFile(inventoryOutputFile, inventoryReportSet);
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.reportInventory(): %s contains %d rows", inventoryOutputFile.toPath(), inventoryReportSet.size()), debugLogging);
-	}
+	} // end of reportInventory()
 
 	/*
 	 * Extract all records, send to export method
@@ -1646,7 +1602,7 @@ public class WineMakerController implements Initializable {
 		exportBatchData(wmkSets, logDir);
 
 		winemakerLogger.writeLog("<< WineMakerController.exportAllBatches()", debugLogging);
-	}
+	} // end of exportAllBatches()
 
 	/*
 	 * Extract all records for selected batch, send to export method
@@ -1677,7 +1633,7 @@ public class WineMakerController implements Initializable {
 		exportBatchData(wmkSets, logDir);
 
 		winemakerLogger.writeLog("<< WineMakerController.exportExistingBatch()", debugLogging);
-	}
+	} // end of exportExistingBatch()
 
 	/*
 	 * Export batch data to .CSV files.  Output is 3 time-stamped files:
@@ -1715,7 +1671,7 @@ public class WineMakerController implements Initializable {
 		writeBatchExportFile(batchOutputFile, fermentOutputFile, testingOutputFile, batchSet, fermentSet, testingSet);
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.exportBatchData(): %s contains %d lines, %s contains %d", batchOutputFile.toPath(), batchSet.size(), fermentOutputFile.toPath(), fermentSet.size()), debugLogging);
-	} // end of exportBatchData(ArrayList<WineMakerLog> wmkSets, File logDir)
+	} // end of exportBatchData()
 
 	/*
 	 * For blends, collect any associated records
@@ -1765,7 +1721,7 @@ public class WineMakerController implements Initializable {
 		}
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.collectBatchRecordSets()"), debugLogging);
-	} // end of collectBatchRecordSets(ArrayList<WineMakerLog> wmkSets, ArrayList<String> batchSet, ArrayList<String> fermentSet, ArrayList<String> testingSet)
+	} // end of collectBatchRecordSets()
 
 	/**
 	 * Prompt user for output file location, then copy internal log file to new file 
@@ -1834,9 +1790,8 @@ public class WineMakerController implements Initializable {
 			winemakerLogger.showIOException(e, "Exception attempting to export log file");
 		}
 
-
 		return copyFailed;
-	}
+	} // end of copyFile()
 
 	/*
 	 * Replace the Inventory table with a new set of assets, or insert new asset entries.
@@ -1970,7 +1925,7 @@ public class WineMakerController implements Initializable {
 		startNewBatch.setTooltip(HelperFunctions.buildTooltip(NEWBATCH));
 		addActivity.setTooltip(HelperFunctions.buildTooltip(NEWTASK));
 		addTestData.setTooltip(HelperFunctions.buildTooltip(NEWTEST));
-	}
+	} // end of loadToolTips()
 
 	/*
 	 * Analyze the messages returned by the database table validation method.
@@ -2008,7 +1963,7 @@ public class WineMakerController implements Initializable {
 			statusDisplay.setText(messages);
 		}
 		winemakerLogger.writeLog(String.format("<< WineMakerController.analyzeTableValidation()"), debugLogging);
-	}
+	} // end of analyzeTableValidation()
 
 	/*
 	 * Provided for resetting ComboBox button prompts
