@@ -225,7 +225,7 @@ public class WineMakerLog {
 		targetRecord.setWmkFerments(wmkFerments);
 		targetRecord.setWmkTests(wmkTests);
 		return targetRecord;
-	}
+	} // end of newCopy()
 
 	/*
 	 * Create a copy of the provided object
@@ -262,7 +262,7 @@ public class WineMakerLog {
 		targetRecord.setWmkFerments(wmkFerments);
 		targetRecord.setWmkTests(wmkTests);
 		return targetRecord;
-	} // end of newCopy(WineMakerLog sourceRecord, String batchDate, String parentKey)
+	} // end of newCopy()
 
 	/*
 	 * Create a copy of the provided object
@@ -299,7 +299,7 @@ public class WineMakerLog {
 		targetRecord.setWmkFerments(wmkFerments);
 		targetRecord.setWmkTests(wmkTests);
 		return targetRecord;
-	}
+	} // end of newCopy()
 
 	/*
 	 * Print readable version of this object
@@ -323,54 +323,46 @@ public class WineMakerLog {
 		showObject += String.format("Batch Notes = '%s' %n", this.get_sourceVendorNotes());
 		
 		return showObject;
-	}
+	} // end of toString()
 	
 	public static String toCSVHeader()
 	{
 		return "Batch Key,BlendKey,Source,Grape,Vineyard,Item Count,Item Price,Units/Item,Scale,Quality,Waste,Vendor,Notes\n";
-	}
+	} // end of toCSVHeader()
 	
 	public String toCSV()
 	{
 		String showObject = "";
 		
-//		HashMap<String, HashMap<String, String>> codeMapping = WineMakerModel.codeFamilies;
 		HashMap<String, String> codeSet;
 		
 		showObject += String.format("%s,", HelperFunctions.batchKeyExpand(this.get_batchKey()));
 		showObject += (this.get_batchBlendKey().length() > 0) ? 
 				String.format("%s,", HelperFunctions.batchKeyExpand(this.get_batchBlendKey())) : ",";
 		
-//		codeSet = codeMapping.get(FamilyCode.BATCHSOURCEFAMILY.getValue());
 		codeSet = HelperFunctions.getCodeKeyFamily(FamilyCode.BATCHSOURCEFAMILY.getValue());
 		showObject += String.format("%s,", codeSet.get(this.get_batchSource()));
 
-//		String grapeName = codeMapping.get(FamilyCode.GRAPEFAMILY.getValue()).get(this.get_batchGrape());
 		String grapeName = HelperFunctions.getCodeKeyEntry(FamilyCode.GRAPEFAMILY.getValue(), this.get_batchGrape());
 		if (grapeName == null)
 			grapeName = HelperFunctions.getCodeKeyEntry(FamilyCode.BLENDFAMILY.getValue(), this.get_batchGrape());
-//			grapeName = codeMapping.get(FamilyCode.BLENDFAMILY.getValue()).get(this.get_batchGrape());		
 		showObject += String.format("%s,", grapeName);
 
-//		codeSet = codeMapping.get(FamilyCode.VINEYARDFAMILY.getValue());
 		codeSet = HelperFunctions.getCodeKeyFamily(FamilyCode.VINEYARDFAMILY.getValue());
 		showObject += String.format("%s,", codeSet.get(this.get_batchVineyard()));
 		showObject += String.format("%s,", this.get_sourceItemCount());
 		showObject += String.format("%s,", this.get_sourceItemPrice());
 		showObject += String.format("%s,", this.get_sourceItemMeasure());
 		
-//		codeSet = codeMapping.get(FamilyCode.MEASURESFAMILY.getValue());
 		codeSet = HelperFunctions.getCodeKeyFamily(FamilyCode.MEASURESFAMILY.getValue());
 		showObject += String.format("%s,", codeSet.get(this.get_sourceScale()));
 		showObject += String.format("%s,", this.get_qualityRating());
 		showObject += String.format("%s,", this.get_wastePercent());
 
-//		codeSet = codeMapping.get(FamilyCode.GRAPESUPPLYFAMILY.getValue());
 		codeSet = HelperFunctions.getCodeKeyFamily(FamilyCode.GRAPESUPPLYFAMILY.getValue());
 		showObject += String.format("%s,", codeSet.get(this.get_sourceVendor()));		
 		showObject += String.format("%s", this.get_sourceVendorNotes().replaceAll(",", ";"));
 		
-		return showObject;
-		
-	}
+		return showObject;		
+	} // end of toCSV()
 }

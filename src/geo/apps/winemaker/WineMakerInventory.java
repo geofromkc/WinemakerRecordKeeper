@@ -36,8 +36,8 @@ public class WineMakerInventory {
 	private String exportActivity = empty;
 	private String exportVendor = empty;
 	
-	public WineMakerInventory() {
-	}
+	public WineMakerInventory() 
+	{}
 
 	public String get_itemName() {
 		return itemName;
@@ -164,12 +164,12 @@ public class WineMakerInventory {
 		}
 				
 		return showObject;
-	}
+	} // end of toString()
 	
 	public static String toCSVHeader()
 	{
 		return "Item Name,Item ID,Entry Date,Stock on Hand,Batch Id,Activity Name,Activity Amount,Purchase Cost,Amount Scale,Purchase Vendor";
-	}
+	} // end of toCSVHeader()
 
 	/**
 	 * 
@@ -215,7 +215,7 @@ public class WineMakerInventory {
 		showObject += String.format("%s,", exportVendor);
 	
 		return showObject;
-	}
+	} // end of toCSV()
 
 	public String toReport()
 	{
@@ -255,7 +255,7 @@ public class WineMakerInventory {
 		}
 		
 		return showObject;		
-	}
+	} // end of toReport()
 	
 	public WineMakerInventory createActivityRecord()
 	{
@@ -265,7 +265,7 @@ public class WineMakerInventory {
 		wmiActivity.setItemBatchId(this.getItemBatchId());
 		
 		return wmiActivity;
-	}
+	}  // end of createActivityRecord()
 	
 	private String formatDouble(Double someNumber)
 	{
@@ -282,5 +282,5 @@ public class WineMakerInventory {
 		}
 						
 		return showDouble;
-	}
+	}  // end of formatDouble()
 }

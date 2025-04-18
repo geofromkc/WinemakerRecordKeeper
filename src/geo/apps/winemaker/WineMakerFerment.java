@@ -545,11 +545,11 @@ public class WineMakerFerment {
 		targetRecord.set_fermentNotes(get_fermentNotes());
 			
 		return targetRecord;
-	}
+	} // end of newCopy()
 	
 	/*
 	 * Print readable version of this object
-	 * @return User-readable version of the current record
+	 * @return String User-readable version of the current record
 	 */
 	@Override
 	public String toString()
@@ -606,7 +606,7 @@ public class WineMakerFerment {
 		showObject += (this.get_fermentNotes().length() > 0) ? String.format("Stage notes = %n\t'%s' %n", this.get_fermentNotes()) : "";
 		
 		return showObject;
-	}
+	} // end of toString()
 
 	public static String toCSVHeader()
 	{
@@ -614,7 +614,7 @@ public class WineMakerFerment {
 				+ "Chem Name,Chem Amt,Chem Scale,Brix,pH,TA,Temp,Starting Temp,Ending Temp,Temp Scale,Yeast in Starter,H2O in Starter,Juice Vol in Starter,"
 				+ "Yeast Activity,Cold Location,1st Container,2nd Container,3rd Container,1st Container Count,2nd Container Count,3rd Container Count,1st Container Vol,2nd Container Vol,3rd Container Vol,"
 				+ "Input Juice Vol,Input Scale,Output Juice Vol,Output Scale, Current Juice Vol, Current Vol Scale, Rack Source,Rack Target 1,Rack Target 2,Rack Target 3,Rack Target 1 Count,Rack Target 2 Count,Rack Target 3 Count,Bottle Count,Punch Tool,Press Cycle,Stage Notes\n");
-	}
+	} // end of newCSVHeader()
 	
 	public String toCSV()
 	{
@@ -703,6 +703,5 @@ public class WineMakerFerment {
 		showObject += String.format("%s", this.get_fermentNotes().replace(",", " - "));
 				
 		return showObject;
-	}
-	
+	} // end of newCSV()
 }

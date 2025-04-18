@@ -85,7 +85,7 @@ public class TestDataDetailController implements Initializable {
 		
 		winemakerLogger.writeLog(String.format("<< TestDataDetailController.setBatchKey(batchKey '%s')", batchKey), debugLogging);
 		return;
-	}
+	} // end of setBatchKey()
 	
 	private String getBatchKey()
 	{
@@ -115,7 +115,7 @@ public class TestDataDetailController implements Initializable {
 		
 		winemakerLogger.writeLog(String.format("<< TestDataDetailController.parseTimeString(uiDate '%s', fieldName '%s')", uiTime, fieldName), debugLogging);
 		return parsedTime;
-	}
+	} // end of parseTimeString()
 	
 	private String extractPattern(String fieldText, int groupNum, Pattern matchPattern)
 	{
@@ -126,14 +126,14 @@ public class TestDataDetailController implements Initializable {
 
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.extractPattern('%s', %d)", fieldText, groupNum), debugLogging);
 		return matcher.group(groupNum);
-	}
+	} // end of extractPattern()
 	
 	/*
 	 * 
 	 */
 	private WineMakerTesting validateFields()
 	{
-		winemakerLogger.writeLog(String.format(">> TestDataDetailController.validateDefaultFields()"), debugLogging);
+		winemakerLogger.writeLog(String.format(">> TestDataDetailController.validateFields()"), debugLogging);
 
 		boolean scaleRequired = true;
 		String validateMessages = "";
@@ -158,9 +158,9 @@ public class TestDataDetailController implements Initializable {
 			return null;
 		}
 				
-		winemakerLogger.writeLog(String.format("<< TestDataDetailController.validateDefaultFields()"), debugLogging);
+		winemakerLogger.writeLog(String.format("<< TestDataDetailController.validateFields()"), debugLogging);
 		return new WineMakerTesting(winemakerModel);
-	}
+	} // end of validateFields()
 	
 	private String validateChemField(String fieldName, String fieldValue, Pattern matchPattern, boolean scaleRequired)
 	{
@@ -186,7 +186,7 @@ public class TestDataDetailController implements Initializable {
 		
 		winemakerLogger.writeLog(String.format("<< TestDataDetailController.validateChemField('%s', '%s'): '%s'", fieldName, fieldValue, validateMessage), debugLogging);
 		return validateMessage;
-	}
+	} // end of validateChemField()
 	
 	private boolean doubleVerification(String fieldName, String doubleValue) 
 	{
@@ -202,14 +202,14 @@ public class TestDataDetailController implements Initializable {
 		}
 	
 		return rc;
-	}
+	} // end of doubleVerification()
 	
 	/**
-	 * 
+	 * Validate input, then save record
 	 */
 	public void submitNewTestData()
 	{
-		winemakerLogger.writeLog(String.format(">> TestDataDetailController.submitNewTestDataLog()"), debugLogging);
+		winemakerLogger.writeLog(String.format(">> TestDataDetailController.submitNewTestData()"), debugLogging);
 		
 		WineMakerTesting wmt = validateFields();
 		if (wmt == null)
@@ -237,23 +237,27 @@ public class TestDataDetailController implements Initializable {
 				.map(valueAsKey -> codeSet.get(valueAsKey))
 				.findFirst();
 
-		String scaleValue = (valueToKey.isPresent()) ? valueToKey.get() : "";
+		String scaleValue = (valueToKey.isPresent()) ? 
+				valueToKey.get() : "";
 		wmt.set_testScale(scaleValue);
 		
 		String updatedNotes = (testNotes.getText().length() > 0) ?
 				testNotes.getText().concat("\n") : "";
-		updatedNotes = updatedNotes.concat(String.format("Container tested: %s%n", containerSelect.getValue()));
-		
+		updatedNotes = updatedNotes.concat(String.format("Container tested: %s%n", containerSelect.getValue()));		
 		wmt.set_testNotes(updatedNotes);
 		
 		if (winemakerModel.insertTestData(wmt))
-			statusDisplay.setText("Test data added successfully");;
+			statusDisplay.setText("Test data added successfully");
+		else
+			statusDisplay.setText("Failed to add Test data");
 		
-		winemakerLogger.writeLog(String.format("<< TestDataDetailController.submitNewTestDataLog()"), debugLogging);
+		winemakerLogger.writeLog(String.format("<< TestDataDetailController.submitNewTestData()"), debugLogging);
 		return;
-	}
+	} // end of submitNewTestData()
 
-	
+	/*
+	 * 
+	 */
 	private void setUIDefaults()
 	{
 		winemakerLogger.writeLog(String.format(">> TestDataDetailController.setUIDefaults()"), debugLogging);
@@ -273,11 +277,10 @@ public class TestDataDetailController implements Initializable {
 		
 		winemakerLogger.writeLog(String.format("<< TestDataDetailController.setUIDefaults()"), debugLogging);
 		return;
-
-	}
+	} // end of setUIDefaults()
 	
 	/*
-	 * Build list of inventory container objects in this batch
+	 * Build list of inventory container assets in this batch
 	 */
 	private ObservableList<String> buildSourceContainerSet(String batchId)
 	{
@@ -299,9 +302,8 @@ public class TestDataDetailController implements Initializable {
 	
 		winemakerLogger.writeLog(String.format("<< TestDataDetailController.buildSourceContainerSet()"), debugLogging);
 		return containerList;
-	} // end of buildSourceContainerSet(<batch id>)
-	
-	
+	} // end of buildSourceContainerSet()
+		
 	/*
 	 * Return to home Scene
 	 */

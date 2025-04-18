@@ -376,6 +376,7 @@ public class WineMakerController implements Initializable {
 	@FXML
 	private void backUpDatabase(ActionEvent e)
 	{
+		winemakerLogger.displayAlert("Depending on your network, this operation could take up to a minute, or not.");
 		statusDisplay.setText(winemakerModel.backupDatabase());
 	}
 
@@ -411,6 +412,7 @@ public class WineMakerController implements Initializable {
 		if (result.isPresent() && result.get() == ButtonType.YES)
 		{
 			winemakerModel.restoreDatabase(appProperties.getProperty("DBBACKUP") + File.separator + restoreDialog.getSelectedItem().toString());
+			statusDisplay.setText(String.format("Data restored from backup %s", restoreDialog.getSelectedItem().toString()));
 			loadBatchSets();
 		}
 		else
@@ -1129,8 +1131,6 @@ public class WineMakerController implements Initializable {
 
 			fermentEntry = String.format("%s %s", ld.format(DateTimeFormatter.ofPattern(entryTimeFormat)), activityName);
 			fermentationEntriesList.add(fermentEntry);
-
-			winemakerLogger.writeLog(String.format("   WineMakerController.loadBatchFermentData() adding '%s'", fermentEntry), debugLogging);
 		}
 
 		fermentationEntries.setItems(fermentationEntriesList.sorted());
@@ -1216,7 +1216,8 @@ public class WineMakerController implements Initializable {
 		/*
 		 * get batch's inventory records and summarize additive usage
 		 */		
-		summarizeAdditives(wmk.get_batchKey());
+		//summarizeAdditives(wmk.get_batchKey());
+		summarizeAdditives(wmiContainers);
 
 		winemakerLogger.writeLog(String.format("<< WineMakerController.showPrimarybatchData('%b') return", isBlendBatch), debugLogging);
 	} // end of showPrimarybatchData()
@@ -1250,19 +1251,19 @@ public class WineMakerController implements Initializable {
 	/*
 	 * Display summary of fermentation additives used for the batch
 	 */
-	private void summarizeAdditives(String uiRecordKey)
+	private void summarizeAdditives(ArrayList<WineMakerInventory> wmiContainers)
 	{
-		winemakerLogger.writeLog(String.format(">> WineMakerController.summarizeAdditives(%s)", uiRecordKey), debugLogging);
+		winemakerLogger.writeLog(String.format(">> WineMakerController.summarizeAdditives(%s)", wmiContainers.get(0).getItemBatchId()), debugLogging);
 
 		HashMap<String, String> chemKeyMap = HelperFunctions.getCodeKeyFamily(FamilyCode.ADDITIVEFAMILY.getValue());
 		HashMap<String, Double> chemKeySumMap = new HashMap<>();
 		HashMap<String, String> chemKeyScaleMap = new HashMap<>();
 
 		chemKeyMap.keySet()
-		.stream()
-		.forEach(chemName -> chemKeySumMap.put(chemName, 0.0));
+			.stream()
+			.forEach(chemName -> chemKeySumMap.put(chemName, 0.0));
 
-		ArrayList<WineMakerInventory> assetActivityCollection = winemakerModel.queryInventoryByBatch(uiRecordKey)
+		ArrayList<WineMakerInventory> assetActivityCollection = wmiContainers
 				.stream()
 				.filter(wmi -> wmi.getItemTaskId().length() > 0)
 				.filter(wmi -> wmi.get_itemActivityAmount() > 0)
@@ -1279,13 +1280,14 @@ public class WineMakerController implements Initializable {
 			batchDisplay.appendText("\nSummary of additives used in batch:\n");
 
 		chemKeySumMap.keySet()
-		.stream()
-		.filter(chemKey -> chemKeySumMap.get(chemKey) > 0)
-		.forEach(chemName -> batchDisplay.appendText(String.format("\t%s: %1.2f%s%n", chemKeyMap.get(chemName), chemKeySumMap.get(chemName), chemKeyScaleMap.get(chemName))));
+			.stream()
+			.filter(chemKey -> chemKeySumMap.get(chemKey) > 0)
+			.forEach(chemName -> batchDisplay.appendText(String.format("\t%s: %1.2f%s%n", chemKeyMap.get(chemName), chemKeySumMap.get(chemName), chemKeyScaleMap.get(chemName))));
 
-		winemakerLogger.writeLog(String.format("<< WineMakerController.summarizeAdditives(%s)", uiRecordKey), debugLogging);
+		winemakerLogger.writeLog(String.format("<< WineMakerController.summarizeAdditives()"), debugLogging);
 	} // end of summarizeAdditives()
 
+	
 	/*
 	 * Using the provided key, extract the record from the batch's current set of Ferment records.
 	 * The key format = "<timestamp> <ferment activity code>"

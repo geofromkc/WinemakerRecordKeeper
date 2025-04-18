@@ -192,7 +192,6 @@ public class FermentDataDetailController implements Initializable {
 			.filter(wmfTest -> wmfTest.get_fermentActivity().equals(ActivityName.CHECKPOINT.getValue()))
 			.filter(wmfTest -> wmfTest.get_stageCycle() == cycleNum)
 			.findFirst();
-	
 	private BiFunction<String, String, String> buildItemDisplay = 
 			(itemName, itemId) -> (itemId.length() > 0) ? 
 					String.format("%s (%s)", itemId, itemName) : itemName;
@@ -213,10 +212,8 @@ public class FermentDataDetailController implements Initializable {
 		this.winemakerLogger = (WineMakerLogging) appRegistry.get(RegistryKeys.LOGGER);
 		
 		loadMethodMaps();
-		//setupClassInstance();
 	}
 
-	
 	private ArrayList<WineMakerInventory> getLocalInventorySet()
 	{
 		return inventoryExistingSetsQueryList;
@@ -263,7 +260,7 @@ public class FermentDataDetailController implements Initializable {
 		winemakerLogger.writeLog(String.format("   FermentDataDetailController.loadMethodMaps(): Extras %s", additionalRecordMethodsMap), debugLogging);
 
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.loadMethodMaps()"), debugLogging);
-	}
+	} // end of loadMethodMaps()
 
 	/*
 	 * Populate the HashMaps connecting activities to their dynamically-called methods
@@ -279,28 +276,7 @@ public class FermentDataDetailController implements Initializable {
 		additionalRecordMethodsMap.put(activityCode, String.format("submitExtra%s", activityName));
 	
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.methodMapInsert('%s', '%s')", activityCode, activityName), debugLogging);
-	}
-	
-	/*
-	 * Load the class reference object for dynamically called activity methods
-	 */
-	@SuppressWarnings("unused")
-	private void setupClassInstance()
-	{
-		winemakerLogger.writeLog(String.format(">> FermentDataDetailController.setupClassInstance()"), debugLogging);
-
-		try 
-		{
-			classRef = Class.forName("geo.apps.winemaker.FermentDataDetailController");
-		}
-		catch (ClassNotFoundException | IllegalArgumentException | SecurityException e) 
-		{
-			winemakerLogger.showIOException(e, "Failure to set FermentDataDetailController class reference");
-			statusDisplay.setText("Fatal programming error, see log for details");
-		}
-		
-		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.setupClassInstance()"), debugLogging);
-	}
+	} // end of methodMapInsert()
 
 	/*
 	 * Retrieve parent batch and retrieve the existing Ferment activity records
@@ -849,7 +825,7 @@ public class FermentDataDetailController implements Initializable {
 		uiComboBox.setButtonCell(new ButtonCell());
 
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.activityDefaultLayoutContainerSetup('%s')", uiComboBox.getId()), debugLogging);
-	}
+	} // end of activityDefaultLayoutContainerSetup()
 
 	private void activityDefaultLayoutFieldSetup(TextField uiField, String promptText, String displayText, double maxWidth)
 	{
@@ -860,7 +836,7 @@ public class FermentDataDetailController implements Initializable {
 		uiField.setMaxWidth(maxWidth);
 
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.activityDefaultLayoutFieldSetup('%s')", uiField.getId()), debugLogging);
-	}
+	} // end of activityDefaultLayoutFieldSetup()
 
 	private void activityDefaultLayoutHBoxSetup(HBox uiHBox, ComboBox<String> uiComboBox, TextField uiField)
 	{
@@ -871,7 +847,7 @@ public class FermentDataDetailController implements Initializable {
 		uiHBox.getChildren().add(uiField);
 		
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.activityDefaultLayoutHBoxSetup('%s', '%s', '%s')", uiHBox.getId(), uiComboBox.getId(), uiField.getId()), debugLogging);
-	}
+	} // end of activityDefaultLayoutHBoxSetup()
 
 	private void activityDefaultLayoutHBoxSetup(HBox uiHBox, ComboBox<String> uiComboBox, Button uiButton)
 	{
@@ -882,7 +858,7 @@ public class FermentDataDetailController implements Initializable {
 		uiHBox.getChildren().add(uiButton);
 
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.activityDefaultLayoutHBoxSetup('%s', '%s', '%s')", uiHBox.getId(), uiComboBox.getId(), uiButton.getId()), debugLogging);
-	}
+	} // end of activityDefaultLayoutHBoxSetup()
 
 	/*
 	 * Validate default fields for Ferment activities
@@ -915,7 +891,7 @@ public class FermentDataDetailController implements Initializable {
 		
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.validateDefaultFields('%s')", fieldSelect.toString()), debugLogging);
 		return validateMessages; 
-	}
+	} // end of validateDefaultFields()
 	
 	private String validateAdditiveField(ComboBox<String> inputCategory, TextField inputValue)
 	{
@@ -942,7 +918,7 @@ public class FermentDataDetailController implements Initializable {
 		
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.validateAdditiveField(%s, '%s' (%s))", inputCategory.getId(), inputValue.getText(), inputValue.getId()), debugLogging);
 		return errorMsg;
-	}
+	} // end of validateAdditiveField()
 	
 	
 	/*
@@ -968,7 +944,7 @@ public class FermentDataDetailController implements Initializable {
 				(itemName, itemId) -> (itemId.length() > 0) ? 
 						String.format("%s (%s)", itemId, itemName) : itemName;
 
-		List<WineMakerInventory> searchSet = HelperFunctions.findAssetItemRecord(this.getLocalInventorySet(), fieldContainers3.getValue());
+		//List<WineMakerInventory> searchSet = HelperFunctions.findAssetItemRecord(this.getLocalInventorySet(), fieldContainers3.getValue());
 
 		errorMsg += (!HelperFunctions.validateVolumeWeightTemp(field_1.getText())) ?
 				String.format(volumeMsg, fieldLabel_1.getText(), field_1.getText()) : "";
@@ -993,7 +969,7 @@ public class FermentDataDetailController implements Initializable {
 		
 		winemakerLogger.writeLog("<< FermentDataDetailController.validateAmelioration()", debugLogging);
 		return checkResults;				
-	}
+	} // end of validateAmelioration()
 	
 	/*
 	 *	Validate new Bottle record
@@ -1003,6 +979,8 @@ public class FermentDataDetailController implements Initializable {
 	@SuppressWarnings("unused")
 	private Validation validateBottle()
 	{
+		winemakerLogger.writeLog(">> FermentDataDetailController.validateBottle()", debugLogging);
+
 		Validation checkResults = Validation.PASSED; 
 		String errorMsg = validateDefaultFields(TimeCheck.ONLYENTRY);
 		
@@ -1017,8 +995,9 @@ public class FermentDataDetailController implements Initializable {
 			checkResults = Validation.FAILED;
 		}
 		
+		winemakerLogger.writeLog("<< FermentDataDetailController.validateBottle()", debugLogging);
 		return checkResults;
-	}
+	} // end of validateBottle()
 	
 	/*
 	 * Validate new Checkpoint record
@@ -1093,11 +1072,14 @@ public class FermentDataDetailController implements Initializable {
 		String errorMsg = validateDefaultFields(TimeCheck.ONLYENTRY);
 	
 		errorMsg += (!HelperFunctions.validateVolumeWeightTemp(field_1.getText())) ?
-				String.format(volumeMsg, fieldLabel_3.getText(), field_1.getText()) : "";
+				String.format(volumeMsg, fieldLabel_1.getText(), field_1.getText()) : "";
 		errorMsg += (!HelperFunctions.validateVolumeWeightTemp(field_2.getText())) ?
-				String.format(volumeMsg, fieldLabel_4.getText(), field_2.getText()) : "";
+				String.format(volumeMsg, fieldLabel_2.getText(), field_2.getText()) : "";
 		errorMsg += (!HelperFunctions.validateVolumeWeightTemp(field_3.getText())) ?
-				String.format(volumeMsg, fieldLabel_5.getText(), field_3.getText()) : "";
+				String.format(volumeMsg, fieldLabel_3.getText(), field_3.getText()) : "";
+		
+		errorMsg += (targetContainerCount < 1) ? 
+				"At least one target container must be selected" : "";	
 		
 		if (errorMsg.length() > 0)
 		{
@@ -1133,8 +1115,10 @@ public class FermentDataDetailController implements Initializable {
 		errorMsg += (!HelperFunctions.validateVolumeWeightTemp(field_1.getText())) ?
 				String.format(volumeMsg, fieldLabel_1.getText(), field_1.getText()) : "";
 
-		errorMsg += (sourceContainerCount < 1) ? "At least one source container must be selected" : "";		
-		errorMsg += (targetContainerCount < 1) ? "At least one target container must be selected" : "";		
+		errorMsg += (sourceContainerCount < 1) ? 
+				"At least one source container must be selected\n" : "";		
+		errorMsg += (targetContainerCount < 1) ? 
+				"At least one target container must be selected" : "";		
 		
 		if (errorMsg.length() > 0) 
 		{
@@ -1144,7 +1128,7 @@ public class FermentDataDetailController implements Initializable {
 		
 		winemakerLogger.writeLog("<< FermentDataDetailController.validatePress()", debugLogging);
 		return checkResults;
-	}
+	} // end of validatePress()
 
 	/*
 	 * Validate new Rack or Transfer record
@@ -1181,7 +1165,7 @@ public class FermentDataDetailController implements Initializable {
 		
 		winemakerLogger.writeLog("<< FermentDataDetailController.validateRack()", debugLogging);
 		return checkResults;
-	}
+	} // end of validateRack()
 	
 	/*
 	 * Validate new Yeast Pitch record
@@ -1237,7 +1221,7 @@ public class FermentDataDetailController implements Initializable {
 	} // end of validateYeastPitch()
 
 	/*
-	 * Generate the key Timestamp value and the Notes field.  
+	 * Generate the key TimeStamp value and the Notes field.  
 	 * Optionally, process the input starting and ending times of this activity. 
 	 */
 	private WineMakerFerment loadDefaultRecordFields(WineMakerFerment wmf)
@@ -1256,7 +1240,7 @@ public class FermentDataDetailController implements Initializable {
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.loadDefaultRecordFields('%s')", wmf.get_batchKey()), debugLogging);
 		return wmf;
 		
-	} // end of loadDefaultRecordFields(WineMakerFerment wmf, TimeCheck fieldSelect)
+	} // end of loadDefaultRecordFields()
 
 	/*
 	 * activity 'amel'
@@ -1357,7 +1341,7 @@ public class FermentDataDetailController implements Initializable {
 		winemakerLogger.writeLog(String.format("   FermentDataDetailController.loadBottleRecord(): new record: %s", wmfBottle), debugLogging);
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.loadBottleRecord()"), debugLogging);
 		return wmfBottle;
-	}
+	} // end of loadBottleRecord()
 	
 	/*
 	 *	Load a new Checkpoint record
@@ -1595,7 +1579,7 @@ public class FermentDataDetailController implements Initializable {
 		valuesMap.put(chemKey + "-m", extractVolumeOrTemp(amountValue, 2, matchAmountPattern));
 		
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.captureChemicalEntry(chemName %s, value %s, valuesMap)", chemName, amountValue), debugLogging);
-	}
+	} // end of captureChemicalEntry()
 
 	/*
 	 * Convert the UI chemical values into WineMakerFerment and WineMakerInventory objects.
@@ -1654,7 +1638,7 @@ public class FermentDataDetailController implements Initializable {
 		
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.loadChemAdditions(...)"), debugLogging);
 		return wmfSets;
-	}
+	} // end of loadChemAdditions()
 
 	/*
 	 * For the current Fermentation activity, create Inventory entries reflecting inventory reductions for
@@ -1740,7 +1724,7 @@ public class FermentDataDetailController implements Initializable {
 
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.collectContainerNotes()"), debugLogging);		
 		return updatedNotes;
-	}
+	} // end of collectContainerNotes()
 
 	/*
 	 * Submit new ferment log entry.
@@ -1770,11 +1754,17 @@ public class FermentDataDetailController implements Initializable {
 		/*
 		 * The Amelioration activity consists of a set of similar records, 
 		 * so the inserts are done in the activity method code and a null is returned
+		 * if no adjustment data was entered
 		 */
 		WineMakerFerment wmfNew = activityRecordMethodCall(this.activityCode);
 
 		if (wmfNew == null || !winemakerModel.insertFermentData(wmfNew)) 
+		{
+			winemakerLogger.writeLog(String.format("<< FermentDataDetailController.submitNewFermentDataLog()"), debugLogging);
+			statusDisplay.setText("No Fermentation activity logged");
+
 			return;
+		}
 
 		statusDisplay.setText("Fermentation activity logged successfully\n");
 
@@ -1831,7 +1821,7 @@ public class FermentDataDetailController implements Initializable {
 			winemakerLogger.writeLog(String.format("   FermentDataDetailController.submitNewStageActivity('%s'): Failure adding stage record %s", wmfStart), debugLogging);
 		
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.submitNewStageActivity()"), debugLogging);
-	}
+	} // end of submitNewStageActivity()
 
 	/*
 	 * For Bottle activities, set the end date of this stage
@@ -1848,7 +1838,7 @@ public class FermentDataDetailController implements Initializable {
 		winemakerModel.updateFermentData(wmfStageUpdate);
 		
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.submitExtraBottle()"), debugLogging);
-	}
+	} // end of submitExtraBottle()
 
 	/*
 	 * For Checkpoint activities, update the current stage record with the current checkpoint juice volume (if any)
@@ -1877,7 +1867,7 @@ public class FermentDataDetailController implements Initializable {
 		submitNewStageActivity(wmfCrush);
 		
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.submitExtraCrush()"), debugLogging);
-	}
+	} // end of submitExtraCrush()
 
 	@SuppressWarnings("unused")
 	private void submitExtraPress(WineMakerFerment wmfPress)
@@ -1887,7 +1877,7 @@ public class FermentDataDetailController implements Initializable {
 		submitNewStageActivity(wmfPress);
 		
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.submitExtraPress()"), debugLogging);
-	}
+	} // end of submitExtraPress()
 	
 	/*
 	 * The YeastPitch activity has optional data that will generate additional records
@@ -1922,7 +1912,7 @@ public class FermentDataDetailController implements Initializable {
 			.forEach(wmiUpdate -> winemakerModel.updateInventory(wmiUpdate));
 		
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.submitExtraYeastPitch()"), debugLogging);
-	}
+	} // end of submitExtraYeastPitch()
 	
 	/*
 	 * Certain activities auto-generate a new Stage activity.
@@ -1961,7 +1951,7 @@ public class FermentDataDetailController implements Initializable {
 		winemakerLogger.writeLog(String.format("   FermentDataDetailController.createNewStageActivity(), new record %s", wmfStart), debugLogging);
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.createNewStageActivity()"), debugLogging);
 		return wmfStart;
-	} // end of createNewStageActivity(WineMakerFerment wmf)
+	} // end of createNewStageActivity()
 
 	/*
 	 * Return to home Scene
@@ -1990,7 +1980,7 @@ public class FermentDataDetailController implements Initializable {
 			winemakerLogger.displayAlert(e1.getMessage());
 			return;
 		}
-	}	
+	} // end of returnToMain()
 
 	/*
 	 * Return the resource key for an amount scale, like 'g/l', that could entered as 'G/L' or 'G/l' 
@@ -2005,7 +1995,7 @@ public class FermentDataDetailController implements Initializable {
 				.findFirst();
 		
 		return valueToKey.get();
-	}
+	} // end of getScaleKey()
 
 	/*
 	 * Perform Regex match and return group value
@@ -2016,7 +2006,7 @@ public class FermentDataDetailController implements Initializable {
 		matcher.find();
 	
 		return matcher.group(groupNum);
-	}
+	} // end of extractVolumeOrTemp()
 
 	/*
 	 * Add set of resource codes to the collected map
@@ -2038,7 +2028,7 @@ public class FermentDataDetailController implements Initializable {
 
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.getResourceValues('')"), debugLogging);
 		return resourceValueList;
-	}
+	} // end of getResourceValues()
 	
 	/*
 	 * Process the container selection buttons
@@ -2067,7 +2057,7 @@ public class FermentDataDetailController implements Initializable {
 			}
 		}
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.processContainerSelectButton()"), debugLogging);
-	}
+	} // end of processContainerSelectButton()
 
 	/*
 	 * Update batch id property for selected container inventory record.
@@ -2110,7 +2100,7 @@ public class FermentDataDetailController implements Initializable {
 		referencedContainer.setItems(listEmptyContainers);
 		
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.processContainerSelection()"), debugLogging);
-	}
+	} // end of processContainerSelection()
 	
     /*
 	 * Build the default set of UI controls
@@ -2298,7 +2288,7 @@ public class FermentDataDetailController implements Initializable {
 		setLocalInventorySet(winemakerModel.queryInventory());
 		
 		winemakerLogger.writeLog("<< FermentDataDetailController.resetUIFields()", debugLogging);
-	}
+	} // end of resetUIFields()
 
 	LocalDateStringConverter localDateStringConverter = new LocalDateStringConverter() {
         @Override

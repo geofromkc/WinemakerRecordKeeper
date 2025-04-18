@@ -6,9 +6,8 @@ public class WineMakerCodes {
 
 	private HashMap<String, String> codeMap = new HashMap<String, String>(50);
 	
-	public WineMakerCodes() {
-		// TODO Auto-generated constructor stub
-	}
+	public WineMakerCodes() 
+	{}
 	
 	public void saveCode(String key, String value)
 	{

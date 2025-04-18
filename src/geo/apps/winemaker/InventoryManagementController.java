@@ -258,7 +258,7 @@ public class InventoryManagementController implements Initializable {
 		inventoryNewRecordsList.add(wmiUpdate);
 		
 		winemakerLogger.writeLog(String.format("<< InventoryManagementController.createAssetUpdateRecord(): Update activity record: %s", wmiUpdate), debugLogging);
-	} // end of createRemovalRecord(<parent record>)
+	} // end of createRemovalRecord()
 	
 	/*
 	 * Create a new purchase record
@@ -420,7 +420,7 @@ public class InventoryManagementController implements Initializable {
 	
 		winemakerLogger.writeLog(String.format("<< InventoryManagementController.validateCapitalUpdate(): returning %n: '%s'", validatePackage.getErrorMsg()), debugLogging);
 		return validatePackage;
-	}
+	} // end of validateCapitalSubmit()
 
 	private ValidationPackage validateConsumableUpdate()
 	{
@@ -454,7 +454,7 @@ public class InventoryManagementController implements Initializable {
 		
 		winemakerLogger.writeLog(String.format("<< InventoryManagementController.validateConsumableUpdate(): returning message  %n'%s'", validatePackage.getErrorMsg()), debugLogging);
 		return validatePackage;
-	}
+	} // end of validateConsumableSubmit()
 
 	private ValidationPackage validateCapitalPurchase()
 	{
@@ -485,7 +485,7 @@ public class InventoryManagementController implements Initializable {
 
 		winemakerLogger.writeLog(">> InventoryManagementController.validateCapitalPurchase()", debugLogging);
 		return validatePackage;		
-	}
+	} // end of validateCapitalPurchase()
 	
 	private ValidationPackage validateConsumablePurchase()
 	{
@@ -517,8 +517,7 @@ public class InventoryManagementController implements Initializable {
 
 		winemakerLogger.writeLog(">> InventoryManagementController.validateConsumablePurchase()", debugLogging);
 		return validatePackage;		
-	}
-
+	} // end of validateConsumablePurchase()
 	
 	/*
 	 * Validate purchase input. 
@@ -552,7 +551,7 @@ public class InventoryManagementController implements Initializable {
 		
 		winemakerLogger.writeLog(String.format("<< InventoryManagementController.validatePurchaseSubmit(): returning %n'%s'", validatePackage.getErrorMsg()), debugLogging);
 		return validatePackage;
-	}
+	} // end of validateCapitalPurchase()
 
 	private ValidationPackage validatePurchaseSubmitDefaults()
 	{
@@ -586,7 +585,7 @@ public class InventoryManagementController implements Initializable {
 	
 		winemakerLogger.writeLog(String.format("<< InventoryManagementController.validatePurchaseSubmitDefaults(): returning message%n'%s'", validatePackage.getErrorMsg()), debugLogging);
 		return validatePackage;
-	}
+	} // end of validatePurchaseSubmitDefaults()
 
 	private Double processItemRemoval(Double stockOnHand, String removalInput)
 	{
@@ -612,7 +611,7 @@ public class InventoryManagementController implements Initializable {
 
 		winemakerLogger.writeLog(String.format(">> InventoryManagementController.processItemRemoval('%s')", removalInput), debugLogging);
 		return newStockOnHand;
-	}
+	} // end of processItemRemoval()
 	
 	/*
 	 * Update the Inventory master record with updates 
@@ -1150,7 +1149,7 @@ public class InventoryManagementController implements Initializable {
 			buildUIForPurchases();
 	
 		winemakerLogger.writeLog(String.format("<< InventoryManagementController.resetUI()"), debugLogging);
-	}
+	} // end of resetUI()
 
 	/*
 	 * Reset the GridPane elements for task switching

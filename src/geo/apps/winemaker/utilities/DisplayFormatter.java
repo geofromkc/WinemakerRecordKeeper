@@ -8,12 +8,15 @@ import geo.apps.winemaker.WineMakerInventory;
 import geo.apps.winemaker.WineMakerLog;
 import geo.apps.winemaker.utilities.Constants.*;
 
+/**
+ * Methods to display the various lines of a batch
+ *  
+ * @author geo
+ * @version 1.0
+ * @since 2022-03-01
+ */
 public class DisplayFormatter {
 	
-	/*
-	 * HelperFunctions test
-	 */
-//	private HashMap<String, HashMap<String, String>> codeMapping = WineMakerModel.codeFamilies;
 	private HashMap<String, HashMap<String, String>> codeMapping = HelperFunctions.getCodeKeyMappings();
 
 	public DisplayFormatter()
@@ -139,6 +142,4 @@ public class DisplayFormatter {
 		return (sourceRecord.get_sourceVendorNotes().length() > 0) ? 
 				String.format("%nBatch notes: %n\t%s %n", sourceRecord.get_sourceVendorNotes()) : "";
 	}
-
-
 }

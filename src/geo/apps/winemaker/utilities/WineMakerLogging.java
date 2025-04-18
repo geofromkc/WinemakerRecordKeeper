@@ -21,6 +21,9 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.DirectoryChooser;
 
+/**
+ * Provide application-level logging
+ */
 public class WineMakerLogging {
 
 	File logFile = new File("/");

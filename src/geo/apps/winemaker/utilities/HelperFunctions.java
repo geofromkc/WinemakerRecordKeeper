@@ -524,8 +524,7 @@ public final class HelperFunctions {
 
 		winemakerLogger.writeLog(String.format("<< HelperFunctions.convertAssetItemName(): return %s", returnValues), true);
 		return returnValues;
-	} // end of convertAssetItemName()
-	
+	} // end of convertAssetItemName()	
 	
 	/**
 	 * Collect contents of provided file
@@ -647,7 +646,7 @@ public final class HelperFunctions {
 
 		winemakerLogger.writeLog(String.format("<< HelperFunctions.findAssetItemRecord('%s'): returning %s", itemSelectedExisting, filteredQueryList), true);
 		return filteredQueryList;
-	}
+	} // end of findAssetItemRecord()
 
 	/*
 	 * Increment an existing TimeStamp with the provided increment
@@ -657,7 +656,7 @@ public final class HelperFunctions {
 		Instant newTimeInstant = parentEntryDate.toInstant().plusSeconds(secondIncrement);
 
 		return Timestamp.from(newTimeInstant);
-	}
+	} // end of buildTimeStamp()
 	
 	public static Timestamp buildTimeStamp(DatePicker uiDate, String uiTime, int secIncrement)
 	{
@@ -689,12 +688,11 @@ public final class HelperFunctions {
 		catch (DateTimeParseException de)
 		{
 			parsedTime = null;
-//			winemakerLogger.displayAlert(String.format("Time string %s is invalid, substituting the current time",  uiTime.toUpperCase()));
 		}
 		
 		winemakerLogger.writeLog(String.format("<< HelperFunctions.parseTimeString('%s')", uiTime), true);
 		return parsedTime;
-	}
+	} // end of parseTimeString()
 	
 	/*
 	 * Provided for resetting ComboBox button prompts

@@ -1,13 +1,11 @@
 package geo.apps.winemaker;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -25,9 +23,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import geo.apps.winemaker.utilities.Constants.*;
@@ -41,7 +37,6 @@ public class ResourceCodesManagementController implements Initializable {
 	private WineMakerLogging winemakerLogger;
 	private DatabaseOperations dbOps;
 	
-	private Properties prop = new Properties();
 	private final String CODECATEGORY = "codeCategory";
 	private final String CODEVALUE = "codeValue";
 	private final String UPDATEVALUE = "updateValue";
@@ -81,8 +76,8 @@ public class ResourceCodesManagementController implements Initializable {
 		this.dbOps = (DatabaseOperations) HelperFunctions.getRegistry().get(RegistryKeys.DBOPS);
 	}
 
-	/*
-	 * Button methods
+	/**
+	 * Delete selected code
 	 */
 	@FXML
 	public void deleteSelectedCode(ActionEvent e)
@@ -112,8 +107,12 @@ public class ResourceCodesManagementController implements Initializable {
 		}
 
 		winemakerLogger.writeLog("<< ResourceCodesManagementController.deleteSelectedCode(ActionEvent e)", debugLogging);
-	}
+	} // end of deleteSelectedCode()
 
+	/**
+	 * Update table with new code value
+	 * @param e
+	 */
 	@FXML
 	public void updateSelectedCode(ActionEvent e)
 	{
@@ -144,8 +143,12 @@ public class ResourceCodesManagementController implements Initializable {
 		}
 		
 		winemakerLogger.writeLog("<< ResourceCodesManagementController.updateSelectedCode(ActionEvent e)", debugLogging);
-	}
+	} // end of updateSelectedCode()
 
+	/**
+	 * Add new code to the table
+	 * @param e
+	 */
 	@FXML
 	public void insertNewCode(ActionEvent e)
 	{
@@ -168,7 +171,7 @@ public class ResourceCodesManagementController implements Initializable {
 		}
 		
 		winemakerLogger.writeLog("<< ResourceCodesManagementController.insertNewCode(ActionEvent e)", debugLogging);
-	}
+	} // end of insertNewCode()
 
 	private String getCategoryKey(String categoryValue)
 	{
@@ -178,7 +181,7 @@ public class ResourceCodesManagementController implements Initializable {
 			.filter(key -> categoryValue.equals(codeSet.get(key)))
 			.collect(Collectors.toList())
 			.get(0);
-	}
+	} // end of getCategoryKey()
 
 	private String getOptionKey(String optionCategory, String optionValue)
 	{
@@ -188,7 +191,7 @@ public class ResourceCodesManagementController implements Initializable {
 			.filter(key -> optionValue.equals(codeSet.get(key)))
 			.collect(Collectors.toList())
 			.get(0);
-	}
+	} // end of getOptionKey()
 
 	/*
 	 * Validate delete option
@@ -213,7 +216,7 @@ public class ResourceCodesManagementController implements Initializable {
 
 		winemakerLogger.writeLog(String.format("<< ResourceCodesManagementController.validate(ComboBox codeCategory, ComboBox codeValue)"), debugLogging);		
 		return checkResults;
-	} // end of validateInput(ComboBox<String> codeCategory, ComboBox<String> codeValue)
+	} // end of validateInput()
 
 	/*
 	 * Validate update option
@@ -241,10 +244,10 @@ public class ResourceCodesManagementController implements Initializable {
 		winemakerLogger.writeLog("<< ResourceCodesManagementController.validate(ComboBox codeCategory, ComboBox codeValue, String codeDesc)", debugLogging);
 
 		return checkResults;
-	} // end of validateInput(ComboBox<String> codeCategory, ComboBox<String> codeValue, String codeDesc)
+	} // end of validateInput()
 
 	/*
-	 * Validate insert option
+	 * Validate input
 	 */
 	private Validation validateInput(ComboBox<String> codeCategory, String codeValue, String codeDesc)
 	{
@@ -278,10 +281,10 @@ public class ResourceCodesManagementController implements Initializable {
 		winemakerLogger.writeLog("<< ResourceCodesManagementController.validate(ComboBox codeCategory, String codeValue, String codeDesc)", debugLogging);
 		
 		return checkResults;
-	} // end of validateInput(ComboBox<String> codeCategory, String codeValue, String codeDesc)
+	} // end of validateInput()
 
 	/*
-	 * UI utility methods
+	 * Load values into the provided ComboBox
 	 */
 	private void loadComboBoxSelections(HashMap<String, String> codeSet, ComboBox<String> selectionList) 
 	{
@@ -297,23 +300,11 @@ public class ResourceCodesManagementController implements Initializable {
 		selectionList.setItems(comboboxSelections);		
 		
 		winemakerLogger.writeLog(String.format("<< ResourceCodesManagementController.loadComboBoxSelections(HashMap<S, S> codeSet, ComboBox<S> selectionList)%n"), debugLogging);
-	}
-
+	} // end of loadComboBoxSelections()
 
 	/*
-	 * Define the new ToolTip to be added to a UI element.  The appearance is set in the local CSS file.
+	 * Retrieve all of the entry values for the provided resource category
 	 */
-	@SuppressWarnings("unused")
-	private Tooltip buildTooltip(String tipText)
-	{
-		Tooltip toolTipText = new Tooltip(tipText);
-		toolTipText.setTextAlignment(TextAlignment.LEFT);
-		toolTipText.setWrapText(true);
-		toolTipText.setMaxWidth(400);
-
-		return toolTipText;
-	}
-	
 	private void loadCategoryValues(String categoryCode)
 	{
 		winemakerLogger.writeLog(String.format(">> ResourceCodesManagementController.loadCategoryValues(String '%s')", categoryCode), debugLogging);
@@ -335,18 +326,23 @@ public class ResourceCodesManagementController implements Initializable {
 		codeValue.setItems(valueList);
 		
 		winemakerLogger.writeLog(String.format("<< ResourceCodesManagementController.loadCategoryValues(String '%s')", categoryCode), debugLogging);
-	}
+	} // end of loadCategoryValues()
 
-	private void loadPrompts()
+	/*
+	 * Set common attributes for the ComboBoxes
+	 */
+	private void initPrompts()
 	{
-		winemakerLogger.writeLog(String.format("ResourceCodesManagementController.loadPrompts()"), debugLogging);
+		winemakerLogger.writeLog(String.format(">> ResourceCodesManagementController.loadPrompts()"), debugLogging);
 
 		codeCategory.setPromptText("Select Category");
 		codeCategory.setButtonCell(new ButtonCell());
 		
 		codeValue.setPromptText("Select Option");
 		codeValue.setButtonCell(new ButtonCell());
-	}
+
+		winemakerLogger.writeLog(String.format("<< ResourceCodesManagementController.loadPrompts()"), debugLogging);
+	} // end of loadPrompts()
 	
 	private void loadToolTips()
 	{
@@ -355,36 +351,7 @@ public class ResourceCodesManagementController implements Initializable {
 		updateValue.setTooltip(HelperFunctions.buildTooltip(UPDATEVALUE));
 		newCode.setTooltip(HelperFunctions.buildTooltip(NEWCODE));
 		newValue.setTooltip(HelperFunctions.buildTooltip(NEWVALUE));
-	}
-	
-	@SuppressWarnings("unused")
-	private void loadPropertiesFile()
-	{		
-		InputStream ins = this.getClass().getClassLoader().getResourceAsStream("tooltips.properties");
-
-		if (ins == null)
-		{
-			winemakerLogger.displayAlert("Could not load Tooltip properties file, contact your vendor.");
-			winemakerLogger.writeLog("The InputStream for the properties file is null", debugLogging);
-		}
-		else
-		{
-			try 
-			{
-				prop.load(ins);
-				if (prop.isEmpty())
-				{
-					winemakerLogger.displayAlert("The Tooltip properties list is empty, contact your vendor.");
-					winemakerLogger.writeLog("The Map object from the Tooltip properties file is empty", debugLogging);
-				}
-			} 
-			catch (IOException e2) 
-			{
-				winemakerLogger.displayAlert("There was a fatal exception loading the Tooltip properties file, contact your vendor.");
-				winemakerLogger.showIOException(e2, "IO Exception loading the Tooltip properties file");
-			}		
-		}		
-	}
+	} // end of loadToolTips()
 	
 	/*
 	 * Return to home Scene
@@ -438,7 +405,7 @@ public class ResourceCodesManagementController implements Initializable {
 			HashMap<String, String> codeSet = this.codeMapping.get(FamilyCode.USERFAMILIES.getValue());
 			
 			loadComboBoxSelections(codeSet, codeCategory);
-			loadPrompts();
+			initPrompts();
 			loadToolTips();
 		}
 		catch (Exception e)
@@ -451,7 +418,7 @@ public class ResourceCodesManagementController implements Initializable {
 		 */
 		codeCategory.setOnAction(e -> {
 			loadCategoryValues(codeCategory.getValue());
-			loadPrompts();
+			initPrompts();
 		});
 
 		/*

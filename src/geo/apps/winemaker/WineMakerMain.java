@@ -134,9 +134,11 @@ public class WineMakerMain extends Application {
 	/*
 	 * Check for initial state.  There are various possible paths:
 	 * 
-	 * 	
-	 * https://stackoverflow.com/questions/622108/check-condition-if-the-application-is-running-for-the-first-time-after-being-ins
-	 * 
+	 * 		Scenario 1: no startup file exists, so assume a clean environment
+	 * 		Scenario 2: startup file exists and matches install state, no further action needed
+	 * 		Scenario 3/4 check: startup file exists but does not match install state, so prompt for next step
+	 * 			Scenario 3: application was reinstalled, user will keep existing data, and startup file will be synched
+	 * 			Scenario 4: application was reinstalled, next step will cleanup and create new directories
 	 */
 	private boolean setStartupState()
 	{
@@ -214,11 +216,10 @@ public class WineMakerMain extends Application {
 		
 		winemakerLogger.writeLog(String.format("<< WineMakerMain.setStartupState()"), true);
 		return isFirstTime;
-	}
+	} // end of setStartupState()
 	
 	/*
-	 * Prompt user for new location of application data,
-	 * then create the tables
+	 * Prompt user for new location of application data, then create the tables
 	 */
 	private void setApplicationDir()
 	{
@@ -292,10 +293,10 @@ public class WineMakerMain extends Application {
 		winemakerLogger.writeLog(String.format("<< WineMakerMain.setApplicationDir()"), true);
 		
 		return;
-	}
+	} // end of setApplicationDir()
 
 	/*
-	 * Prompt for use of default file location, or user-selected
+	 * Prompt for location of application files: default or user-selected
 	 */
 	private Optional<ButtonType> setupPrompt(String alertTitle, String alertText)
 	{
@@ -307,8 +308,11 @@ public class WineMakerMain extends Application {
 		Optional<ButtonType> result = initialStatePrompt.showAndWait();
 	
 		return result;
-	}
+	} // end of setupPrompt()
 
+	/*
+	 * Create application files for this installation
+	 */
 	private void createAppFiles(File appFilesDir, File appDataBackupDir, boolean useDefaults)
 	{
 		winemakerLogger.writeLog(String.format(">> WineMakerMain.createAppFiles(%s, %s)", appFilesDir.getPath(), appDataBackupDir.getPath()), true);
@@ -332,8 +336,6 @@ public class WineMakerMain extends Application {
 		String setDefault = (useDefaults) ? "1" : "0";
 		writePropsAndStartupFile(appFilesDir, appDataBackupDir, propsFile, startupFile, setDefault);
 		
-		winemakerModel.setBackupFilesDir(appDataBackupDir);
-		
 		if (isInstalled)
 		{
 			winemakerLogger.writeLog(String.format("   WineMakerMain.createAppFiles(): set timestamp on startup file '%s'", startupFile.getPath()), true);
@@ -342,8 +344,11 @@ public class WineMakerMain extends Application {
 		}
 		winemakerLogger.writeLog(String.format("<< WineMakerMain.createAppFiles(%s, %s)", appFilesDir.getPath(), appDataBackupDir.getPath()), true);
 		return;
-	}
+	} // end of createAppFiles()
 	
+	/*
+	 * Create new installation directory
+	 */
 	private void directoryCreate(File newDir)
 	{
 		winemakerLogger.writeLog(String.format(">> WineMakerMain.directoryCreate(%s)", newDir.getPath()), true);
@@ -364,8 +369,11 @@ public class WineMakerMain extends Application {
 		winemakerLogger.writeLog(String.format("<< WineMakerMain.directoryCreate(%s)", newDir.getPath()), true);
 		
 		return;
-	}
+	} // end of directoryCreate()
 
+	/*
+	 * Delete file structure of prior installation
+	 */
 	private void directoryCleanup(File existingDir)
 	{
 		winemakerLogger.writeLog(String.format(">> WineMakerMain.directoryCleanup(%s)", existingDir.getPath()), true);
@@ -385,7 +393,7 @@ public class WineMakerMain extends Application {
 		
 		winemakerLogger.writeLog(String.format("<< WineMakerMain.directoryCleanup(%s)", existingDir.getPath()), true);
 		return;
-	}
+	} // end of directoryCleanup()
 	
 	/*
 	 * Prompt user for customer directory to store the database files and backups
@@ -417,7 +425,7 @@ public class WineMakerMain extends Application {
 		winemakerLogger.writeLog(String.format("<< WineMakerMain.promptForDir('%s')", selectTitle), true);
 		
 		return newDir;
-	}
+	} // end of promptForDir()
 
 	/*
 	 * Using the default or custom locations, create the database properties file
@@ -455,7 +463,7 @@ public class WineMakerMain extends Application {
 
 		winemakerLogger.writeLog(String.format("<< WineMakerMain.writePropsFile()"), true);
 		return writeStatus;
-	}
+	} // end of writePropsFile()
 	
 	@Override
 	public void start(Stage primaryStage) 

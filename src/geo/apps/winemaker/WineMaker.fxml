@@ -45,7 +45,6 @@
                      <accelerator>
                         <KeyCodeCombination alt="DOWN" code="T" control="UP" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
-                  <MenuItem mnemonicParsing="false" onAction="#updateExistingBatch" text="Update Batch" visible="false" />
                   <SeparatorMenuItem mnemonicParsing="false" />
               <MenuItem mnemonicParsing="false" onAction="#sayGoodbye" text="Close">
                      <accelerator>

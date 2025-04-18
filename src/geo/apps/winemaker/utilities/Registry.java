@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import geo.apps.winemaker.utilities.Constants.RegistryKeys;
 
+/**
+ * Manage registry of application-level objects
+ */
 public class Registry {
     private static final Registry INSTANCE = new Registry();
     

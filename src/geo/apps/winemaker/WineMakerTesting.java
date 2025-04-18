@@ -96,9 +96,6 @@ public class WineMakerTesting {
 	{
 		WineMakerTesting targetRecord = new WineMakerTesting(winemakerModel);
 
-		/*
-		 * Increment timestamp to make it unique
-		 */
 		Timestamp selectedDate = sourceRecord.get_entry_date();
 		long newTime = selectedDate.getTime() + 1000;
 		selectedDate.setTime(newTime);
@@ -112,7 +109,7 @@ public class WineMakerTesting {
 		targetRecord.set_testNotes(sourceRecord.get_testNotes());
 
 		return targetRecord;
-	}
+	} // end of newCopy()
 	
 	@Override
 	public String toString()
@@ -134,12 +131,12 @@ public class WineMakerTesting {
 				String.format("Stage notes = %n\t'%s' %n", this.get_testNotes()) : "";
 		
 		return showObject;
-	}
+	} // end of toString()
 	
 	public static String toCSVHeader()
 	{
 		return "Entry Date,Batch,Test,Value,Unit,Temp,Notes";
-	}
+	} // end of toCSVHeader()
 
 	public String toCSV()
 	{
@@ -161,5 +158,5 @@ public class WineMakerTesting {
 		showObject += String.format("%s", this.get_testNotes().replace(",", " - "));
 		
 		return showObject;
-	}
+	} // end of toCSV()
 }

@@ -30,7 +30,7 @@ public class WineMakerModel {
 	private WineMakerLogging winemakerLogger = null;
 	private DatabaseOperations dbOps = null;
 	
-	private static final String appVersion = "2.0.0";
+	private static final String appVersion = "3.2.0";
 
 	private static final String jdbcBase = "jdbc:derby://localhost:1527/";
 	private static final String defaultAppName = "/WineMakerApp";
@@ -55,8 +55,12 @@ public class WineMakerModel {
 	private File inputFile;
 	private Window fxStage;
 
+	/*
+	 * 
 	private File appFilesDir = null;
 	private File backupFilesDir = null;
+	 */
+
 	private Properties appProperties = new Properties();
 	
 	private String codeFilePath = null;
@@ -99,20 +103,8 @@ public class WineMakerModel {
 		return this.codeFilePath;
 	}
 
-	public void setCodeFilePath(String filePath) {
-		this.codeFilePath = filePath;
-	}
-
 	public String getLogFilePath() {
 		return this.codeFilePath;
-	}
-
-	public File getAppFilesDir() {
-		return this.appFilesDir;
-	}
-
-	public void setAppFilesDir(File appFilesDir) {
-		this.appFilesDir = appFilesDir;
 	}
 
 	public static String getJdbcbase() {
@@ -153,14 +145,6 @@ public class WineMakerModel {
 
 	public static String getDefaultappsearch() {
 		return defaultAppSearch;
-	}
-
-	public File getBackupFilesDir() {
-		return this.backupFilesDir;
-	}
-
-	public void setBackupFilesDir(File backupFilesDir) {
-		this.backupFilesDir = backupFilesDir;
 	}
 
 	public WineMakerLogging getApplicationLogger() {
@@ -262,7 +246,7 @@ public class WineMakerModel {
 		
 		winemakerLogger.writeLog(String.format("<< WineMakerModel.loadProperties()"), debugLogging);
 		return returnState;
-	}
+	} // end of loadProperties()
 
 	/**
 	 * Validate existence of specified table
@@ -330,7 +314,7 @@ public class WineMakerModel {
 		this.dbOps.copyDirectory(moveBackupSource, moveBackupTarget);
 
 		winemakerLogger.writeLog(String.format("<< WineMakerModel.moveDatabase('%s', '%s', '%s')", moveDataTarget, moveBackupTarget, moveBackupSource), debugLogging);
-	}
+	} // end of moveDataBase()
 
 	/**
 	 * Add new batch to primary batch table
@@ -346,7 +330,7 @@ public class WineMakerModel {
 		
 		winemakerLogger.writeLog(String.format("<< WineMakerModel.insertBatch(%s)", wmk.get_batchKey()), debugLogging);
 		return returnState;
-	}
+	} // end of insertBatch()
 
 	/**
 	 * Add new ferment data to ferment table
@@ -362,7 +346,7 @@ public class WineMakerModel {
 
 		winemakerLogger.writeLog(String.format("<< WineMakerModel.insertFermentData(%s)", wmf.get_batchKey()), debugLogging);
 		return returnState;
-	}
+	} // end of insertFermentData()
 
 	/**
 	 * Add new test data for the current batch
@@ -378,7 +362,7 @@ public class WineMakerModel {
 		
 		winemakerLogger.writeLog(String.format("<< WineMakerModel.insertTestData(%s)", wmt.get_batchKey()), debugLogging);
 		return returnState;
-	}
+	} // end of insertTestData()
 	
 	/**
 	 * Add new resource code
@@ -395,7 +379,7 @@ public class WineMakerModel {
 		
 		winemakerLogger.writeLog(String.format("<< WineMakerModel.insertNewCode(%s, %s, %s)", codeType, codeValue, codeDesc), debugLogging);
 		return returnState;
-	}
+	} // end of insertNewCode()
 
 	/**
 	 * Add new inventory record
@@ -410,7 +394,7 @@ public class WineMakerModel {
 		
 		winemakerLogger.writeLog(String.format("<< WineMakerModel.insertInventory(%s)", wmi.get_itemName()), debugLogging);
 		return returnState;
-	}
+	} // end of insertInventory()
 	
 	/**
 	 * Update current batch record
@@ -426,7 +410,7 @@ public class WineMakerModel {
 				
 		winemakerLogger.writeLog(String.format("<< WineMakerModel.updateBatch(%s)", wmk.get_batchKey()), debugLogging);
 		return returnState;
-	}
+	} // end of updateBatch()
 
 	/**
 	 * Call method to update an inventory record
@@ -441,7 +425,7 @@ public class WineMakerModel {
 		
 		winemakerLogger.writeLog(String.format("<< WineMakerModel.updateInventory(%s)", wmi.get_itemName()), debugLogging);
 		return returnState;
-	}
+	} // end of updateInventory()
 
 	public boolean updateInventoryBatch(WineMakerInventory wmi) 
 	{
@@ -451,7 +435,7 @@ public class WineMakerModel {
 		
 		winemakerLogger.writeLog(String.format("<< WineMakerModel.updateInventoryBatch(%s)", wmi.get_itemName()), debugLogging);
 		return returnState;
-	}
+	} // end of updateInventoryBatch()
 
 	/**
 	 * Call method to delete current batch records. This includes all related records in the
@@ -467,7 +451,7 @@ public class WineMakerModel {
 		
 		winemakerLogger.writeLog(String.format("<< WineMakerModel.deleteBatch(%s)", batchKey), debugLogging);
 		return returnState;
-	}
+	} // end of deleteBatch()
 
 	/**
 	 * Call method to delete records from tables with java.sql.Timestamp keys, currently the Ferment and Testing tables
@@ -483,7 +467,7 @@ public class WineMakerModel {
 		
 		winemakerLogger.writeLog(String.format("<< WineMakerModel.deleteDateRecord('%s', '%s')", entryDate, tableName), debugLogging);
 		return returnState;
-	}
+	} // end of deleteDateRecord()
 
 	/**
 	 * Call method to delete a resource code entry
@@ -499,12 +483,7 @@ public class WineMakerModel {
 		
 		winemakerLogger.writeLog(String.format("<< WineMakerModel.deleteCode(%s, %s)", codeType, codeValue), debugLogging);
 		return returnState;
-	}
-
-	/**
-	 * Call method to return all inventory records
-	 * @return boolean True/False flag indicating success or failure
-	 */
+	} // end of deleteCode()
 	
 	/**
 	 * Query all inventory records
@@ -518,7 +497,7 @@ public class WineMakerModel {
 		
 		winemakerLogger.writeLog(String.format("<< WineMakerModel.queryInventory()"), debugLogging);
 		return returnData;
-	}
+	} // end of queryInventory()
 
 	/**
 	 * 
@@ -533,7 +512,7 @@ public class WineMakerModel {
 		
 		winemakerLogger.writeLog(String.format("<< WineMakerModel.queryInventory()"), debugLogging);
 		return returnData;
-	}
+	} // end of queryInventoryBatch()
 	
 	/**
 	 * Query to return a single capital asset inventory record
@@ -549,7 +528,7 @@ public class WineMakerModel {
 		
 		winemakerLogger.writeLog(String.format("<< WineMakerModel.queryInventory(%s)", itemName), debugLogging);
 		return returnItem;
-	}
+	} // end of queryInventory()
 
 	/**
 	 * Call method to return a single batch record
@@ -565,7 +544,7 @@ public class WineMakerModel {
 		
 		winemakerLogger.writeLog(String.format("<< WineMakerModel.queryBatch(%s, %s)", batchKey, blendSearch.toString()), debugLogging);
 		return returnItem; 
-	}
+	} // end of queryBatch()
 
 	/**
 	 * Query DB for Ferment table entries.   Specify an empty activity code to retrieve all
@@ -587,7 +566,7 @@ public class WineMakerModel {
 		
 		winemakerLogger.writeLog(String.format("<< WineMakerModel.queryFermentData(%s)", batchKey), debugActive);
 		return wmfSet;
-	}
+	} // end of queryFermentData()
 
 	/**
 	 * Query DB for Ferment table entries, filtered to a specific activity code
@@ -604,7 +583,7 @@ public class WineMakerModel {
 		
 		winemakerLogger.writeLog(String.format("<< WineMakerModel.queryFermentData(%s, %s)", batchKey, activity), debugActive);
 		return wmfSet;
-	}
+	} // end of queryFermentData()
 
 	/**
 	 * Query DB for Ferment table entries, filtered to a specific activity code
@@ -621,7 +600,7 @@ public class WineMakerModel {
 		
 		winemakerLogger.writeLog(String.format("<< WineMakerModel.queryFermentData(%s, %s, %s)", batchKey, activity, refTime.toString()), debugActive);
 		return wmfSet;
-	}
+	} // end of queryFermentData()
 
 	/**
 	 * Query DB for Test table entries
@@ -637,7 +616,7 @@ public class WineMakerModel {
 		
 		winemakerLogger.writeLog(String.format("<< WineMakerModel.queryTestingData(%s)", batchKey), debugLogging);
 		return returnItems; 
-	}
+	} // end of queryTestingData()
 
 	
 	/**
@@ -654,7 +633,7 @@ public class WineMakerModel {
 		
 		winemakerLogger.writeLog(String.format("<< WineMakerModel.updateFermentData(%s)", wmf.get_batchKey()), debugLogging);
 		return returnState;
-	}
+	} // end of updateFermentData()
 
 	/**
 	 * Update resource code record
@@ -671,7 +650,7 @@ public class WineMakerModel {
 		
 		winemakerLogger.writeLog(String.format("<< WineMakerModel.updateCode(%s, %s, %s)", codeType, codeValue, codeDesc), debugLogging);
 		return returnState;
-	}
+	} // end of updateCode()
 
 	/**
 	 * Drop all existing tables and recreate them
@@ -689,18 +668,7 @@ public class WineMakerModel {
 		}
 
 		return true;
-	}
-
-	public void initCodesFileDeprecated()
-	{
-		winemakerLogger.writeLog(String.format(">> WineMakerModel.initCodesFile()"), debugActive);
-
-		File defaultCodesPath = new File(System.getProperty("user.dir") + "/app/WineMakerApp_ResourceCodes.csv");
-
-		this.dbOps.insertCodes(HelperFunctions.returnFileContents(defaultCodesPath));
-
-		winemakerLogger.writeLog(String.format("<< WineMakerModel.initCodesFile()"), debugActive);
-	}
+	} // end of resetTables()
 	
 	/**
 	 * Validate and create a connection to the codes file.
@@ -739,5 +707,5 @@ public class WineMakerModel {
 
 		winemakerLogger.writeLog(String.format("<< WineMakerModel.readCodesFile()"), debugActive);
 		return HelperFunctions.returnFileContents(inputFile);
-	}
+	} // end of readCodesFile()
 }

@@ -205,5 +205,4 @@ public class Constants {
 
 	    public String getValue() { return value; }
 	}
-	
 }

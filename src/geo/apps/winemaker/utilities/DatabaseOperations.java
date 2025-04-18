@@ -36,17 +36,6 @@ import javafx.scene.control.Alert.AlertType;
 
 public class DatabaseOperations {
 	
-	// Database Table names
-	
-	/*
-	 *
-	private final String winemkrKeyTable = "WMK_KEY";	
-	private final String winemkrCodesTable = "WMK_CODES";
-	private final String winemkrTestingTable = "WMK_TESTING";
-	private final String winemkrFermentTable = "WMK_FERMENT";
-	private final String winemkrInventoryTable = "WMK_INVENTORY";
-	 */
-	
 	// SQL Query templates
 	private final String QUERY_ALL = "SELECT * FROM $table";
 	private final String QUERY_ALL_1 = "SELECT * FROM $table FETCH FIRST ROW ONLY";
@@ -453,7 +442,7 @@ public class DatabaseOperations {
 		
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.connectDatabaseDerby()"), debugLogging);
 		return newConn;
-	}
+	} // end of connectDatabaseDerby()
 	
 	/*
 	 * SSL Connect to cloud-based DB2 database instance.
@@ -523,7 +512,7 @@ public class DatabaseOperations {
 		
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.backUpDatabase()"), debugLogging);
 		return returnMsg;
-	}
+	} // end of backUpDatabase()
 
 	/**
 	 * Restore the database from a selected backup
@@ -545,13 +534,7 @@ public class DatabaseOperations {
 		
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.restoreDatabase('%s'):", restoreLocation), debugLogging);
 		return;
-	}
-
-	/*
-	 * Sample: jdbc:derby:c:/Users/geo/Box/WinemakerTest/winemaker;createFrom=c:/Users/geo/Documents/Apps/WineMakerApp/Backup/2023-05-03_09-23/winemaker
-	 * 
-	 * Will need to also move the Backup folder (if exists) and rebuild the properties file
-	 */
+	} // end of restoreDatabase()
 	
 	/**
 	 * Close and reconnect database to set it in a new location
@@ -572,7 +555,7 @@ public class DatabaseOperations {
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.moveDatabase('%s')", toLocation), debugLogging);
 		
 		return;
-	}
+	} // end of moveDatabase()
 
 	/**
 	 * Move directory files to a new location.  Primarily used by the Move Database option to move backup files
@@ -607,7 +590,7 @@ public class DatabaseOperations {
 
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.copyDirectory('%s', '%s')", sourceDirectoryLocation, destinationDirectoryLocation), debugLogging);
 		return;
-	}
+	} // end of copyDirectory()
 	
 	/**
 	 * Create new table in the database, using the supplied table name
@@ -657,7 +640,7 @@ public class DatabaseOperations {
 		
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.createTable('%s')", tableName), debugLogging);
 		return returnState;
-	}
+	} // end of createTable()
 
 	/**
 	 * Drop the current table
@@ -700,7 +683,7 @@ public class DatabaseOperations {
 		
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.dropTable('%s')", tableName), debugLogging);
 		return returnState;
-	} // end of dropTable(String tableName)
+	} // end of dropTable()
 		
 	/*
 	 * Validation method to check existence of a table.  Takes table name as input.
@@ -729,11 +712,11 @@ public class DatabaseOperations {
 		
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.doesTableExist('%s')", tableName), debugLogging);
 		return returnTable;
-	}
+	} // end of doesTableExist()
 	
 	/**
 	 * Call database table validation for each required table.
-	 * The validation consists of testing the connection to the table. There are three reason for failure:
+	 * The validation consists of testing the connection to the table. There are three reasons for failure:
 	 * 		1. The database instance is missing
 	 * 		2. The table is missing in the database
 	 * 		3. The table might exist but the SQL query statement failed
@@ -835,7 +818,7 @@ public class DatabaseOperations {
 
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.validateAllTables()"), debugLogging);
 		return validateStates;
-	}
+	} // end of validateAllTables()
 
 	/**
 	 * Validate connection to requested table.  Validation checks both the existence of the table
@@ -898,7 +881,7 @@ public class DatabaseOperations {
 	
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.validateTable('%s'): returning '%s'", tableName, returnState), debugLogging);
 		return returnState;
-	} // end of validateTable(String tableName)
+	} // end of validateTable()
 
 	/**
 	 * Insert new batch record into the database
@@ -963,7 +946,7 @@ public class DatabaseOperations {
 
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.insertBatch('%s')", wmk.get_batchKey()), debugLogging);
 		return returnCode;
-	} // end of insertBatch(wineMakerLog wmk)
+	} // end of insertBatch()
 	
 	/**
 	 * Insert new ferment record into the database
@@ -1059,7 +1042,7 @@ public class DatabaseOperations {
 	
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.insertFermentData('%s')", wmf.get_batchKey()), debugLogging);
 		return returnCode;
-	} // end of insertFermentData(WineMakerFerment wmf)
+	} // end of insertFermentData()
 
 	/**
 	 * Insert new inventory record into the database
@@ -1115,7 +1098,7 @@ public class DatabaseOperations {
 		
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.insertNewInventoryItem()"), debugLogging);
 		return returnCode;
-	} // end of insertNewInventoryItem(WineMakerInventory inv)
+	} // end of insertNewInventoryItem()
 	
 	/**
 	 * Insert new test record into the database
@@ -1166,7 +1149,7 @@ public class DatabaseOperations {
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.insertNewTestData('%s')", wmt.get_batchKey()), debugLogging);
 		return returnCode;
 		
-	} // end of insertNewTestData(WineMakerTesting wmt)
+	} // end of insertNewTestData()
 	
 	/**
 	 * Insert new resource record into the database
@@ -1212,7 +1195,7 @@ public class DatabaseOperations {
 
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.insertNewCode(codeType '%s', codeValue '%s', codeDesc '%s')", codeType, codeValue, codeDesc), debugLogging);
 		return returnCode;
-	} // end of insertNewCode(String codeType, String codeValue, String codeDesc)
+	} // end of insertNewCode()
 
 	/**
 	 * Bulk insertion of new resource codes
@@ -1278,7 +1261,7 @@ public class DatabaseOperations {
 	
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.insertCodes()"), debugLogging);
 		return returnCode;
-	} // end of insertCodes(String[] codesData)
+	} // end of insertCodes()
 
 	/**
 	 * Bulk insertion of new inventory assets
@@ -1363,7 +1346,7 @@ public class DatabaseOperations {
 	
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.insertAssets()"), debugLogging);
 		return returnCode;
-	} // end of insertAssets(String[] codesData)
+	} // end of insertAssets()
 	
 	/**
 	 * Common method for deleting records from tables with java.sql.Timestamp keys, currently the Ferment and Testing tables
@@ -1416,7 +1399,7 @@ public class DatabaseOperations {
 
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.deleteDateRecord('%s', '%s')", entryDate, dbTable), debugLogging);
 		return returnCode;
-	}
+	} // end of deleteDateRecord()
 	
 	/**
 	 * Delete a batch, which will include all associated Ferment and Testing records
@@ -1490,7 +1473,7 @@ public class DatabaseOperations {
 	
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.deleteBatch(batchKey '%s')", batchKey), debugLogging);
 		return returnCode;
-	} // end of deleteBatch(String batchKey)
+	} // end of deleteBatch()
 
 	/**
 	 * Delete a resource code
@@ -1546,7 +1529,7 @@ public class DatabaseOperations {
 		
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.deleteCode(codeType '%s', codeValue '%s')", codeType, codeValue), debugLogging);
 		return returnCode;
-	} // end of deleteCode(String codeType, String codeValue)	
+	} // end of deleteCode()
 
 	/**
 	 * Update parent Batch record
@@ -1695,7 +1678,7 @@ public class DatabaseOperations {
 	
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.updateFermentData(WineMakerFerment '%s')", wmf.get_batchKey()), debugLogging);
 		return returnCode;
-	} // end of updateFermentData(WineMakerFerment wmf)
+	} // end of updateFermentData()
 
 	/**
 	 * Update existing resource code record
@@ -1744,7 +1727,7 @@ public class DatabaseOperations {
 		
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.updateCode(codeType '%s', codeValue '%s', codeDesc '%s')", codeType, codeValue, codeDesc), debugLogging);
 		return returnCode;
-	} // end of updateCode(String codeType, String codeValue, String codeDesc)
+	} // end of updateCode()
 
 	/**
 	 * Update existing non-id inventory record
@@ -1798,7 +1781,7 @@ public class DatabaseOperations {
 		
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.updateInventory()"), debugLogging);
 		return returnCode;
-	} // end of updateInventory(String codeType, String codeValue, String codeDesc)
+	} // end of updateInventory()
 
 	/**
 	 * Update existing inventory record with id
@@ -1852,7 +1835,7 @@ public class DatabaseOperations {
 		
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.updateInventoryBatch()"), debugLogging);
 		return returnCode;
-	}
+	} // end of updateInventoryBatch()
 
 	
 	/**
@@ -1934,7 +1917,7 @@ public class DatabaseOperations {
 
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.queryBatch() "), debugLogging);
 		return queryRecords;
-	} // end of queryBatch(String batchKey, SQLSearch blendSearch)
+	} // end of queryBatch()
 	 	
 	/**
 	 * Query to return all Ferment table records without restriction
@@ -2033,10 +2016,7 @@ public class DatabaseOperations {
 					wmf.set_currentStageJuiceScale(resultSet.getString(50));
 					wmf.set_fermentNotes(resultSet.getString(51));
 	
-					queryRecords.add(wmf);
-	
-					winemakerLogger.writeLog(String.format("   DatabaseOperations.queryFermentData(): Record: '%s' '%s' '%s'",
-							wmf.get_batchKey(), wmf.get_entry_date(), wmf.get_fermentActivity()), debugLogging);
+					queryRecords.add(wmf);	
 				}
 			}
 		}
@@ -2051,7 +2031,7 @@ public class DatabaseOperations {
 	
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.queryFermentData()"), debugLogging);
 		return queryRecords;
-	} // end of queryFermentData(String batchKey)
+	} // end of queryFermentData()
 
 	/**
 	 * Query the Ferment table using a batch key and specific activity code
@@ -2074,7 +2054,7 @@ public class DatabaseOperations {
 	
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.queryFermentData()"), debugLogging);
 		return queryRecords;
-	} // end of queryFermentData(String batchKey, String activity)
+	} // end of queryFermentData()
 
 	/**
 	 * Query Ferment data records within a time range.  This is needed when retrieving amelioration records,
@@ -2097,7 +2077,7 @@ public class DatabaseOperations {
 
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.queryFermentData('%s', '%s', '%s') returned %d records", batchKey, activity, refTime.toString(), queryRecords.size()), debugLogging);
 		return queryRecords;
-	} // end of queryFermentData(String batchKey, String activity, Timestamp refTime)
+	} // end of queryFermentData()
 
 	
 	/**
@@ -2140,7 +2120,7 @@ public class DatabaseOperations {
 
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.queryInventoryData(): %d records returned", queryRecords.size()), debugLogging);
 		return queryRecords;		
-	} // end of queryInventoryData(itemName, itemID)
+	} // end of queryInventoryData()
 
 	/**
 	 * Gets the set of inventory records containing the provided batch id
@@ -2159,7 +2139,7 @@ public class DatabaseOperations {
 
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.queryInventoryDataByBatch(): %d records returned", queryRecords.size()), debugLogging);
 		return queryRecords;		
-	}
+	} // end of queryInventoryDataByBatch()
 
 	/**
 	 * Query to potentially return Inventory records
@@ -2220,7 +2200,7 @@ public class DatabaseOperations {
 		
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.queryInventoryData('%s')", sqlText), debugLogging);
 		return queryRecords;
-	}
+	} // end of queryInventoryData()
 
 	/**
 	 * Returns all Testing records for a batch
@@ -2289,7 +2269,7 @@ public class DatabaseOperations {
 		
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.queryTestingData(batchKey '%s')", batchKey), debugLogging);
 		return queryRecords;		
-	} // end of queryTestingData(String batchKey)
+	} // end of queryTestingData()
 
 	/**
 	 * Returns all resources codes in a CSV format, like 'grape,carm,Carmenere'
@@ -2388,20 +2368,20 @@ public class DatabaseOperations {
 	
 		winemakerLogger.writeLog(String.format("<< DatabaseOperations.getColumnNames() for %s: %n", tableName), debugLogging);
 		return returnColumns;
-	} // end of getColumnNames(String tableName)
+	} // end of getColumnNames()
 	
 	/*
 	 * Close open objects: ResultSet, Statements and Connection
 	 */
 	private void closeResources(Connection conn, ArrayList<Statement> statements, ResultSet rs)
 	{
-
 		try {
 			if (rs != null) {
 				rs.close();
 				rs = null;
 			}
-		} catch (SQLException sqle) 
+		} 
+		catch (SQLException sqle) 
 		{
 			winemakerLogger.showSqlException(sqle, "Exception trying to close DB2 ResultSet resources");
 		}		
@@ -2434,5 +2414,5 @@ public class DatabaseOperations {
 		{
 			winemakerLogger.showSqlException(sqle, "Exception trying to close DB2 Connection resource");
 		}
-	}
+	} // end of closeResources()
 }
