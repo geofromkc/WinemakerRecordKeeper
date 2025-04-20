@@ -1,0 +1,180 @@
+blend,brun,Brunello
+blend,chianti,Chianti
+blend,meritage,Meritage
+blend,rosezin,Rose Zin
+blend,supertsc,Super Tuscan
+blend,trdred,Traditional Red
+blend,zin2,Zinfandel PSM
+blendtyp,field,Field
+blendtyp,juice,Juice
+code,blend,Blend Names
+code,fermentadd,Fermentation Additive
+code,fermentcon,Fermentation Container
+code,fermentyst,Fermentation Yeast Variety
+code,grape,Grape Varietals
+code,labsupplies,Lab Hardware & Supplies
+code,measuresys,Measuring Scale
+code,remaction,Stock Update Reason
+code,supplyVendor,Inventory Supplier Name
+code,test,Test Name
+code,vendor,Source Vendor Name
+code,vineyard,Source Vineyard
+fermentact,amel,Amelioration
+fermentact,bottle,Bottle
+fermentact,check,Checkpoint
+fermentact,coldstor,ColdStorage
+fermentact,crush,Crush
+fermentact,ferment,Start Ferment Cycle
+fermentact,heatxfr,Heat Exchange
+fermentact,leefiltr,Filter
+fermentact,press,Press
+fermentact,punch,PunchDown
+fermentact,rack,Rack
+fermentact,txfr,Transfer
+fermentact,yeastadd,YeastPitch
+fermentadd,amoakblcks,American Oak Blocks
+fermentadd,amoakbns,American Oak Beans
+fermentadd,amoakstves,American Oak Staves
+fermentadd,amoakstx,American Oak Stix
+fermentadd,ascorbic,Ascorbic Acid
+fermentadd,benton,IOC Bentolact S Bentonite-Casein Fining Agent
+fermentadd,chml16,Chris Hansen ML Culture CH-16
+fermentadd,dap,DAP
+fermentadd,enzlalex,LALLZYME EX Enzyme
+fermentadd,enzlalmx,LALLZYME MMX
+fermentadd,enzlalxv,LALLZYME EX-V Enzyme
+fermentadd,enzscpro,Scott Color Pro Enzyme
+fermentadd,essntann,ESSENTIAL Antioxidant Tannin
+fermentadd,fermk,Fermaid K
+fermentadd,fermo,Fermaid O
+fermentadd,ftrouge,FT Rouge
+fermentadd,goferm,Goferm Protect Yeast
+fermentadd,h2o,Filtered Water
+fermentadd,malobac,Malolactic Culture
+fermentadd,me-3,ME oenos ML nutrient powder
+fermentadd,optired,Opti-Red
+fermentadd,potmeta,Potassium Metabisulfate
+fermentadd,rpdrevaro,Rapidase Revelation Aroma Enzyme
+fermentadd,scottbst,Scott'Tan FT Blanc Soft Tannin
+fermentadd,scottrst,Scott'Tan FT Rouge Soft Tannin
+fermentadd,so2,SO2
+fermentadd,tartacid,Tartaric Acid
+fermentcon,amoak40,American Oak Barrel 40 Liter
+fermentcon,amoak50,American Oak Barrel 50 Liter
+fermentcon,beerkeg,Beer Keg 15.5 gal
+fermentcon,bottl,Wine Bottle
+fermentcon,brute10,Brute 10 gal Bucket
+fermentcon,brute25,Brute 20 gal Bucket
+fermentcon,brute55,Brute 44 gal Bucket
+fermentcon,carb2,Carboy 2.8 gal
+fermentcon,carb3,Carboy 3 gal
+fermentcon,carb5,Carboy 5 gal
+fermentcon,carb6,Carboy 6 gal
+fermentcon,carb7,Carboy 7 gal
+fermentcon,crnykeg,Corny Keg 5 gal
+fermentcon,eco15,Eco Tank 15 gal
+fermentcon,froak40,French Oak Barrel 40 Liter
+fermentcon,froak50,French Oak Barrel 50 Liter
+fermentcon,huoak40,Hungarian Oak Barrel 40 Liter
+fermentcon,huoak50,Hungarian Oak Barrel 50 Liter
+fermentcon,jug3,Jug 1 gal
+fermentcon,pail6,Standard 6 gal Bucket
+fermentcon,t4w50,Tanks for Wine 50gal
+fermentcon,t4w80,Tanks for Wine 80gal
+fermentcon,vct100,VCT 100L
+fermentcon,vct300,VCT 300L
+fermentcon,vct500,VCT 500L
+fermentyst,icv254,Lalvin ICV D254 Wine Yeast
+fermentyst,icvd21,Lalvin D21 Wine Yeast
+fermentyst,icvd80,Lalvin D80 Wine Yeast
+fermentyst,y-avanti,Renaissance Avante (ADT-36)
+fermentyst,y-la1116,Lalvin K1V-1116 Montpellier
+fermentyst,y-la1118,Lalvin EC-1118 Champagne
+fermentyst,y-labm45,Lalvin BM45 Wine Yeast
+fermentyst,y-labm4x4,Lalvin BM 4x4 Wine Yeast
+fermentyst,y-lad47,Lalvin ICV D-47 Wine Yeast
+fermentyst,y-lc212,Lalvin Bourgovin RC212
+fermentyst,y-rscdb,Red Star Cote des Blancs
+fermentyst,y-rspr,Red Star Premier Rouge
+grape,aglian,Aglianico
+grape,albar,Albarino
+grape,alican,Alicante
+grape,alican,Alicante
+grape,bacono,Baco Noir
+grape,barber,Barbera
+grape,blkmct,Black Muscat
+grape,blkmlv,Black Malvasia
+grape,cabfranc,Cabernet Franc
+grape,cabsav,Cabernet Savignon
+grape,cabscl15,Cab Sauv Clone 15
+grape,cabscl69,Cabt Sauv Clone 169
+grape,cargane,Carginane
+grape,carm,Carmenere
+grape,chard,Chardonnay
+grape,frencolo,French Colombard
+grape,grenche,Grenache
+grape,mouv,Mourvedre
+grape,mrlot,Merlot
+grape,musct,Muscat
+grape,petsyr,Petite Syrah
+grape,pinoir,Pinot Noir
+grape,pinotag,Pinotage
+grape,sangio,Sangiovese
+grape,shrz,Shiraz
+grape,syrah,Syrah
+grape,zin,Zinfandel
+invActivity,purch,Purchase
+labsupplies,glbkr1000ml,1000ml Glass Beaker
+labsupplies,glbkr100ml,100ml Glass Beaker
+labsupplies,glbkr50ml,50ml Glass Beaker
+measuresys,%,%
+measuresys,c,C
+measuresys,f,F
+measuresys,g,g
+measuresys,g/l,g/L
+measuresys,gal,gal
+measuresys,kg,kg
+measuresys,l,L
+measuresys,lbs,lbs
+measuresys,mg,mg
+measuresys,mg/l,mg/L
+measuresys,ml,ml
+measuresys,oz,oz
+measuresys,ppm,ppm
+remaction,break,Breakage
+remaction,lost,MIA
+remaction,sold,Sold
+remaction,update,Set/Reset
+source,gp,Grape
+source,jc,Juice
+supplyVendor,flextank,FLEXTANK
+supplyVendor,homedepot,The Home Depot
+supplyVendor,lalle,Lallemand Oenology
+supplyVendor,lodilabs,Lodi Wine Labs
+supplyVendor,lowes,Lowes
+supplyVendor,midwest,Midwest Supplies
+supplyVendor,morewine,MoreWine!
+supplyVendor,nobileoak,Nobile USA
+supplyVendor,piwines,Presque Isle Wine Cellars
+supplyVendor,private,Private Seller
+supplyVendor,scottlabs,Scott Laboratories
+supplyVendor,tanks4wine,Tanks for Wine Inc
+test,alcohol,Alcohol (%)
+test,brix,Brix
+test,lactacid,Lactic Acid
+test,malcacid,Malic Acid
+test,ph,pH
+test,so2,SO2
+test,specgrav,Specific Gravity
+test,tartacid,Tartaric Acid
+test,totlacid,TA 
+vendor,conprod,Consumers Produce
+vendor,presque,Presque Isle 
+vendor,var,Various
+vineyard,califor,California
+vineyard,chilean,Chilean
+vineyard,lanza,Lanza
+vineyard,lodi,Lodi
+vineyard,mettler,Mettler
+vineyard,redmisc,Blended Batch
+vineyard,southafr,South African
