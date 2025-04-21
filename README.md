@@ -62,9 +62,12 @@ jpackage --type msi \
 
 The output file will install the application as a standard Windows program.
 
+
 ### Executing the program
 The installation will add an icon to the Windows desktop:
-![Folder-wine-icon](https://github.com/user-attachments/assets/80acdf5b-3cd5-470f-aec0-8d4b61f56fe8)
+
+![Desktop icon, showing the results of your labor](https://github.com/user-attachments/assets/80acdf5b-3cd5-470f-aec0-8d4b61f56fe8)
+
 
 ## Help
 A Users Guide is being developed.  Otherwise, the application is provided as-is.   
