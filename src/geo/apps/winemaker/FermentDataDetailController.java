@@ -550,6 +550,7 @@ public class FermentDataDetailController implements Initializable {
 	
 		activityDefaultLayout();
 	
+		fieldLabel_0.setText("Select Container");
 		fieldLabel_1.setText("Total Volume");
 		fieldLabel_2.setText("Tested Volume");
 		fieldLabel_3.setText("Current Temperature");
@@ -564,6 +565,9 @@ public class FermentDataDetailController implements Initializable {
 		activityDefaultLayoutFieldSetup(field_4, "pH", "", 40);
 		activityDefaultLayoutFieldSetup(field_5, "TA", "", 40);
 	
+		activityDefaultLayoutContainerSetup(usedSourceContainers, buildSourceContainerSet(this.wmk.get_batchKey()), "Select Container");
+
+		gp.add(usedSourceContainers, 1, 2);
 		gp.add(field_6, 1, 3);
 		gp.add(field_1, 1, 4);
 		gp.add(field_2, 1, 5);
@@ -944,8 +948,6 @@ public class FermentDataDetailController implements Initializable {
 				(itemName, itemId) -> (itemId.length() > 0) ? 
 						String.format("%s (%s)", itemId, itemName) : itemName;
 
-		//List<WineMakerInventory> searchSet = HelperFunctions.findAssetItemRecord(this.getLocalInventorySet(), fieldContainers3.getValue());
-
 		errorMsg += (!HelperFunctions.validateVolumeWeightTemp(field_1.getText())) ?
 				String.format(volumeMsg, fieldLabel_1.getText(), field_1.getText()) : "";
 		errorMsg += (!HelperFunctions.validateVolumeWeightTemp(field_2.getText())) ?
@@ -1016,17 +1018,15 @@ public class FermentDataDetailController implements Initializable {
 		Validation checkResults = Validation.PASSED; 
 		String errorMsg = validateDefaultFields(TimeCheck.ONLYENTRY);
 		
-		String checkEmpty = "";
-		
 		field_1.setText(testForEmptyVolume.apply(field_1.getText()));
 		field_2.setText(testForEmptyTemp.apply(field_2.getText()));
 		field_3.setText(testForEmptyField.apply(field_3.getText()));
 		field_4.setText(testForEmptyField.apply(field_4.getText()));
 		field_5.setText(testForEmptyField.apply(field_5.getText()));
 		
-		/*
-		 * validate: total volume (field_6), tested volume (field_1), temperature (field_2)
-		 */
+		errorMsg += (usedSourceContainers.getValue() == null) ? 
+				(String.format("Source container was not selected%n")) : "";
+
 		errorMsg += (!HelperFunctions.validateVolumeWeightTemp(field_6.getText())) ?
 				String.format(volumeMsg, fieldLabel_1.getText(), field_6.getText()) : "";
 		errorMsg += (!HelperFunctions.validateVolumeWeightTemp(field_1.getText())) ?
@@ -1034,9 +1034,6 @@ public class FermentDataDetailController implements Initializable {
 		errorMsg += (!HelperFunctions.validateVolumeWeightTemp(field_2.getText())) ?
 				String.format(volumeMsg, fieldLabel_3.getText(), field_2.getText()) : "";
 
-		/*
-		 * validate: Brix (field_3), pH (field_4), TA (field_5)
-		 */
 		errorMsg += (!HelperFunctions.validateDouble(field_3.getText())) ?
 				String.format(volumeMsg, fieldLabel_4.getText(), field_3.getText()) : "";
 		errorMsg += (!HelperFunctions.validateDouble(field_4.getText())) ?
@@ -1052,7 +1049,6 @@ public class FermentDataDetailController implements Initializable {
 	
 		winemakerLogger.writeLog("<< FermentDataDetailController.validateCheckpoint()", debugLogging);
 		return checkResults;
-	
 	} // end of validateCheckpoint()
 
 	/*
@@ -1379,6 +1375,8 @@ public class FermentDataDetailController implements Initializable {
 		String showTestVolume = (testedVolume > 0) ? String.format("%nTested volume was %s", field_1.getText()) : "";
 		String updatedNotes = (field_1.getText() != null && field_1.getText().length() > 0) ? 
 				wmfCheckpoint.get_fermentNotes() + showTestVolume : wmfCheckpoint.get_fermentNotes();
+		updatedNotes += (!fieldNotes.getText().contains(usedSourceContainers.getValue())) ?
+				String.format("%nContainer tested: %s%n", usedSourceContainers.getValue()) : "";
 		
 		wmfCheckpoint.set_fermentNotes(updatedNotes);
 		wmfCheckpoint.set_outputJuiceScale(getScaleKey(extractVolumeOrTemp(field_6.getText(), 2, matchAmountPattern)));

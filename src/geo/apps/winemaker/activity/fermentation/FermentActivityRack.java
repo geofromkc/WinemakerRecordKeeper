@@ -1,12 +1,9 @@
 
 package geo.apps.winemaker.activity.fermentation;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.stream.Collectors;
 
 import geo.apps.winemaker.WineMakerFerment;
 import geo.apps.winemaker.WineMakerInventory;
@@ -14,8 +11,6 @@ import geo.apps.winemaker.utilities.Constants.FamilyCode;
 import geo.apps.winemaker.utilities.HelperFunctions;
 
 public class FermentActivityRack implements FermentationActivity {
-	
-	private ArrayList<WineMakerInventory> wmiSet;
 
 	@Override
 	public void setRecordList(ArrayList<WineMakerFerment> objList)
@@ -23,9 +18,7 @@ public class FermentActivityRack implements FermentationActivity {
 	
 	@Override
 	public void setInventoryList(ArrayList<WineMakerInventory> objList) 
-	{
-		this.wmiSet = objList;
-	}
+	{}
 
 	@Override
 	public String apply(WineMakerFerment wmf)
@@ -50,5 +43,4 @@ public class FermentActivityRack implements FermentationActivity {
 		
 		return displayLine;
 	}
-
 }

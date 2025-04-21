@@ -3,7 +3,6 @@ package geo.apps.winemaker.activity.fermentation;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.stream.Collectors;
 
 import geo.apps.winemaker.WineMakerFerment;
 import geo.apps.winemaker.WineMakerInventory;
@@ -12,17 +11,13 @@ import geo.apps.winemaker.utilities.HelperFunctions;
 
 public class FermentActivityCrush implements FermentationActivity {
 	
-	private ArrayList<WineMakerInventory> wmiSet;
-	
 	@Override
 	public void setRecordList(ArrayList<WineMakerFerment> objList)
 	{}
 	
 	@Override
 	public void setInventoryList(ArrayList<WineMakerInventory> objList)
-	{
-		this.wmiSet = objList;
-	}
+	{}
 	
 	@Override
 	public String apply(WineMakerFerment wmf)

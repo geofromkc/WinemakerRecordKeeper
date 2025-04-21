@@ -44,9 +44,9 @@ public class FermentActivityCheckpoint implements FermentationActivity {
 			displayLine += (wmf.get_currTA() > 0) ? String.format("\tTA = %.1f%n", wmf.get_currTA()) : "";  
 			displayLine += (currTemp > 0) ? String.format("\tTemp = %d %s%n", currTemp, codesetMeasure.get(wmf.get_tempScale())) : "";
 		}
+		else
+			displayLine += "\n";
 		
-		//displayLine += String.format("%nTotal %s for this stage = %d %s", batchComposition, wmf.get_currentStageJuiceVol(), codesetMeasure.get(wmf.get_currentStageJuiceScale()));
-
 		if (wmf.get_fermentNotes().length() > 0)
 		{
 			displayLine += String.format("%nNotes on this activity:");
