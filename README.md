@@ -60,7 +60,7 @@ jpackage --type msi \
 	--verbose
 '''
 
-The output file will install the application as a standard Windows program.
+The output file will install the application as a standard Windows program.  During the initial install, the user will be prompted to download the install guide, if desired.
 
 
 ### Executing the program
