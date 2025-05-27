@@ -610,13 +610,55 @@ public class WineMakerFerment {
 
 	public static String toCSVHeader()
 	{
-		return String.format("Entry Date,Batch,Activity,Stage #,Stage Started,Stage Ended,Stage Duration,Input Grape Amt,Must Vol,Yeast Strain,"
-				+ "Chem Name,Chem Amt,Chem Scale,Brix,pH,TA,Temp,Starting Temp,Ending Temp,Temp Scale,Yeast in Starter,H2O in Starter,Juice Vol in Starter,"
-				+ "Yeast Activity,Cold Location,1st Container,2nd Container,3rd Container,1st Container Count,2nd Container Count,3rd Container Count,1st Container Vol,2nd Container Vol,3rd Container Vol,"
-				+ "Input Juice Vol,Input Scale,Output Juice Vol,Output Scale, Current Juice Vol, Current Vol Scale, Rack Source,Rack Target 1,Rack Target 2,Rack Target 3,Rack Target 1 Count,Rack Target 2 Count,Rack Target 3 Count,Bottle Count,Punch Tool,Press Cycle,Stage Notes\n");
+		return String.format("Entry Date,Batch,Activity,Input Grape Amt,Must Vol,Yeast Strain,"
+				+ "Chem Name,Chem Amt,Chem Scale,Brix,pH,TA,Temp,Starting Temp,Temp Scale,Yeast in Starter,"
+				+ "Output Juice Vol,Output Scale, Current Juice Vol, Current Vol Scale,Bottle Count,Stage Notes\n");
 	} // end of newCSVHeader()
-	
+
 	public String toCSV()
+	{
+		String showObject = "";
+		HashMap<String, String> codeSet;
+		
+		Timestamp ts = this.get_entry_date();
+		LocalDateTime entryDate = ts.toLocalDateTime();
+		
+		showObject += String.format("%s,", entryDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+		showObject += String.format("%s,", HelperFunctions.batchKeyExpand(this.get_batchKey()));
+		
+		codeSet = HelperFunctions.getCodeKeyFamily(FamilyCode.ACTIVITYFAMILY.getValue());
+		showObject += String.format("%s,", codeSet.get(this.get_fermentActivity()));
+		
+		showObject += String.format("%d,", this.get_inputGrapeAmt());
+		showObject += String.format("%d,", this.get_outputMustVolume());
+
+		codeSet = HelperFunctions.getCodeKeyFamily(FamilyCode.YEASTFAMILY.getValue());
+		showObject += (this.get_yeastStrain().length() > 0) ? String.format("%s,", codeSet.get(this.get_yeastStrain())) : "n/a,";
+		
+		codeSet = HelperFunctions.getCodeKeyFamily(FamilyCode.ADDITIVEFAMILY.getValue());
+		showObject += (this.get_chemAdded().length() > 0) ? String.format("%s,", codeSet.get(this.get_chemAdded())) : "n/a,";
+		
+		showObject += String.format("%1.2f,", this.get_chemAmount());
+		showObject += String.format("%s,", this.get_chemScale());
+		showObject += String.format("%1.2f,", this.get_currBrix());
+		showObject += String.format("%1.2f,", this.get_currpH());
+		showObject += String.format("%1.2f,", this.get_currTA());
+		showObject += String.format("%d,", this.get_currentTemp());
+		showObject += String.format("%d,", this.get_startTemp());
+		showObject += String.format("%s,", this.get_tempScale());
+		showObject += String.format("%1.2f,", this.get_starterYeastAmt());
+		showObject += String.format("%d,", this.get_outputJuiceVol());
+		showObject += String.format("%s,", this.get_outputJuiceScale());
+		showObject += String.format("%d,", this.get_currentStageJuiceVol());
+		showObject += String.format("%s,", this.get_currentStageJuiceScale());
+		showObject += String.format("%d,", this.get_bottleCount());
+		showObject += String.format("%s", this.get_fermentNotes().replace(",", " - "));
+				
+		return showObject;
+	} // end of newCSV()
+
+	
+	public String toCSVDeprecated()
 	{
 		String showObject = "";
 		HashMap<String, String> codeSet;

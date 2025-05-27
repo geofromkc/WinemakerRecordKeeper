@@ -131,6 +131,104 @@ public class WineMakerMain extends Application {
 		});		
 	}
 	
+	@Override
+	public void start(Stage primaryStage) 
+	{	
+		appRegistry.register(RegistryKeys.LOGGER, new WineMakerLogging());
+		this.winemakerLogger = (WineMakerLogging) appRegistry.get(RegistryKeys.LOGGER);
+		
+		appRegistry.register(RegistryKeys.MODEL, new WineMakerModel());
+		this.winemakerModel = (WineMakerModel) appRegistry.get(RegistryKeys.MODEL);
+	
+		appRegistry.register(RegistryKeys.DBOPS, new DatabaseOperations());
+		this.winemakerModel.setDbOps((DatabaseOperations) appRegistry.get(RegistryKeys.DBOPS));
+		
+		winemakerLogger.loadDependencies(winemakerModel);
+		winemakerModel.setDebugActive(true);
+	
+		winemakerLogger.writeLog(String.format(">> WineMakerMain.start()"), true);
+		
+		/*
+		 * if this is the first time, prompt the user to accept defaults or 
+		 * specify explicit application file directory.
+		 * 
+		 * First, ask if user wants to review the Installation and Setup Guide.
+		 */
+		if (setStartupState())
+		{
+			Alert alertWarning = new Alert(AlertType.CONFIRMATION, "", ButtonType.YES, ButtonType.NO);		
+			alertWarning.setTitle("Install Guide Download");
+			alertWarning.setContentText("Do you want to download and review the Install Guide before installation?");
+			Optional<ButtonType> result = alertWarning.showAndWait();
+
+			if (result.isPresent() && result.get() == ButtonType.YES)
+			{
+				HelperFunctions.showInstallGuide();
+				System.exit(0);
+			}
+			
+			setApplicationDir();
+		}
+	
+		if (!winemakerModel.loadProperties())
+		{
+			winemakerLogger.displayAlert("Could not load the default properties file, the application will now exit");
+			System.exit(4);			
+		}
+		
+		/*
+		 * Start the Derby Network Server
+		 */
+		winemakerLogger.writeLog(String.format("   WineMakerMain.start(): start Network Server"), true);
+	
+		try 
+		{
+			server = new NetworkServerControl(InetAddress.getByName("localhost"),1527);
+			server.start(null);
+		} 
+		catch (Exception e1) 
+		{
+			winemakerLogger.displayAlert("The database server could not be started, the application will now exit");
+			winemakerLogger.showIOException(e1, "Failed starting the Derby network server");
+			System.exit(4);
+		}
+	
+		/*
+		 * Start the UI Stage
+		 */
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("WineMaker.fxml"));
+		
+		try 
+		{
+			winemakerLogger.loadDependencies(winemakerModel);
+			winemakerModel.setDebugActive(true);
+			
+			WineMakerController winemakerController = new WineMakerController();
+			loader.setController(winemakerController);
+			
+			Parent batchDetailParent = loader.load();
+			Scene winemakerScene = new Scene(batchDetailParent);
+			winemakerScene
+				.getStylesheets()
+				.add(getClass()
+				.getResource("modena.css")
+				.toExternalForm());
+			
+			primaryStage.setTitle("Winemaker's Logging Application");
+			primaryStage.setScene(winemakerScene);
+			primaryStage.show();
+		} 
+		catch(Exception e) 
+		{
+			winemakerLogger.displayAlert("The home scene failed, the application will now exit. Check if the applcation is already running.");
+			winemakerLogger.showIOException(e, "Failed starting the initial scene");
+			e.printStackTrace();
+			System.exit(8);
+		}
+		
+		winemakerLogger.writeLog(String.format("<< WineMakerMain.start()"), true);
+	}
+
 	/*
 	 * Check for initial state.  There are various possible paths:
 	 * 
@@ -147,6 +245,9 @@ public class WineMakerMain extends Application {
 		propsFolder = new File(WineMakerModel.getLocalappdatahome());
 		startupFile = new File(propsFolder.getPath() + File.separator + WineMakerModel.getStartupfilename());
 		installedTime = new File(System.getProperty("user.dir")).lastModified();
+
+		winemakerLogger.writeLog(String.format("   WineMakerMain.setStartupState(): propsFolder: %s", propsFolder.getPath()), true);
+		winemakerLogger.writeLog(String.format("   WineMakerMain.setStartupState(): startupFile: %s", startupFile.getPath()), true);
 
 		boolean isFirstTime = true;
 		
@@ -464,90 +565,6 @@ public class WineMakerMain extends Application {
 		winemakerLogger.writeLog(String.format("<< WineMakerMain.writePropsFile()"), true);
 		return writeStatus;
 	} // end of writePropsFile()
-	
-	@Override
-	public void start(Stage primaryStage) 
-	{	
-		appRegistry.register(RegistryKeys.LOGGER, new WineMakerLogging());
-		this.winemakerLogger = (WineMakerLogging) appRegistry.get(RegistryKeys.LOGGER);
-		
-		appRegistry.register(RegistryKeys.MODEL, new WineMakerModel());
-		this.winemakerModel = (WineMakerModel) appRegistry.get(RegistryKeys.MODEL);
-
-		appRegistry.register(RegistryKeys.DBOPS, new DatabaseOperations());
-		this.winemakerModel.setDbOps((DatabaseOperations) appRegistry.get(RegistryKeys.DBOPS));
-		
-		winemakerLogger.loadDependencies(winemakerModel);
-		winemakerModel.setDebugActive(true);
-
-		winemakerLogger.writeLog(String.format(">> WineMakerMain.start()"), true);
-		
-		/*
-		 * if this is the first time, prompt the user to accept defaults or specify explicit application file directory
-		 */
-		if (setStartupState())
-		{
-			setApplicationDir();
-		}
-
-		if (!winemakerModel.loadProperties())
-		{
-			winemakerLogger.displayAlert("Could not load the default properties file, the application will now exit");
-			System.exit(4);			
-		}
-		
-		/*
-		 * Start the Derby Network Server
-		 */
-		winemakerLogger.writeLog(String.format("   WineMakerMain.start(): start Network Server"), true);
-
-		try 
-		{
-			server = new NetworkServerControl(InetAddress.getByName("localhost"),1527);
-			server.start(null);
-		} 
-		catch (Exception e1) 
-		{
-			winemakerLogger.displayAlert("The database server could not be started, the application will now exit");
-			winemakerLogger.showIOException(e1, "Failed starting the Derby network server");
-			System.exit(4);
-		}
-
-		/*
-		 * Start the UI Stage
-		 */
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("WineMaker.fxml"));
-		
-		try 
-		{
-			winemakerLogger.loadDependencies(winemakerModel);
-			winemakerModel.setDebugActive(true);
-			
-			WineMakerController winemakerController = new WineMakerController();
-			loader.setController(winemakerController);
-			
-			Parent batchDetailParent = loader.load();
-			Scene winemakerScene = new Scene(batchDetailParent);
-			winemakerScene
-				.getStylesheets()
-				.add(getClass()
-				.getResource("modena.css")
-				.toExternalForm());
-			
-			primaryStage.setTitle("Winemaker's Logging Application");
-			primaryStage.setScene(winemakerScene);
-			primaryStage.show();
-		} 
-		catch(Exception e) 
-		{
-			winemakerLogger.displayAlert("The home scene failed, the application will now exit. Check if the applcation is already running.");
-			winemakerLogger.showIOException(e, "Failed starting the initial scene");
-			e.printStackTrace();
-			System.exit(8);
-		}
-		
-		winemakerLogger.writeLog(String.format("<< WineMakerMain.start()"), true);
-	}
 	
 	public static void main(String[] args) 
 	{	

@@ -30,7 +30,7 @@ public class WineMakerModel {
 	private WineMakerLogging winemakerLogger = null;
 	private DatabaseOperations dbOps = null;
 	
-	private static final String appVersion = "3.2.0";
+	private static final String appVersion = "1.0.0";
 
 	private static final String jdbcBase = "jdbc:derby://localhost:1527/";
 	private static final String defaultAppName = "/WineMakerApp";

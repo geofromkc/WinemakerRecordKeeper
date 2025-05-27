@@ -1502,14 +1502,14 @@ public class BatchDetailController implements Initializable {
 		batchTypeHeader.setText("New Juice Blend Batch");
 		batchGrapeLabel.setText("Blend Style");
 		grapeSelect.setPromptText("Select a Blend Style");
-		blendGrapeLabel.setText("Blend Batch");
+		blendGrapeLabel.setText("Component Batch");
 
 		loadComboBoxSelections(HelperFunctions.getCodeKeyFamily(FamilyCode.BLENDFAMILY.getValue()), grapeSelect);
 		loadBlendBatchSets();
 		
 		itemCount.clear();
 		
-		unitCountLabel.setText("Added to Blend");
+		unitCountLabel.setText("Extract for Blend");
 
 		gp.add(batchGrapeLabel, 0, 1);
 		gp.add(grapeSelect, 1, 1);

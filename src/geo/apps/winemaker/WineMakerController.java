@@ -1,12 +1,11 @@
 package geo.apps.winemaker;
 
-import java.net.URL;
 
+import java.net.URL;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.sql.Timestamp;
@@ -47,7 +46,6 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
@@ -106,7 +104,7 @@ public class WineMakerController implements Initializable {
 	private final String NEWBATCH = "newBatch";
 	private final String NEWTASK = "newTask";
 	private final String NEWTEST = "newTest";
-
+	
 	/*
 	 * JavaFX UI objects
 	 * ===============================================================================
@@ -436,8 +434,8 @@ public class WineMakerController implements Initializable {
 
 		File oldAppDir = new File(appProperties.getProperty("DBAPPDIR"));
 		File oldBackupDir = new File(appProperties.getProperty("DBBACKUP"));
-		File newDatabaseDir = directoryPrompt("WineMaker New Data Directory Selection", WineMakerModel.getDefaultappname());
-		File newBackupDir = directoryPrompt("WineMaker New Backup Directory Selection", WineMakerModel.getDefaultbackupdirname());
+		File newDatabaseDir = HelperFunctions.directoryPrompt("WineMaker New Data Directory Selection", WineMakerModel.getDefaultappname());
+		File newBackupDir = HelperFunctions.directoryPrompt("WineMaker New Backup Directory Selection", WineMakerModel.getDefaultbackupdirname());
 
 		if (newDatabaseDir == null || !newDatabaseDir.exists())
 		{
@@ -504,32 +502,6 @@ public class WineMakerController implements Initializable {
 		winemakerLogger.writeLog(String.format("<< WineMakerController.filePrompt('%s')", promptTitle), debugLogging);
 		return selectedFile;
 	} // end of filePrompt()
-
-	/*
-	 * Generic method to prompt user for location of an output directory
-	 */
-	private File directoryPrompt(String promptTitle, String terminalDir)
-	{
-		winemakerLogger.writeLog(String.format(">> WineMakerController.directoryPrompt('%s', '%s')", promptTitle, terminalDir), debugLogging);
-
-		File newDir = null;
-		try 
-		{
-			DirectoryChooser dc = new DirectoryChooser();
-			dc.setInitialDirectory(new File(WineMakerModel.getDefaultappsearch()));
-			dc.setTitle(promptTitle);
-
-			newDir = dc.showDialog(winemakerModel.getFxStage());
-		}
-		catch (Exception e1) 
-		{
-			winemakerLogger.showIOException(e1, "Failed operation for " + promptTitle);
-			statusDisplay.setText("Failed to set target directory for " + promptTitle);
-		}
-
-		winemakerLogger.writeLog(String.format("<< WineMakerController.directoryPrompt('%s', '%s'): Set to %s", promptTitle, terminalDir, newDir), debugLogging);
-		return newDir;
-	} // end of directoryPrompt()
 
 	/*
 	 * Create an updated properties file
@@ -1427,7 +1399,7 @@ public class WineMakerController implements Initializable {
 		winemakerLogger.writeLog(String.format(">> WineMakerController.exportCodesFile()"), debugLogging);
 
 		File codesOutputFile = null;
-		File logDir = directoryPrompt("WineMaker Resource Codes Export Selection", "");
+		File logDir = HelperFunctions.directoryPrompt("WineMaker Resource Codes Export Selection", "");
 
 		if (logDir != null)
 		{
@@ -1472,7 +1444,7 @@ public class WineMakerController implements Initializable {
 		ArrayList<WineMakerInventory> wmiQuerySet = new ArrayList<>();
 
 		File inventoryOutputFile;		
-		File logDir = directoryPrompt("WineMaker Inventory Export Directory Selection", "");
+		File logDir = HelperFunctions.directoryPrompt("WineMaker Inventory Export Directory Selection", "");
 
 		if (logDir == null)
 		{
@@ -1517,7 +1489,7 @@ public class WineMakerController implements Initializable {
 		ArrayList<WineMakerInventory> wmiQuerySet = new ArrayList<>();
 
 		File inventoryOutputFile;		
-		File logDir = directoryPrompt("WineMaker Inventory Report Directory Selection", "");
+		File logDir = HelperFunctions.directoryPrompt("WineMaker Inventory Report Directory Selection", "");
 
 		if (logDir == null)
 		{
@@ -1587,7 +1559,7 @@ public class WineMakerController implements Initializable {
 	{
 		winemakerLogger.writeLog(">> WineMakerController.exportAllBatches()", debugLogging);
 
-		File logDir = directoryPrompt("WineMaker All Batches Export Directory Selection", "");
+		File logDir = HelperFunctions.directoryPrompt("WineMaker All Batches Export Directory Selection", "");
 		if (logDir == null)
 		{
 			statusDisplay.setText("Directory selection cancelled, export operation terminated");
@@ -1621,7 +1593,7 @@ public class WineMakerController implements Initializable {
 			return;
 		}
 
-		File logDir = directoryPrompt("WineMaker Single Batch Export Directory Selection", "");
+		File logDir = HelperFunctions.directoryPrompt("WineMaker Single Batch Export Directory Selection", "");
 		if (logDir == null)
 		{
 			statusDisplay.setText("Directory selection cancelled, export operation terminated");
@@ -1725,6 +1697,40 @@ public class WineMakerController implements Initializable {
 		winemakerLogger.writeLog(String.format("<< WineMakerController.collectBatchRecordSets()"), debugLogging);
 	} // end of collectBatchRecordSets()
 
+	@FXML
+	private void showUserGuide(ActionEvent e)
+	{
+		winemakerLogger.writeLog(String.format(">> WineMakerController.showUserGuide()"), debugLogging);
+
+		HelperFunctions.showUserGuide();
+		
+		/*
+		 * 
+		File outputFile;
+		File copyDir = HelperFunctions.directoryPrompt("WineMaker App User Guide Directory Selection", "");
+
+		if (copyDir != null)
+		{
+			outputFile = new File(copyDir.getPath() + File.separator + userGuide.getName());	
+		}
+		else
+		{
+			statusDisplay.setText("Directory selection cancelled, download operation terminated");
+			return;
+		}
+
+		winemakerLogger.writeLog(String.format("   WineMakerController.showUserGuide(): source file = %s", userGuide.getPath()), debugLogging);
+		winemakerLogger.writeLog(String.format("   WineMakerController.showUserGuide(): exported file = %s", outputFile.getPath()), debugLogging);
+
+		if (HelperFunctions.copyFile(userGuide, outputFile))
+			statusDisplay.setText(String.format("Failure downloading user guide %s, see log for details", outputFile.getPath()));
+		else
+			statusDisplay.setText(String.format("User Guide downloaded to %s", outputFile.getPath()));
+		
+		winemakerLogger.writeLog(String.format("<< WineMakerController.showUserGuide()"), debugLogging);
+		 */
+	}
+
 	/**
 	 * Prompt user for output file location, then copy internal log file to new file 
 	 */
@@ -1733,7 +1739,7 @@ public class WineMakerController implements Initializable {
 		winemakerLogger.writeLog(String.format(">> WineMakerController.exportLogFile()"), debugLogging);
 
 		File outputFile;
-		File logDir = directoryPrompt("WineMaker App Log Export Directory Selection", "");
+		File logDir = HelperFunctions.directoryPrompt("WineMaker App Log Export Directory Selection", "");
 
 		if (logDir != null)
 		{
@@ -1753,7 +1759,7 @@ public class WineMakerController implements Initializable {
 		winemakerLogger.writeLog(String.format("   WineMakerController.exportLogFile(): source file = %s", inputFile.getPath()), debugLogging);
 		winemakerLogger.writeLog(String.format("   WineMakerController.exportLogFile(): exported file = %s", outputFile.getPath()), debugLogging);
 
-		if (copyFile(inputFile, outputFile))
+		if (HelperFunctions.copyFile(inputFile.toPath(), outputFile.toPath()))
 			statusDisplay.setText(String.format("Failure exporting log file %s, see log for details", outputFile.getPath()));
 		else
 			statusDisplay.setText(String.format("Log file exported to %s", outputFile.getPath()));
@@ -1769,31 +1775,6 @@ public class WineMakerController implements Initializable {
 		alertWarning.setContentText("Version " + WineMakerModel.getAppVersion());
 		alertWarning.showAndWait();
 	}
-
-	/*
-	 * Perform file copy operation
-	 */
-	private boolean copyFile(File inputFile, File outputFile)
-	{
-		boolean copyFailed = false;
-
-		try 
-		{
-			Files.copy(inputFile.toPath(), outputFile.toPath());
-		} 
-		catch (FileAlreadyExistsException ef)
-		{
-			copyFailed = true;
-			winemakerLogger.displayAlert("Duplicate file name, count to 10 and try again");
-		}
-		catch (IOException e) 
-		{
-			copyFailed = true;
-			winemakerLogger.showIOException(e, "Exception attempting to export log file");
-		}
-
-		return copyFailed;
-	} // end of copyFile()
 
 	/*
 	 * Replace the Inventory table with a new set of assets, or insert new asset entries.
@@ -1928,7 +1909,7 @@ public class WineMakerController implements Initializable {
 		addActivity.setTooltip(HelperFunctions.buildTooltip(NEWTASK));
 		addTestData.setTooltip(HelperFunctions.buildTooltip(NEWTEST));
 	} // end of loadToolTips()
-
+	
 	/*
 	 * Analyze the messages returned by the database table validation method.
 	 * Messages indicating the absence of a table will include the string 'TBE'. 
@@ -2033,10 +2014,9 @@ public class WineMakerController implements Initializable {
 		_batchId.setVisible(false);
 		batchDisplay.setVisible(false);
 
-
 		fermentationEntries.setVisible(false);
 		testingEntries.setVisible(false);
-
+		
 		winemakerLogger.writeLog(String.format("<< WineMakerController.initialize() Finished%n"), debugLogging);
 
 		/*

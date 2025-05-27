@@ -118,6 +118,7 @@
           <Menu mnemonicParsing="false" text="Help">
             <items>
                   <MenuItem mnemonicParsing="false" onAction="#exportLogFile" text="Export Log File" />
+                  <MenuItem mnemonicParsing="false" onAction="#showUserGuide" text="User Guide" />
               <MenuItem mnemonicParsing="false" onAction="#showAbout" text="About" />
             </items>
           </Menu>
