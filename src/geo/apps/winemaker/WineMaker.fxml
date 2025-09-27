@@ -28,6 +28,11 @@
                      <accelerator>
                         <KeyCodeCombination alt="DOWN" code="E" control="UP" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#reportExistingBatch" text="Report Batch">
+                     <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="E" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                  </MenuItem>
                   <MenuItem mnemonicParsing="false" onAction="#exportAllBatches" text="Export All Batches">
                      <accelerator>
                         <KeyCodeCombination alt="DOWN" code="A" control="UP" meta="UP" shift="UP" shortcut="UP" />
@@ -183,12 +188,12 @@
                   <Insets bottom="2.0" />
                </padding>
             </Label>
-            <TextArea fx:id="batchDisplay" editable="false" prefHeight="232.0" prefWidth="783.0" VBox.vgrow="ALWAYS">
+            <TextArea fx:id="batchDisplay" editable="false" prefHeight="222.0" prefWidth="783.0" VBox.vgrow="ALWAYS">
                <font>
                   <Font name="Cambria" size="14.0" />
                </font>
             </TextArea>
-            <TextArea fx:id="statusDisplay" maxHeight="20.0" prefHeight="6.0" prefWidth="783.0" VBox.vgrow="ALWAYS">
+            <TextArea fx:id="statusDisplay" maxHeight="80.0" prefHeight="16.0" prefWidth="783.0" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets top="8.0" />
                </VBox.margin>

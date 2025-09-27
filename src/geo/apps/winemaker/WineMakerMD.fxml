@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXDrawer?>
+<?import com.jfoenix.controls.JFXHamburger?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="730.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <AnchorPane fx:id="ap" prefHeight="730.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox fx:id="vbox" layoutY="6.0" prefHeight="730.0">
+               <children>
+                  <GridPane fx:id="gp" maxHeight="-Infinity" VBox.vgrow="ALWAYS">
+                    <columnConstraints>
+                      <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" maxWidth="311.0" minWidth="200.0" prefWidth="200.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="320.0" minWidth="10.0" prefWidth="320.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <JFXHamburger fx:id="drawerHamburger" alignment="CENTER_RIGHT" GridPane.columnIndex="2">
+                           <GridPane.margin>
+                              <Insets right="8.0" />
+                           </GridPane.margin>
+                        </JFXHamburger>
+                        <JFXComboBox fx:id="batchSets" prefWidth="240.0" />
+                        <JFXComboBox fx:id="fermentationEntries" prefWidth="240.0" GridPane.rowIndex="1" />
+                        <JFXComboBox fx:id="testingEntries" prefWidth="240.0" GridPane.rowIndex="2" />
+                        <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
+                           <children>
+                              <JFXButton fx:id="startNewBatch" buttonType="RAISED" onAction="#createNewBatch" style="-fx-background-color: #DCDCDC;" text="+">
+                                 <HBox.margin>
+                                    <Insets right="4.0" top="4.0" />
+                                 </HBox.margin>
+                              </JFXButton>
+                              <JFXButton fx:id="deleteBatchButton" buttonType="RAISED" onAction="#deleteExistingBatch" style="-fx-background-color: #DCDCDC;" text="-">
+                                 <HBox.margin>
+                                    <Insets top="4.0" />
+                                 </HBox.margin>
+                              </JFXButton>
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                           <children>
+                              <JFXButton fx:id="addActivity" buttonType="RAISED" onAction="#addNewFermentData" style="-fx-background-color: #DCDCDC;" text="+">
+                                 <HBox.margin>
+                                    <Insets right="4.0" top="4.0" />
+                                 </HBox.margin>
+                              </JFXButton>
+                              <JFXButton fx:id="deleteActivityButton" buttonType="RAISED" onAction="#deleteFermentRecord" style="-fx-background-color: #DCDCDC;" text="-">
+                                 <HBox.margin>
+                                    <Insets top="4.0" />
+                                 </HBox.margin>
+                              </JFXButton>
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                           <children>
+                              <JFXButton fx:id="addTestData" buttonType="RAISED" onAction="#addNewTestData" style="-fx-background-color: #DCDCDC;" text="+">
+                                 <HBox.margin>
+                                    <Insets right="4.0" top="4.0" />
+                                 </HBox.margin>
+                              </JFXButton>
+                              <JFXButton fx:id="deleteTestButton" buttonType="RAISED" onAction="#deleteTestRecord" style="-fx-background-color: #DCDCDC;" text="-">
+                                 <HBox.margin>
+                                    <Insets top="4.0" />
+                                 </HBox.margin>
+                              </JFXButton>
+                           </children>
+                        </HBox>
+                     </children>
+                     <padding>
+                        <Insets right="8.0" />
+                     </padding>
+                  </GridPane>
+                  <Label fx:id="_batchId" alignment="CENTER" maxWidth="1.7976931348623157E308" minWidth="100.0" prefHeight="35.0" prefWidth="730.0" style="-fx-background-color: silver;" text="--------">
+                     <VBox.margin>
+                        <Insets right="8.0" top="8.0" />
+                     </VBox.margin>
+                     <padding>
+                        <Insets bottom="2.0" right="8.0" />
+                     </padding>
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <TextArea fx:id="batchDisplay" prefHeight="356.0" prefWidth="730.0" VBox.vgrow="ALWAYS">
+                     <font>
+                        <Font name="Cambria" size="14.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets right="8.0" />
+                     </VBox.margin>
+                  </TextArea>
+                  <TextArea fx:id="statusDisplay" maxHeight="80.0" prefHeight="20.0" prefWidth="730.0" VBox.vgrow="ALWAYS">
+                     <VBox.margin>
+                        <Insets bottom="6.0" right="8.0" />
+                     </VBox.margin>
+                  </TextArea>
+               </children>
+            </VBox>
+         </children>
+         <BorderPane.margin>
+            <Insets left="6.0" />
+         </BorderPane.margin></AnchorPane>
+   </center>
+   <left>
+      <JFXDrawer fx:id="navDrawer" alignment="TOP_CENTER" defaultDrawerSize="160.0" prefWidth="0.0" BorderPane.alignment="CENTER" />
+   </left>
+</BorderPane>

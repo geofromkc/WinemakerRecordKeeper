@@ -21,6 +21,7 @@ public class WineMakerTesting {
 	private double _testTemp;
 	private String _tempScale;
 	private String _testNotes;
+	private final String reportDelimiter = "\n-----------------------------\n";
 	
 	private WineMakerModel winemakerModel = null;
 	
@@ -159,4 +160,21 @@ public class WineMakerTesting {
 		
 		return showObject;
 	} // end of toCSV()
+	
+	public String toReport()
+	{		
+		HashMap<String, String> codeSet = HelperFunctions.getCodeKeyFamily(FamilyCode.LABTESTFAMILY.getValue());
+
+		Timestamp ts = this.get_entry_date();
+		LocalDateTime entryDate = ts.toLocalDateTime();
+		StringBuilder showObject = new StringBuilder("");
+		showObject.append("\n");		
+		
+		showObject.append(String.format("%s: Test: %s = ", entryDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), codeSet.get(this.get_testType())));
+		showObject.append(String.format("%1.2f%s at %1.0f%s", this.get_testValue(), this.get_testScale(), this.get_testTemp(), this.get_tempScale().toUpperCase()));
+		showObject.append(String.format("%n%s", this.get_testNotes()));
+		showObject.append(reportDelimiter);
+		
+		return showObject.toString();
+	} // end of toReport()
 }

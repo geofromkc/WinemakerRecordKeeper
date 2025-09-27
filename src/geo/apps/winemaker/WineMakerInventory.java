@@ -24,7 +24,7 @@ public class WineMakerInventory {
 	
 	private String itemName = empty;
 	private String itemId = empty;
-	private Timestamp itemTaskTime = null;
+	private Timestamp itemEntryDate = null;
 	private double itemStockOnHand = 0;
 	private String itemBatchId = empty;
 	private String itemTaskId = empty;
@@ -71,12 +71,12 @@ public class WineMakerInventory {
 		this.itemTaskId = itemTaskId;
 	}
 
-	public Timestamp getItemTaskTime() {
-		return itemTaskTime;
+	public Timestamp getItemEntryDate() {
+		return itemEntryDate;
 	}
 
-	public void setItemTaskTime(Timestamp itemTaskTime) {
-		this.itemTaskTime = itemTaskTime;
+	public void setItemEntryDate(Timestamp itemEntryDate) {
+		this.itemEntryDate = itemEntryDate;
 	}
 
 	public double get_itemStockOnHand() {
@@ -145,7 +145,7 @@ public class WineMakerInventory {
 		showObject += (this.getItemId().equals(empty)) ? "" : String.format("Item ID = %s%n", this.getItemId());
 		
 		showObject += String.format("Current Stock on Hand = %s %s%n", formatDouble(this.get_itemStockOnHand()), this.itemAmountScale);
-		showObject += (this.getItemTaskTime() != null) ? String.format("Record Date = %s%n", this.getItemTaskTime().toLocalDateTime().format(dateFormatter)) : "<no task time>";
+		showObject += (this.getItemEntryDate() != null) ? String.format("Record Date = %s%n", this.getItemEntryDate().toLocalDateTime().format(dateFormatter)) : "<no task time>";
 		showObject += (this.getItemBatchId().length() > 0) ? String.format("Current batch = '%s'%n", this.getItemBatchId()) : "Current batch = <no batch id>\n";
 		
 		if (this.getItemTaskId().equals(ActivityName.INVENTORYBUY.getValue()))
@@ -205,7 +205,7 @@ public class WineMakerInventory {
 	
 		showObject = String.format("%s,", this.get_itemName());
 		showObject += String.format("%s,", itemId);
-		showObject += String.format("%s,", this.getItemTaskTime().toLocalDateTime().format(dateFormatter));
+		showObject += String.format("%s,", this.getItemEntryDate().toLocalDateTime().format(dateFormatter));
 		showObject += String.format("%s,", formatDouble(this.get_itemStockOnHand()));
 		showObject += String.format("%s,", this.getItemBatchId());
 		showObject += String.format("%s,", exportActivity);

@@ -3,9 +3,14 @@
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
+import geo.apps.winemaker.utilities.Constants.ActivityName;
 import geo.apps.winemaker.utilities.Constants.FamilyCode;
+import geo.apps.winemaker.activity.fermentation.FermentationActivity;
+import geo.apps.winemaker.activity.fermentation.FermentationActivityFactory;
 import geo.apps.winemaker.utilities.HelperFunctions;
 
 public class WineMakerFerment {
@@ -63,6 +68,7 @@ public class WineMakerFerment {
 	private int _yeastActiveLevel = 0;
 	private String _tempScale = "";
 	private String _fermentNotes = empty;
+	private final String reportDelimiter = "\n-----------------------------\n";
 
 	private WineMakerModel winemakerModel = null;
 	
@@ -603,7 +609,7 @@ public class WineMakerFerment {
 		showObject += (this.get_stageDuration() > 0) ? String.format("Stage duration = '%d' %n", this.get_stageDuration()) : "";
 		showObject += (this.get_yeastActiveLevel() > 0) ? String.format("Yeast activity level = '%d' %n", this.get_yeastActiveLevel()) : "";
 		showObject += (this.get_tempScale().length() > 0) ? String.format("Temperature scale = '%s' %n", this.get_tempScale()) : "";
-		showObject += (this.get_fermentNotes().length() > 0) ? String.format("Stage notes = %n\t'%s' %n", this.get_fermentNotes()) : "";
+		showObject += (this.get_fermentNotes().length() > 0) ? String.format("Stage notes = %n\t'%s' %n", this.get_fermentNotes().stripTrailing()) : "";
 		
 		return showObject;
 	} // end of toString()
@@ -655,95 +661,107 @@ public class WineMakerFerment {
 		showObject += String.format("%s", this.get_fermentNotes().replace(",", " - "));
 				
 		return showObject;
-	} // end of newCSV()
-
+	} // end of toCSV()
 	
-	public String toCSVDeprecated()
-	{
-		String showObject = "";
-		HashMap<String, String> codeSet;
-		
+	public String toReport()
+	{	
 		Timestamp ts = this.get_entry_date();
 		LocalDateTime entryDate = ts.toLocalDateTime();
-		
-		showObject += String.format("%s,", entryDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-		showObject += String.format("%s,", HelperFunctions.batchKeyExpand(this.get_batchKey()));
-		
-		codeSet = HelperFunctions.getCodeKeyFamily(FamilyCode.ACTIVITYFAMILY.getValue());
-		showObject += String.format("%s,", codeSet.get(this.get_fermentActivity()));
-		showObject += String.format("%d,", this.get_stageCycle());
 
-		if (this.get_startDate() != null)
+		StringBuilder showObject = new StringBuilder("");
+		showObject.append("\n");
+		
+		if (this.get_fermentActivity().equals(ActivityName.FERMENT.getValue()))
 		{
-			ts = this.get_startDate();
-			entryDate = ts.toLocalDateTime();		
-			showObject += String.format("%s,", entryDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+			showObject.append(String.format("%s: Start fermentation cycle%n", entryDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
+			showObject.append(reportDelimiter);
 		}
-		else
-			showObject += ",";
+		
+		FermentationActivity fermentActivity = FermentationActivityFactory.getActivity(this.get_fermentActivity())
+				.orElseThrow( () -> new IllegalArgumentException("Undefined activity " + this.get_fermentActivity()) );
 
-		if (this.get_endDate() != null)
+		if (this.get_fermentActivity().equals(ActivityName.CHECKPOINT.getValue()))
 		{
-			ts = this.get_endDate();
-			entryDate = ts.toLocalDateTime();		
-			showObject += String.format("%s,", entryDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+			showObject.append(String.format("%s: Checkpoint%n", entryDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
+//			showObject.append(fermentActivity.apply(this));
+//			showObject.append(reportDelimiter);
 		}
-		else
-			showObject += ",";
 		
-		showObject += String.format("%d,", this.get_stageDuration());
-		showObject += String.format("%d,", this.get_inputGrapeAmt());
-		showObject += String.format("%d,", this.get_outputMustVolume());
+		if (this.get_fermentActivity().equals(ActivityName.AMELIORATION.getValue()))
+		{
+			showObject.append(String.format("%s: Amelioration task%n", entryDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
+//			showObject.append(fermentActivity.apply(this));
+//			showObject.append(reportDelimiter);
+		}
 
-		codeSet = HelperFunctions.getCodeKeyFamily(FamilyCode.YEASTFAMILY.getValue());
-		showObject += (this.get_yeastStrain().length() > 0) ? String.format("%s,", codeSet.get(this.get_yeastStrain())) : "n/a,";
-		
-		codeSet = HelperFunctions.getCodeKeyFamily(FamilyCode.ADDITIVEFAMILY.getValue());
-		showObject += (this.get_chemAdded().length() > 0) ? String.format("%s,", codeSet.get(this.get_chemAdded())) : "n/a,";
-		
-		showObject += String.format("%1.2f,", this.get_chemAmount());
-		showObject += String.format("%s,", this.get_chemScale());
-		showObject += String.format("%1.2f,", this.get_currBrix());
-		showObject += String.format("%1.2f,", this.get_currpH());
-		showObject += String.format("%1.2f,", this.get_currTA());
-		showObject += String.format("%d,", this.get_currentTemp());
-		showObject += String.format("%d,", this.get_startTemp());
-		showObject += String.format("%d,", this.get_endingTemp());
-		showObject += String.format("%s,", this.get_tempScale());
-		showObject += String.format("%1.2f,", this.get_starterYeastAmt());
-		showObject += String.format("%d,", this.get_starterH2OAmt());
-		showObject += String.format("%d,", this.get_starterJuiceAmt());
-		showObject += String.format("%d,", this.get_yeastActiveLevel());
-		showObject += String.format("%s,", this.get_coldLocation());
-		
-		codeSet = HelperFunctions.getCodeKeyFamily(FamilyCode.CONTAINERFAMILY.getValue());
-		showObject += (this.get_containerType().length() > 0) ? String.format("%s,", codeSet.get(this.get_containerType())) : "n/a,";
-		showObject += (this.get_containerType2().length() > 0) ? String.format("%s,", codeSet.get(this.get_containerType2())) : "n/a,";
-		showObject += (this.get_containerType3().length() > 0) ? String.format("%s,", codeSet.get(this.get_containerType3())) : "n/a,";
-		showObject += String.format("%d,", this.get_containerCount());
-		showObject += String.format("%d,", this.get_container2Count());
-		showObject += String.format("%d,", this.get_container3Count());
-		showObject += String.format("%d,", this.get_containerVol());
-		showObject += String.format("%d,", this.get_container2Vol());
-		showObject += String.format("%d,", this.get_container3Vol());
-		showObject += String.format("%d,", this.get_inputJuiceVol());
-		showObject += String.format("%s,", this.get_inputJuiceScale());
-		showObject += String.format("%d,", this.get_outputJuiceVol());
-		showObject += String.format("%s,", this.get_outputJuiceScale());
-		showObject += String.format("%d,", this.get_currentStageJuiceVol());
-		showObject += String.format("%s,", this.get_currentStageJuiceScale());
-		showObject += (this.get_rackSource().length() > 0) ? String.format("%s,", codeSet.get(this.get_rackSource())) : "n/a,";
-		showObject += (this.get_rackTarget1().length() > 0) ? String.format("%s,", codeSet.get(this.get_rackTarget1())) : "n/a,";
-		showObject += (this.get_rackTarget2().length() > 0) ? String.format("%s,", codeSet.get(this.get_rackTarget2())) : "n/a,";
-		showObject += (this.get_rackTarget3().length() > 0) ? String.format("%s,", codeSet.get(this.get_rackTarget3())) : "n/a,";
-		showObject += String.format("%d,", this.get_rackTarget1Count());
-		showObject += String.format("%d,", this.get_rackTarget2Count());
-		showObject += String.format("%d,", this.get_rackTarget2Count());
-		showObject += String.format("%d,", this.get_bottleCount());
-		showObject += String.format("%s,", this.get_punchTool());
-		showObject += String.format("%d,", this.get_pressCycle());
-		showObject += String.format("%s", this.get_fermentNotes().replace(",", " - "));
-				
-		return showObject;
-	} // end of newCSV()
+		if (this.get_fermentActivity().equals(ActivityName.CRUSH.getValue()))
+		{
+			fermentActivity.setInventoryList(getInventoryRecords());
+
+			showObject.append(String.format("%s: Crush task%n", entryDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
+//			showObject.append(fermentActivity.apply(this));
+//			showObject.append(reportDelimiter);
+		}
+
+		if (this.get_fermentActivity().equals(ActivityName.YEASTPITCH.getValue()))
+		{
+			ArrayList<WineMakerFerment> wmfSets = winemakerModel.queryFermentData(this.get_batchKey(), this.get_fermentActivity());
+			wmfSets.addAll(winemakerModel.queryFermentData(this.get_batchKey(), ActivityName.AMELIORATION.getValue(), this.get_entry_date()));
+
+			fermentActivity.setRecordList(wmfSets);
+			
+			showObject.append(String.format("%s: Yeast Pitch task%n", entryDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
+//			showObject.append(fermentActivity.apply(this));
+//			showObject.append(reportDelimiter);
+		}
+
+		if (this.get_fermentActivity().equals(ActivityName.PRESS.getValue()))
+		{
+			fermentActivity.setInventoryList(getInventoryRecords());
+
+			showObject.append(String.format("%s: Press task%n", entryDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
+//			showObject.append(fermentActivity.apply(this));
+//			showObject.append(reportDelimiter);	
+		}
+
+		if (this.get_fermentActivity().equals(ActivityName.RACK.getValue()))
+		{
+			fermentActivity.setInventoryList(getInventoryRecords());
+
+			showObject.append(String.format("%s: Rack task%n", entryDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
+//			showObject.append(fermentActivity.apply(this));
+//			showObject.append(reportDelimiter);	
+		}
+
+		if (this.get_fermentActivity().equals(ActivityName.TRANSFER.getValue()))
+		{
+			fermentActivity.setInventoryList(getInventoryRecords());
+
+			showObject.append(String.format("%s: Transfer task%n", entryDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
+//			showObject.append(fermentActivity.apply(this));
+//			showObject.append(reportDelimiter);	
+		}
+
+		if (this.get_fermentActivity().equals(ActivityName.BOTTLE.getValue()))
+		{
+			showObject.append(String.format("%s: Bottle task%n", entryDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
+//			showObject.append(fermentActivity.apply(this));
+//			showObject.append(reportDelimiter);	
+		}
+
+		showObject.append(fermentActivity.apply(this));
+		showObject.append(reportDelimiter);	
+
+		return showObject.toString();
+	}
+	
+	private ArrayList<WineMakerInventory> getInventoryRecords()
+	{
+		ArrayList<WineMakerInventory> displayList = winemakerModel.queryInventoryByBatch(this.get_batchKey())
+				.stream()
+				.filter(wmi -> wmi.get_itemStockOnHand() > 0)
+				.collect(Collectors.toCollection(ArrayList::new));
+
+		return displayList;
+	}
 }

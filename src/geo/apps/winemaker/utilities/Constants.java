@@ -60,6 +60,11 @@ public class Constants {
 		RECORDBUILD
 	}
 	
+	public enum ExportType {
+		TEXTREPORT,
+		CSVEXPORT
+	}
+	
 	public enum FamilyCode {
 		BATCHSOURCEFAMILY("source"),
 		GRAPEFAMILY("grape"),
@@ -115,10 +120,10 @@ public class Constants {
 	public enum WeightsAndMeasures {
 		USWEIGHT("lbs"),
 		USVOLUME("gal"),
-		USTEMP("fahren"),
+		USTEMP("F"),
 		METRICWEIGHT("kg"),
 		METRICVOLUME("l"),
-		METRICTEMP("centgrde");
+		METRICTEMP("C");
 
 		private final String value;
 

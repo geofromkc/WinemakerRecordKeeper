@@ -375,6 +375,7 @@ public class WineMakerLogging {
 	
 	public String showIOException(Exception e, String titleText)
 	{
+		writeLog(String.format("Caller Title: %s%n", titleText), errorLogging);
 		writeLog(String.format("Message: %s%n", e.getMessage()), errorLogging);
 		
 		for (StackTraceElement st : e.getStackTrace())
@@ -408,7 +409,7 @@ public class WineMakerLogging {
 
 	public String showIOException(IOException e, String titleText)
 	{
-		writeLog(String.format(titleText), errorLogging);
+		writeLog(String.format("Caller Title: %s%n", titleText), errorLogging);
 		writeLog(String.format("Message: %s%n", e.getMessage()), errorLogging);
 		e.printStackTrace();
 		
@@ -452,8 +453,7 @@ public class WineMakerLogging {
 		String statusText = titleText;
 		StackTraceElement[] stackTrace = null;
 
-		statusText += titleText + ": Database Exception";
-		writeLog(String.format(statusText), errorLogging);
+		writeLog(String.format("Caller Title: %s%n", titleText), errorLogging);
 		
 		// Unwrap the entire exception chain to unveil the real cause of the Exception.
 		while (e != null)
@@ -518,8 +518,7 @@ public class WineMakerLogging {
 			e = e.getNextException();
 		}
 
-		writeLog("\n==========================================================================", errorLogging);
-		
+		writeLog("\n==========================================================================", errorLogging);		
 		return statusText;
 	}	
 }

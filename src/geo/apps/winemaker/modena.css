@@ -1,26 +1,26 @@
 /*
- * Copyright (c) 2009, 2015, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ * Copyright (c) 2009, 2021, Oracle and/or its affiliates. All rights reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
+ * This code is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 only, as
+ * published by the Free Software Foundation.  Oracle designates this
+ * particular file as subject to the "Classpath" exception as provided
+ * by Oracle in the LICENSE file that accompanied this code.
  *
+ * This code is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * version 2 for more details (a copy is included in the LICENSE file that
+ * accompanied this code).
  *
+ * You should have received a copy of the GNU General Public License version
+ * 2 along with this work; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
 
 /*
@@ -446,6 +446,7 @@ is being used to size a border should also be in pixels.
 .tab-pane > .tab-header-area > .control-buttons-tab > .container > .tab-down-button:hover {
     -fx-color: -fx-hover-base;
 }
+
 .button:armed,
 .toggle-button:armed,
 .radio-button:armed > .radio,
@@ -479,6 +480,11 @@ is being used to size a border should also be in pixels.
     -fx-background-insets: -0.2, 1, 2, -1.4, 2.6;
     -fx-background-radius: 3, 2, 1, 4, 1;
 }
+.combo-box-base:hover
+{
+    -fx-color: -fx-hover-base;
+	-fx-border-color: brown;
+}
 
 /* ====   DISABLED THINGS   ================================================= */
 
@@ -503,12 +509,11 @@ is being used to size a border should also be in pixels.
 .tree-view:disabled,
 .table-view:disabled,
 .tree-table-view:disabled,
-.tab-pane:disabled,
+/*.tab-pane:disabled,  / Removed for JDK-8144983 */
 .titled-pane:disabled > .title,
 .accordion:disabled > .titled-pane > .title,
 .tab-pane > .tab-header-area > .headers-region > .tab:disabled,
 .menu:disabled,
-.menu-item:disabled > .label,
 .menu-item:disabled,
 .list-cell:filled:selected:focused:disabled,
 .list-cell:filled:selected:disabled,
@@ -522,6 +527,11 @@ is being used to size a border should also be in pixels.
 .tree-table-cell:selected:disabled,
 .spinner:disabled {
     -fx-opacity: 0.4;
+}
+
+/* Prevent opacity being applied twice for JDK-8152392 */
+.text-input:disabled > .scroll-pane {
+    -fx-opacity: 1.0;
 }
 
 /* ====   MNEMONIC THINGS   ================================================= */
@@ -540,10 +550,21 @@ is being used to size a border should also be in pixels.
 .toggle-button:show-mnemonics > .mnemonic-underline,
 .radio-button:show-mnemonics > .mnemonic-underline,
 .check-box:show-mnemonics > .mnemonic-underline,
-.hyperlink:show-mnemonics > .mnemonic-underline,
 .split-menu-button:show-mnemonics > .mnemonic-underline,
 .menu-button:show-mnemonics > .mnemonic-underline {
     -fx-stroke: -fx-text-base-color;
+}
+
+.menu-button:showing > .label:show-mnemonics > .mnemonic-underline,
+.menu-button:hover > .label:show-mnemonics > .mnemonic-underline,
+.menu-button:focused > .label:show-mnemonics > .mnemonic-underline,
+.menu-item:hover .label:show-mnemonics > .mnemonic-underline,
+.menu-item:focused .label:show-mnemonics > .mnemonic-underline {
+    -fx-stroke: -fx-focused-text-base-color;
+}
+
+.hyperlink:show-mnemonics > .mnemonic-underline {
+    -fx-stroke: -fx-text-fill;
 }
 
 /* ====   MARKS   =========================================================== */
@@ -581,6 +602,9 @@ is being used to size a border should also be in pixels.
 .choice-box,
 .menu-button,
 .combo-box-base {
+    -fx-background-color: white, white, white, white;
+    -fx-background-radius: 5, 5, 4, 3;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
     -fx-padding: 0;
 }
 .choice-box > .label,
@@ -815,9 +839,6 @@ is being used to size a border should also be in pixels.
     -fx-border-color: -fx-focus-color;
     -fx-border-style: segments(0.166667em, 0.166667em);
     -fx-border-width: 1px;
-}
-.hyperlink:show-mnemonics > .mnemonic-underline {
-    -fx-stroke: -fx-text-fill;
 }
 
 /* Fix for RT-37971 */
@@ -1207,7 +1228,7 @@ is being used to size a border should also be in pixels.
     -fx-padding: 0.666667em; /* 8 */
     -fx-shape: "M-0.25,6.083c0.843-0.758,4.583,4.833,5.75,4.833S14.5-1.5,15.917-0.917c1.292,0.532-8.75,17.083-10.5,17.083C3,16.167-1.083,6.833-0.25,6.083z";
 }
-.progress-indicator > .percentage {
+.progress-indicator > .determinate-indicator > .percentage {
     -fx-font-size: 0.916667em; /* 11pt - 1 less than the default font */
     -fx-fill: -fx-text-background-color;
 }
@@ -1450,9 +1471,7 @@ is being used to size a border should also be in pixels.
     -fx-background-color: -fx-background;
     -fx-text-fill: -fx-text-background-color;
 }
-.context-menu:show-mnemonics > .mnemonic-underline {
-    -fx-stroke: -fx-text-fill;
-}
+
 
 /*******************************************************************************
  *                                                                             *
@@ -1463,9 +1482,6 @@ is being used to size a border should also be in pixels.
 .menu {
     -fx-background-color: transparent;
     -fx-padding: 0.333333em 0.666667em 0.333333em 0.666667em; /* 4 8 4 8 */
-}
-.menu:show-mnemonics > .mnemonic-underline {
-    -fx-stroke: -fx-text-fill;
 }
 .menu > .right-container > .arrow {
     -fx-padding: 0.458em 0.167em 0.458em 0.167em; /* 4.5 2 4.5 2 */
@@ -1535,9 +1551,7 @@ is being used to size a border should also be in pixels.
 .menu-bar > .container > .menu-button:showing  > .label {
     -fx-text-fill: -fx-text-background-color;
 }
-.menu-bar:show-mnemonics > .mnemonic-underline {
-    -fx-stroke: -fx-text-fill;
-}
+
 
 /*******************************************************************************
  *                                                                             *
@@ -1569,9 +1583,6 @@ is being used to size a border should also be in pixels.
 }
 .menu-item > .right-container {
     -fx-padding: 0em 0em 0em 0.5em;
-}
-.menu-item:show-mnemonics > .mnemonic-underline {
-    -fx-stroke: -fx-text-fill;
 }
 .radio-menu-item:checked > .left-container > .radio {
     -fx-background-color: -fx-mark-color;
@@ -1982,11 +1993,13 @@ is being used to size a border should also be in pixels.
 }
 /* the color over which the user is hovering */
 .color-palette-region > .color-square.hover-square {
-    -fx-background-color: -fx-faint-focus-color, -fx-focus-color;
+    -fx-background-color: -fx-faint-focus-color, white;
     -fx-background-insets: -3,-1;
     -fx-background-radius: 5,0;
     -fx-scale-x: 1.5;
     -fx-scale-y: 1.5;
+    -fx-border-color: -fx-focus-color;
+    -fx-border-insets: -1, -1;
 }
 /* ------- CUSTOM COLOR DIALOG ------- */
 .custom-color-dialog > .color-rect-pane {
@@ -2190,6 +2203,9 @@ is being used to size a border should also be in pixels.
    -fx-background-insets: 0, 5,  6,  7;
 }
 .pagination > .pagination-control > .control-box > .bullet-button:selected {
+    -fx-base: -fx-selection-bar-non-focused;
+}
+.pagination:focused > .pagination-control > .control-box > .bullet-button:selected {
     -fx-base: -fx-accent;
 }
 .pagination.bullet > .pagination-control > .control-box {
@@ -2212,6 +2228,9 @@ is being used to size a border should also be in pixels.
     -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
 }
 .pagination > .pagination-control > .control-box > .number-button:selected {
+    -fx-base: -fx-selection-bar-non-focused;
+}
+.pagination:focused > .pagination-control > .control-box > .number-button:selected {
     -fx-base: -fx-accent;
 }
 .pagination > .pagination-control > .page-information {
@@ -2570,13 +2589,12 @@ is being used to size a border should also be in pixels.
 .tooltip {
     -fx-background: rgba(30,30,30);
     -fx-text-fill: white;
-    -fx-background-color: rgba(60,30,30,0.8);
+    -fx-background-color: rgba(30,30,30,0.8);
     -fx-background-radius: 6px;
     -fx-background-insets: 0;
     -fx-padding: 0.667em 0.75em 0.667em 0.75em; /* 10px */
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.5) , 10, 0.0 , 0 , 3 );
-    -fx-font-family: cambria, serif;
-    -fx-font-size: 1.25em;
+    -fx-font-size: 0.85em;
 }
 
 /*******************************************************************************
@@ -3370,7 +3388,7 @@ is being used to size a border should also be in pixels.
     -fx-padding: 0.833em; /* 10 */
 }
 
-.dialog-pane:no-header .graphic-container {
+.dialog-pane:no-header > * > .graphic-container {
     -fx-padding: 0.833em 0 0 0.833em; /* 10px 0px 0px 10px */
 }
 

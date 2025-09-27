@@ -21,6 +21,17 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXButton.ButtonType;
+import com.jfoenix.controls.JFXComboBox;
+
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+
+//import com.jfoenix.controls.JFXDatePicker;
+//import com.jfoenix.controls.JFXTimePicker;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -28,6 +39,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -89,14 +101,15 @@ public class FermentDataDetailController implements Initializable {
 	@FXML GridPane gp;
 	@FXML Pane titlePane;
 	@FXML TextArea statusDisplay;
+	//JFXDatePicker jfxDatePicker = new JFXDatePicker();
+	//JFXTimePicker jfxTimePicker = new JFXTimePicker();
+
 
 	/*
 	 * Scene ComboBoxes
 	 */
-	@FXML private ComboBox<String> activitySelect;
+	@FXML private JFXComboBox<String> activitySelect;
 	ObservableList<String> activitiesList = FXCollections.observableArrayList();
-
-	ComboBox<String> stageSelect = new ComboBox<String>();
 
 	@FXML DatePicker activityDate;
 	@FXML TextField entryTime = new TextField();
@@ -133,14 +146,14 @@ public class FermentDataDetailController implements Initializable {
 	Label notesLabel = new Label();
 	TextArea fieldNotes = new TextArea();
 
-	ComboBox<String> usedSourceContainers = new ComboBox<String>();
-	ComboBox<String> emptyTargetContainers = new ComboBox<String>();
-	ComboBox<String> fieldContainers3 = new ComboBox<String>();
-	ComboBox<String> fieldContainers4 = new ComboBox<String>();
-	ComboBox<String> fieldContainers5 = new ComboBox<String>();
-	ComboBox<String> fieldContainers6 = new ComboBox<String>();
-	ComboBox<String> fieldContainers7 = new ComboBox<String>();
-	ComboBox<String> fieldContainers8 = new ComboBox<String>();
+	JFXComboBox<String> usedSourceContainers = new JFXComboBox<String>();
+	JFXComboBox<String> emptyTargetContainers = new JFXComboBox<String>();
+	JFXComboBox<String> fieldContainers3 = new JFXComboBox<String>();
+	JFXComboBox<String> fieldContainers4 = new JFXComboBox<String>();
+	JFXComboBox<String> fieldContainers5 = new JFXComboBox<String>();
+	JFXComboBox<String> fieldContainers6 = new JFXComboBox<String>();
+	JFXComboBox<String> fieldContainers7 = new JFXComboBox<String>();
+	JFXComboBox<String> fieldContainers8 = new JFXComboBox<String>();
 	
 	HBox hbStartTime = new HBox();
 	HBox hbEndTime = new HBox();
@@ -153,8 +166,9 @@ public class FermentDataDetailController implements Initializable {
 	HBox hBox_7 = new HBox();
 	HBox hBox_8 = new HBox();
 
-	Button addTargetContainerButton = new Button();
-	Button addSourceContainerButton = new Button();
+	JFXButton testButton = new JFXButton();
+	JFXButton addTargetContainerButton = new JFXButton();
+	JFXButton addSourceContainerButton = new JFXButton();
 	TextArea displayContainerSelections = new TextArea();
 	
 	ArrayList<String> sfieldSet = new ArrayList<String>();
@@ -171,6 +185,10 @@ public class FermentDataDetailController implements Initializable {
 	String datePickerOriginal = "";
 	Timestamp ts = null;
 	boolean debugLogging = true;
+	
+	ChangeListener<Boolean> volumeChangeListener = this::onVolumeChange ;
+	ChangeListener<Boolean> weightChangeListener = this::onWeightChange ;
+	ChangeListener<Boolean> tempChangeListener = this::onTempChange ;
 	
 	Object classInstance;
 	Class<?> classRef;
@@ -454,7 +472,17 @@ public class FermentDataDetailController implements Initializable {
 	{
 		winemakerLogger.writeLog(">> FermentDataDetailController.activityAmeliorateLayout()", debugLogging);
 		
+		activityDefaultLayoutContainerSetup(usedSourceContainers, buildSourceContainerSet(this.wmk.get_batchKey()), "Select Container");
+		if (usedSourceContainers.getItems().size() == 0)
+		{
+			statusDisplay.setText("No source containers exist");
+			return;
+		}
+		
 		activityDefaultLayout();
+		
+		field_1.focusedProperty().addListener(volumeChangeListener);
+		field_2.focusedProperty().addListener(tempChangeListener);
 		
 		ObservableList<String> chemList =  loadObservableList(HelperFunctions.getCodeKeyMappings().get(FamilyCode.ADDITIVEFAMILY.getValue()));
 	
@@ -468,8 +496,6 @@ public class FermentDataDetailController implements Initializable {
 		fieldLabel_8.setText("Select Additive & Amt");
 		fieldLabel_9.setText("Select Additive & Amt");
 	
-		activityDefaultLayoutContainerSetup(usedSourceContainers, buildSourceContainerSet(this.wmk.get_batchKey()), "Select Container");
-
 		activityDefaultLayoutContainerSetup(fieldContainers3, chemList, "Select Additive");
 		activityDefaultLayoutContainerSetup(fieldContainers4, chemList, "Select Additive");
 		activityDefaultLayoutContainerSetup(fieldContainers5, chemList, "Select Additive");
@@ -517,19 +543,29 @@ public class FermentDataDetailController implements Initializable {
 	{
 		winemakerLogger.writeLog(String.format(">> FermentDataDetailController.activityBottleLayout()"), debugLogging);
 
+		activityDefaultLayoutContainerSetup(usedSourceContainers, buildSourceContainerSet(this.wmk.get_batchKey()), "Select Container");			
+		if (usedSourceContainers.getItems().size() == 0)
+		{
+			statusDisplay.setText("No source containers exist");
+			return;
+		}
+		
 		activityDefaultLayout();
 		
 		fieldLabel_1.setText("Source Containers");
 		fieldLabel_2.setText("Bottle Count");
 		fieldLabel_3.setText("Selected Containers");
 
-		activityDefaultLayoutContainerSetup(usedSourceContainers, buildSourceContainerSet(this.wmk.get_batchKey()), "Select Container");			
 		activityDefaultLayoutHBoxSetup(hBox_1, usedSourceContainers, addSourceContainerButton);
 		activityDefaultLayoutFieldSetup(field_3, "1", "", 50);
+		
 
 		gp.add(hBox_1, 1, 3);
 		gp.add(field_3, 1, 4);
-		gp.add(displayContainerSelections, 1, 5, 1, 2);		
+		gp.add(displayContainerSelections, 1, 5, 1, 2);
+		
+		//gp.add(jfxDatePicker, 1, 7);
+		//gp.add(jfxTimePicker, 1, 8);
 
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.activityBottleLayout()"), debugLogging);
 	}
@@ -549,6 +585,9 @@ public class FermentDataDetailController implements Initializable {
 		winemakerLogger.writeLog(String.format(">> FermentDataDetailController.activityCheckpointLayout()"), debugLogging);
 	
 		activityDefaultLayout();
+		
+		field_6.focusedProperty().addListener(volumeChangeListener);
+		field_2.focusedProperty().addListener(tempChangeListener);
 	
 		fieldLabel_0.setText("Select Container");
 		fieldLabel_1.setText("Total Volume");
@@ -594,6 +633,10 @@ public class FermentDataDetailController implements Initializable {
 	
 		activityDefaultLayout();
 		
+		field_1.focusedProperty().addListener(weightChangeListener);
+		field_2.focusedProperty().addListener(volumeChangeListener);
+		field_3.focusedProperty().addListener(tempChangeListener);
+		
 		fieldLabel_1.setText("Input Amt");
 		fieldLabel_2.setText("Output Volume");
 		fieldLabel_3.setText("Must Temperature");
@@ -630,6 +673,8 @@ public class FermentDataDetailController implements Initializable {
 		winemakerLogger.writeLog(">> FermentDataDetailController.activityPressLayout()", debugLogging);
 	
 		activityDefaultLayout();
+		
+		field_1.focusedProperty().addListener(volumeChangeListener);
 	
 		fieldLabel_1.setText("Output Volume");
 		fieldLabel_2.setText("Source Containers");
@@ -665,6 +710,8 @@ public class FermentDataDetailController implements Initializable {
 		winemakerLogger.writeLog(">> FermentDataDetailController.activityRackLayout()", debugLogging);
 	
 		activityDefaultLayout();
+		
+		field_1.focusedProperty().addListener(volumeChangeListener);
 	
 		fieldLabel_1.setText("Output Volume");
 		fieldLabel_2.setText("Source Containers");
@@ -715,6 +762,9 @@ public class FermentDataDetailController implements Initializable {
 
 		activityDefaultLayout();
 		
+		field_1.focusedProperty().addListener(volumeChangeListener);
+		field_2.focusedProperty().addListener(weightChangeListener);
+		
 		ObservableList<String> yeastOptions = FXCollections.observableArrayList();
 		
 		fieldLabel_0.setText("Current Volume");
@@ -734,11 +784,12 @@ public class FermentDataDetailController implements Initializable {
 				.collect(Collectors.toList()));
 		
 		fieldContainers3.setItems(yeastOptions);
-		fieldContainers3.setPromptText("Select Yeast");	
-		fieldContainers3.setButtonCell(new ButtonCell());
+		//fieldContainers3.setPromptText(" Select Yeast");	
+		//fieldContainers3.setButtonCell(new ButtonCell());
 
 		activityDefaultLayoutContainerSetup(fieldContainers3, yeastOptions, "Select Yeast");	
 		activityDefaultLayoutHBoxSetup(hBox_2, fieldContainers3, field_3);
+		hBox_2.setPadding(new Insets(3, 0, 0, 0));
 
 		codeSet = HelperFunctions.getCodeKeyMappings().get(FamilyCode.ADDITIVEFAMILY.getValue());
 		
@@ -820,13 +871,13 @@ public class FermentDataDetailController implements Initializable {
 		return containerList;
 	} // end of buildEligibleContainerSet()
 
-	private void activityDefaultLayoutContainerSetup(ComboBox<String> uiComboBox, ObservableList<String> containerContent, String promptText)
+	private void activityDefaultLayoutContainerSetup(JFXComboBox<String> uiComboBox, ObservableList<String> containerContent, String promptText)
 	{
 		winemakerLogger.writeLog(String.format(">> FermentDataDetailController.activityDefaultLayoutContainerSetup('%s')", uiComboBox.getId()), debugLogging);
 
 		uiComboBox.setItems(containerContent);
-		uiComboBox.setPromptText(promptText);
-		uiComboBox.setButtonCell(new ButtonCell());
+		uiComboBox.setPromptText(" " + promptText);
+		//uiComboBox.setButtonCell(new ButtonCell());
 
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.activityDefaultLayoutContainerSetup('%s')", uiComboBox.getId()), debugLogging);
 	} // end of activityDefaultLayoutContainerSetup()
@@ -835,14 +886,14 @@ public class FermentDataDetailController implements Initializable {
 	{
 		winemakerLogger.writeLog(String.format(">> FermentDataDetailController.activityDefaultLayoutFieldSetup('%s', %1.0f)", uiField.getId(), maxWidth), debugLogging);
 
-		uiField.setPromptText(promptText);
+		uiField.setPromptText(" " + promptText);
 		uiField.setText(displayText);
 		uiField.setMaxWidth(maxWidth);
 
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.activityDefaultLayoutFieldSetup('%s')", uiField.getId()), debugLogging);
 	} // end of activityDefaultLayoutFieldSetup()
 
-	private void activityDefaultLayoutHBoxSetup(HBox uiHBox, ComboBox<String> uiComboBox, TextField uiField)
+	private void activityDefaultLayoutHBoxSetup(HBox uiHBox, JFXComboBox<String> uiComboBox, TextField uiField)
 	{
 		winemakerLogger.writeLog(String.format(">> FermentDataDetailController.activityDefaultLayoutHBoxSetup('%s', '%s', '%s' (%s))", uiHBox.getId(), uiComboBox.getId(), uiField.getId(), uiField.getText()), debugLogging);
 
@@ -853,7 +904,7 @@ public class FermentDataDetailController implements Initializable {
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.activityDefaultLayoutHBoxSetup('%s', '%s', '%s')", uiHBox.getId(), uiComboBox.getId(), uiField.getId()), debugLogging);
 	} // end of activityDefaultLayoutHBoxSetup()
 
-	private void activityDefaultLayoutHBoxSetup(HBox uiHBox, ComboBox<String> uiComboBox, Button uiButton)
+	private void activityDefaultLayoutHBoxSetup(HBox uiHBox, JFXComboBox<String> uiComboBox, JFXButton uiButton)
 	{
 		winemakerLogger.writeLog(String.format(">> FermentDataDetailController.activityDefaultLayoutHBoxSetup('%s', '%s', '%s')", uiHBox.getId(), uiComboBox.getId(), uiButton.getId()), debugLogging);
 
@@ -1103,7 +1154,7 @@ public class FermentDataDetailController implements Initializable {
 	private Validation validatePress()
 	{
 		winemakerLogger.writeLog(">> FermentDataDetailController.validatePress()", debugLogging);
-	
+		
 		Validation checkResults = Validation.PASSED;
 
 		String errorMsg = validateDefaultFields(TimeCheck.ONLYENTRY);
@@ -1257,7 +1308,6 @@ public class FermentDataDetailController implements Initializable {
 	{
 		winemakerLogger.writeLog(String.format(">> FermentDataDetailController.loadAmeliorationRecord()"), debugLogging);
 		
-		WineMakerFerment wmfNull = null;
 		String chemKey;
 		
 		HashMap<String, String> valuesMap = new HashMap<>();
@@ -1274,24 +1324,35 @@ public class FermentDataDetailController implements Initializable {
 			.stream()
 			.filter(key -> key != null)
 			.collect(Collectors.toSet())
-			.forEach(key -> collectChemicalEntry(key, fieldMap.get(key), valuesMap));
+			.forEach(key -> collectAdditive(key, fieldMap.get(key), valuesMap));
 		
-		ArrayList<WineMakerFerment> wmfCollectFields = loadChemAdditions(valuesMap, field_1.getText(), field_2.getText(), HelperFunctions.buildTimeStamp(activityDate, entryTime.getText(), 0));
+		ArrayList<WineMakerFerment> wmfCollectFields = loadFermentationAdditions(valuesMap, field_1.getText(), field_2.getText(), HelperFunctions.buildTimeStamp(activityDate, entryTime.getText(), 0));
 		codeSet = HelperFunctions.getCodeKeyMappings().get(FamilyCode.ADDITIVEFAMILY.getValue());
 		
-		for (WineMakerFerment wmfChem : wmfCollectFields)
+		/*
+		 * For logic consistency, pass back the first entry
+		 * If more than one, insert 2...n now
+		 */
+		ArrayList<WineMakerFerment> subsetCollectFields = new ArrayList<>();
+		if (wmfCollectFields.size() > 1)
 		{
-			if (winemakerModel.insertFermentData(wmfChem)) 
+			subsetCollectFields.addAll(wmfCollectFields);
+			subsetCollectFields.remove(0);
+			
+			for (WineMakerFerment wmfAdditive : subsetCollectFields)
 			{
-				statusDisplay.appendText(String.format("Fermentation Amelioration %s added successfully%n", codeSet.get(wmfChem.get_chemAdded())));
-			}
-			else
-			{
-				statusDisplay.appendText(String.format("Failure adding amelioration records %s%n", codeSet.get(wmfChem.get_chemAdded())));
-				winemakerLogger.writeLog(String.format("   FermentDataDetailController.loadAmeliorationRecord(): Failure adding amelioration records %s", wmfChem), debugLogging);
+				if (winemakerModel.insertFermentData(wmfAdditive)) 
+				{
+					statusDisplay.appendText(String.format("Fermentation Amelioration %s added successfully%n", codeSet.get(wmfAdditive.get_chemAdded())));
+				}
+				else
+				{
+					statusDisplay.appendText(String.format("Failure adding amelioration records %s%n", codeSet.get(wmfAdditive.get_chemAdded())));
+					winemakerLogger.writeLog(String.format("   FermentDataDetailController.loadAmeliorationRecord(): Failure adding amelioration records %s", wmfAdditive), debugLogging);
+				}
 			}
 		}
-	
+		
 		this.wmiInsertSet
 			.stream()
 			.forEach(wmiNew -> winemakerModel.insertInventory(wmiNew));
@@ -1302,7 +1363,8 @@ public class FermentDataDetailController implements Initializable {
 	
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.loadAmeliorationRecord()"), debugLogging);
 		
-		return wmfNull;
+		WineMakerFerment wmfFirst = (wmfCollectFields.size() > 0) ? wmfCollectFields.get(0) : null;
+		return wmfFirst;
 	} // end of loadAmeliorateRecords()
 
 	/*
@@ -1373,6 +1435,7 @@ public class FermentDataDetailController implements Initializable {
 		
 		Integer testedVolume = Integer.parseInt(extractVolumeOrTemp(field_1.getText(), 1, matchAmountPattern));
 		String showTestVolume = (testedVolume > 0) ? String.format("%nTested volume was %s", field_1.getText()) : "";
+		
 		String updatedNotes = (field_1.getText() != null && field_1.getText().length() > 0) ? 
 				wmfCheckpoint.get_fermentNotes() + showTestVolume : wmfCheckpoint.get_fermentNotes();
 		updatedNotes += (!fieldNotes.getText().contains(usedSourceContainers.getValue())) ?
@@ -1418,7 +1481,7 @@ public class FermentDataDetailController implements Initializable {
 		wmfCrush.set_currentTemp(Integer.parseInt(extractVolumeOrTemp(field_3.getText(), 1, matchTempPattern)));
 		wmfCrush.set_tempScale(extractVolumeOrTemp(field_3.getText(), 2, matchTempPattern).toLowerCase());
 		wmfCrush.set_stageCycle(++stageCycle);
-		wmfCrush.set_fermentNotes(collectContainerNotes(wmfCrush, fieldNotes));
+		wmfCrush.set_fermentNotes(collectContainerAssignments(wmfCrush, fieldNotes));
 		
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.loadCrushRecord(): new record: %s", wmfCrush), debugLogging);
 		return wmfCrush;
@@ -1444,10 +1507,11 @@ public class FermentDataDetailController implements Initializable {
 		wmfPress.set_outputJuiceVol(Integer.parseInt(extractVolumeOrTemp(field_1.getText(), 1, matchAmountPattern)));
 		wmfPress.set_outputJuiceScale(getScaleKey(extractVolumeOrTemp(field_1.getText(), 2, matchAmountPattern)));
 		wmfPress.set_stageCycle(++stageCycle);
-		wmfPress.set_fermentNotes(collectContainerNotes(wmfPress, fieldNotes));
+		wmfPress.set_fermentNotes(collectContainerAssignments(wmfPress, fieldNotes));
 
 		winemakerLogger.writeLog(String.format("   FermentDataDetailController.loadPressRecord(): new record: %s", wmfPress), debugLogging);
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.loadPressRecord()"), debugLogging);
+
 		return wmfPress;
 	} // end of loadPressRecord()
 
@@ -1475,7 +1539,7 @@ public class FermentDataDetailController implements Initializable {
 		wmfRack.set_outputJuiceVol(Integer.parseInt(extractVolumeOrTemp(field_1.getText(), 1, matchAmountPattern)));
 		wmfRack.set_outputJuiceScale(getScaleKey(extractVolumeOrTemp(field_1.getText(), 2, matchAmountPattern)));
 		wmfRack.set_stageCycle(++stageCycle);
-		wmfRack.set_fermentNotes(collectContainerNotes(wmfRack, fieldNotes));
+		wmfRack.set_fermentNotes(collectContainerAssignments(wmfRack, fieldNotes));
 		
 		winemakerLogger.writeLog(String.format("   FermentDataDetailController.loadRackRecord(): new record: %s", wmfRack), debugLogging);
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.loadRackRecord()"), debugLogging);
@@ -1501,8 +1565,11 @@ public class FermentDataDetailController implements Initializable {
 		String updatedNotes = "";
 		WineMakerFerment wmfYeastPitch = loadDefaultRecordFields(new WineMakerFerment(this.winemakerModel));
 		
-		wmfYeastPitch.set_fermentActivity(ActivityName.YEASTPITCH.getValue());
+		updatedNotes += (fieldNotes.getText().length() > 0) ? "\n" : "";
+		updatedNotes += String.format("Container adjusted: %s%n", usedSourceContainers.getValue());
+		fieldNotes.appendText(updatedNotes);
 		
+		wmfYeastPitch.set_fermentActivity(ActivityName.YEASTPITCH.getValue());		
 		wmfYeastPitch.set_outputMustVolume(Integer.parseInt(extractVolumeOrTemp(field_1.getText(), 1, matchAmountPattern)));
 		wmfYeastPitch.set_outputJuiceScale(getScaleKey(extractVolumeOrTemp(field_1.getText(), 2, matchAmountPattern)));
 		wmfYeastPitch.set_currentTemp(Integer.parseInt(extractVolumeOrTemp(field_2.getText(), 1, matchTempPattern)));
@@ -1510,7 +1577,7 @@ public class FermentDataDetailController implements Initializable {
 		wmfYeastPitch.set_yeastStrain(HelperFunctions.getCodeValueEntry(FamilyCode.YEASTFAMILY.getValue(), fieldContainers3.getValue()));	
 		wmfYeastPitch.set_starterYeastAmt(Double.parseDouble(extractVolumeOrTemp(field_3.getText(), 1, matchAmountPattern)));
 		wmfYeastPitch.set_chemScale(getScaleKey(extractVolumeOrTemp(field_3.getText(), 2, matchAmountPattern)));		
-		wmfYeastPitch.set_fermentNotes(collectContainerNotes(wmfYeastPitch, fieldNotes));
+		wmfYeastPitch.set_fermentNotes(updatedNotes);
 		
 		loadInventoryRecords(wmfYeastPitch, HelperFunctions.getCodeKeyMappings().get(FamilyCode.YEASTFAMILY.getValue()), wmfYeastPitch.get_yeastStrain());
 		
@@ -1552,19 +1619,19 @@ public class FermentDataDetailController implements Initializable {
 			.stream()
 			.filter(key -> key != null)
 			.collect(Collectors.toSet())
-			.forEach(key -> collectChemicalEntry(key, fieldMap.get(key), valuesMap));
+			.forEach(key -> collectAdditive(key, fieldMap.get(key), valuesMap));
 		
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.loadYeastPitchAdjustmentRecords()"), debugLogging);
-		return loadChemAdditions(valuesMap, field_1.getText(), field_2.getText(), parentEntryDate);
+		return loadFermentationAdditions(valuesMap, field_1.getText(), field_2.getText(), parentEntryDate);
 	} // end of loadYeastPitchAdjustmentRecords()
 
 	/*
 	 * Add a UI chemical entry to the collection of field values
 	 * 		'Enzymes' = "2.4', 'Enzymes-m' = 'mL'
 	 */
-	private void collectChemicalEntry(String chemName, String amountValue, HashMap<String, String> valuesMap)
+	private void collectAdditive(String chemName, String amountValue, HashMap<String, String> valuesMap)
 	{
-		winemakerLogger.writeLog(String.format(">> FermentDataDetailController.captureChemicalEntry(chemName '%s', value '%s', valuesMap)", chemName, amountValue), debugLogging);
+		winemakerLogger.writeLog(String.format(">> FermentDataDetailController.collectAdditives(chemName '%s', value '%s', valuesMap)", chemName, amountValue), debugLogging);
 	
 		HashMap<String, String> codeSet = HelperFunctions.getCodeKeyMappings().get(FamilyCode.ADDITIVEFAMILY.getValue());
 		Optional<String> codeValue = codeSet.keySet()
@@ -1576,7 +1643,7 @@ public class FermentDataDetailController implements Initializable {
 		valuesMap.put(chemKey, extractVolumeOrTemp(amountValue, 1, matchAmountPattern));
 		valuesMap.put(chemKey + "-m", extractVolumeOrTemp(amountValue, 2, matchAmountPattern));
 		
-		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.captureChemicalEntry(chemName %s, value %s, valuesMap)", chemName, amountValue), debugLogging);
+		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.collectAdditives(chemName %s, value %s, valuesMap)", chemName, amountValue), debugLogging);
 	} // end of captureChemicalEntry()
 
 	/*
@@ -1584,9 +1651,9 @@ public class FermentDataDetailController implements Initializable {
 	 * Skip the label entries and yeast entries, which are included to activate inventory checking 
 	 * 
 	 */
-	private ArrayList<WineMakerFerment> loadChemAdditions(HashMap<String, String> chemAmounts, String targetVol, String currTemp, Timestamp parentEntryTime)
+	private ArrayList<WineMakerFerment> loadFermentationAdditions(HashMap<String, String> chemAmounts, String targetVol, String currTemp, Timestamp parentEntryTime)
 	{
-		winemakerLogger.writeLog(String.format(">> FermentDataDetailController.loadChemAdditions('%s', '%s', '%s')", chemAmounts.toString(), targetVol, currTemp), debugLogging);
+		winemakerLogger.writeLog(String.format(">> FermentDataDetailController.loadFermentationAdditions('%s', '%s', '%s')", chemAmounts.toString(), targetVol, currTemp), debugLogging);
 	
 		ArrayList<WineMakerFerment> wmfSets = new ArrayList<WineMakerFerment>();
 		WineMakerFerment wmf;
@@ -1601,7 +1668,7 @@ public class FermentDataDetailController implements Initializable {
 			
 			if (Double.parseDouble(chemAmounts.get(chemName)) > 0.0)
 			{
-				winemakerLogger.writeLog(String.format("      FermentDataDetailController.loadChemAdditions(...): %s added, amt = %s", 
+				winemakerLogger.writeLog(String.format("   FermentDataDetailController.loadFermentationAdditions(...): %s added, amt = %s", 
 						chemName, Double.parseDouble(chemAmounts.get(chemName))), debugLogging);
 	
 				String updatedNotes = "";
@@ -1630,11 +1697,11 @@ public class FermentDataDetailController implements Initializable {
 				wmfSets.add(wmf);
 				
 				loadInventoryRecords(wmf, HelperFunctions.getCodeKeyMappings().get(FamilyCode.ADDITIVEFAMILY.getValue()), chemName);
-				winemakerLogger.writeLog(String.format("   FermentDataDetailController.loadChemAdditions(...): new rec on queue %s", wmf), debugLogging);
+				winemakerLogger.writeLog(String.format("   FermentDataDetailController.loadFermentationAdditions(...): new rec on queue %n%s", wmf), debugLogging);
 			}
 		}
 		
-		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.loadChemAdditions(...)"), debugLogging);
+		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.loadFermentationAdditions(...)"), debugLogging);
 		return wmfSets;
 	} // end of loadChemAdditions()
 
@@ -1677,7 +1744,7 @@ public class FermentDataDetailController implements Initializable {
 		WineMakerInventory wmi = new WineMakerInventory();
 		wmi = new WineMakerInventory();
 		wmi.set_itemName(wmf.get_chemAdded());
-		wmi.setItemTaskTime(wmf.get_entry_date());
+		wmi.setItemEntryDate(wmf.get_entry_date());
 		wmi.setItemTaskId(wmf.get_fermentActivity());
 		wmi.setItemBatchId(wmf.get_batchKey());
 		wmi.set_itemActivityAmount(wmf.get_chemAmount());
@@ -1687,11 +1754,14 @@ public class FermentDataDetailController implements Initializable {
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.loadInventoryRecords(%s)", wmf.get_chemAdded()), debugLogging);
 	} // end of loadInventoryRecords()
 
-	private String collectContainerNotes(WineMakerFerment wmf, TextArea fieldNotes)	
+	private String collectContainerAssignments(WineMakerFerment wmf, TextArea fieldNotes)	
 	{
-		winemakerLogger.writeLog(String.format(">> FermentDataDetailController.collectContainerNotes()"), debugLogging);		
+		winemakerLogger.writeLog(String.format(">> FermentDataDetailController.collectContainerAssignments()"), debugLogging);		
 		
-		String rackContainers = "\nContainers used:\nSource:";
+		StringBuilder updatedNotes = new StringBuilder(wmf.get_fermentNotes());
+		if (wmf.get_fermentNotes().length() > 0)
+			updatedNotes.append("\n");
+		updatedNotes.append("Containers used:");
 		
 		List<WineMakerInventory> sourceAssets = updateInventoryBatch.stream()
 				.filter(wmi -> wmi.getItemBatchId().length() == 0)
@@ -1702,27 +1772,26 @@ public class FermentDataDetailController implements Initializable {
 			
 		if (sourceAssets.size() > 0)
 		{
-			rackContainers += "\n\tSource:";
+			winemakerLogger.writeLog(String.format("   FermentDataDetailController.collectContainerAssignments() process source container(s)"), debugLogging);		
+			updatedNotes.append("\n\tSource:");
 
 			for (WineMakerInventory sourceAsset: sourceAssets)
-				rackContainers += "\n\t\t" + buildItemDisplay.apply(HelperFunctions.getCodeKeyEntry(FamilyCode.CONTAINERFAMILY.getValue(), sourceAsset.get_itemName()), sourceAsset.getItemId());
+				updatedNotes.append("\n\t\t" + buildItemDisplay.apply(HelperFunctions.getCodeKeyEntry(FamilyCode.CONTAINERFAMILY.getValue(), sourceAsset.get_itemName()), sourceAsset.getItemId()));
+
 		}
 		
 		if (targetAssets.size() > 0)
 		{
-			rackContainers += "\n\tTarget:";
+			winemakerLogger.writeLog(String.format("   FermentDataDetailController.collectContainerAssignments() process target container(s)"), debugLogging);		
+			updatedNotes.append("\n\tTarget:");
 
-			for (WineMakerInventory sourceAsset: targetAssets)
-				rackContainers += "\n\t\t" + buildItemDisplay.apply(HelperFunctions.getCodeKeyEntry(FamilyCode.CONTAINERFAMILY.getValue(), sourceAsset.get_itemName()), sourceAsset.getItemId());
+			for (WineMakerInventory targetAsset: targetAssets)
+				updatedNotes.append("\n\t\t" + buildItemDisplay.apply(HelperFunctions.getCodeKeyEntry(FamilyCode.CONTAINERFAMILY.getValue(), targetAsset.get_itemName()), targetAsset.getItemId()));
 		}
 		
-		rackContainers += "\n";
-		
-		String updatedNotes = wmf.get_fermentNotes().concat(rackContainers);
-
-		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.collectContainerNotes()"), debugLogging);		
-		return updatedNotes;
-	} // end of collectContainerNotes()
+		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.collectContainerAssignments()"), debugLogging);		
+		return updatedNotes.toString();
+	} // end of collectContainerAssignments()
 
 	/*
 	 * Submit new ferment log entry.
@@ -1777,11 +1846,11 @@ public class FermentDataDetailController implements Initializable {
 		
 		for (WineMakerInventory wmi: insertInventoryActivity)
 		{
-			timestampTime = wmi.getItemTaskTime().getTime(); 
+			timestampTime = wmi.getItemEntryDate().getTime(); 
 			myCalendar.setTimeInMillis(timestampTime);
 			
 			if (myCalendar.get(Calendar.YEAR) == 1900)
-				wmi.setItemTaskTime(HelperFunctions.buildTimeStamp(activityDate, entryTime.getText(), 1));
+				wmi.setItemEntryDate(HelperFunctions.buildTimeStamp(activityDate, entryTime.getText(), 1));
 		}
 
 		updateInventoryStock.stream()
@@ -1957,7 +2026,7 @@ public class FermentDataDetailController implements Initializable {
 	@FXML
 	public void returnToMain(ActionEvent e) 
 	{
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("WineMaker.fxml"));
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("WineMakerMD.fxml"));
 
 		try {
 			WineMakerController winemakerController = new WineMakerController();
@@ -2042,7 +2111,7 @@ public class FermentDataDetailController implements Initializable {
 		{
 			if (usedSourceContainers.getValue() != null)
 			{
-				processContainerSelection(usedSourceContainers);
+				processContainerSelection(usedSourceContainers, true);
 				this.sourceContainerCount++;
 			}
 		}
@@ -2050,7 +2119,7 @@ public class FermentDataDetailController implements Initializable {
 		{
 			if (emptyTargetContainers.getValue() != null)
 			{
-				processContainerSelection(emptyTargetContainers);
+				processContainerSelection(emptyTargetContainers, true);
 				this.targetContainerCount++;
 			}
 		}
@@ -2061,17 +2130,19 @@ public class FermentDataDetailController implements Initializable {
 	 * Update batch id property for selected container inventory record.
 	 * Add batch id to a target container, or remove batch id from source container 
 	 */
-	private void processContainerSelection(ComboBox<String> referencedContainer)
+	private void processContainerSelection(ComboBox<String> referencedContainer, boolean clearContainer)
 	{
 		winemakerLogger.writeLog(String.format(">> FermentDataDetailController.processContainerSelection()"), debugLogging);
-		
+
+		winemakerLogger.writeLog(String.format("   FermentDataDetailController.processContainerSelection() container value = '%s'", referencedContainer.getValue()), debugLogging);
+
 		WineMakerInventory inventoryUpdateRecord = HelperFunctions.findAssetItemRecord(this.getLocalInventorySet(),	referencedContainer.getValue()).get(0);
 		WineMakerInventory inventoryActivityRecord = inventoryUpdateRecord.createActivityRecord();
 		
 		Timestamp tempDate = (activityDate.getValue() != null ) ? 
 				Timestamp.valueOf(activityDate.getValue().atTime(LocalTime.now())) : Timestamp.valueOf(LocalDate.of(1900, 1, 1).atTime(LocalTime.now()));
 		
-		inventoryActivityRecord.setItemTaskTime(tempDate);
+		inventoryActivityRecord.setItemEntryDate(tempDate);
 		inventoryActivityRecord.setItemTaskId(HelperFunctions.getCodeValueEntry(FamilyCode.ACTIVITYFAMILY.getValue(), activitySelect.getValue()));
 
 		if (referencedContainer.getId().equals("dyn-target"))
@@ -2091,11 +2162,14 @@ public class FermentDataDetailController implements Initializable {
 		
 		winemakerLogger.writeLog(String.format("   FermentDataDetailController.processContainerSelection(): created inventory rec: %s", inventoryActivityRecord), debugLogging);
 		winemakerLogger.writeLog(String.format("   FermentDataDetailController.processContainerSelection(): updated inventory rec: %s", inventoryUpdateRecord), debugLogging);
-		
-		ObservableList<String> listEmptyContainers = referencedContainer.getItems();
 
-		listEmptyContainers.remove(referencedContainer.getValue());
-		referencedContainer.setItems(listEmptyContainers);
+		if (clearContainer)
+		{
+			ObservableList<String> listEmptyContainers = referencedContainer.getItems();
+
+			listEmptyContainers.remove(referencedContainer.getValue());
+			referencedContainer.setItems(listEmptyContainers);
+		}
 		
 		winemakerLogger.writeLog(String.format("<< FermentDataDetailController.processContainerSelection()"), debugLogging);
 	} // end of processContainerSelection()
@@ -2112,6 +2186,13 @@ public class FermentDataDetailController implements Initializable {
 		ArrayList<String> keyList = new ArrayList<>(codeSet.keySet());
 	
 		gp.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+		
+//		testButton.setButtonType(ButtonType.RAISED);
+//		testButton.setStyle("-fx-background-color: #DCDCDC");
+//		testButton.setText("Test JFXButton");
+//		testButton.setOnAction(event -> 
+//			processContainerSelectButton(event)
+//		);
 		
 		this.activitiesList.addAll(keyList
 				.stream()
@@ -2169,14 +2250,14 @@ public class FermentDataDetailController implements Initializable {
 		fieldContainers8.setId("dyn-combo8");
 		
 		DropShadow dS = new DropShadow();
-		usedSourceContainers.setEffect(dS);
-		emptyTargetContainers.setEffect(dS);
-		fieldContainers3.setEffect(dS);
-		fieldContainers4.setEffect(dS);
-		fieldContainers5.setEffect(dS);
-		fieldContainers6.setEffect(dS);
-		fieldContainers7.setEffect(dS);
-		fieldContainers8.setEffect(dS);
+		//usedSourceContainers.setEffect(dS);
+		//emptyTargetContainers.setEffect(dS);
+		//fieldContainers3.setEffect(dS);
+		//fieldContainers4.setEffect(dS);
+		//fieldContainers5.setEffect(dS);
+		//fieldContainers6.setEffect(dS);
+		//fieldContainers7.setEffect(dS);
+		//fieldContainers8.setEffect(dS);
 		
 		field_1.setEffect(dS);
 		field_2.setEffect(dS);
@@ -2191,10 +2272,19 @@ public class FermentDataDetailController implements Initializable {
 		
 		addSourceContainerButton.setOnAction(event -> processContainerSelectButton(event));
 		addTargetContainerButton.setOnAction(event -> processContainerSelectButton(event));
+		
+		testButton.setButtonType(ButtonType.RAISED);
+		testButton.setStyle("-fx-background-color: #DCDCDC");
+		
 		addSourceContainerButton.setId("source");
-		addTargetContainerButton.setId("target");
 		addSourceContainerButton.setText("Add");
+		addSourceContainerButton.setButtonType(ButtonType.RAISED);
+		addSourceContainerButton.setStyle("-fx-background-color: #DCDCDC");
+		
+		addTargetContainerButton.setId("target");
 		addTargetContainerButton.setText("Add");
+		addTargetContainerButton.setButtonType(ButtonType.RAISED);
+		addTargetContainerButton.setStyle("-fx-background-color: #DCDCDC");
 		
 		displayContainerSelections.setId("dyn-showcontainers");
 		
@@ -2275,6 +2365,12 @@ public class FermentDataDetailController implements Initializable {
 				ComboBox<String> cmbBox = (ComboBox<String>) oldNode;
 				gp.getChildren().remove(cmbBox);
 			}
+			else if (oldNode instanceof JFXComboBox<?>)
+			{
+				@SuppressWarnings("unchecked")
+				JFXComboBox<String> cmbBox = (JFXComboBox<String>) oldNode;
+				gp.getChildren().remove(cmbBox);
+			}
 			else if (oldNode instanceof HBox)
 			{
 				HBox hrzBox = (HBox) oldNode;
@@ -2284,6 +2380,10 @@ public class FermentDataDetailController implements Initializable {
 		}
 	
 		setLocalInventorySet(winemakerModel.queryInventory());
+		
+		field_1.focusedProperty().removeListener(volumeChangeListener);
+		field_2.focusedProperty().removeListener(volumeChangeListener);
+		field_6.focusedProperty().removeListener(volumeChangeListener);
 		
 		winemakerLogger.writeLog("<< FermentDataDetailController.resetUIFields()", debugLogging);
 	} // end of resetUIFields()
@@ -2311,6 +2411,7 @@ public class FermentDataDetailController implements Initializable {
 	/*
 	 * Provided for resetting ComboBox button prompts
 	 */
+	@SuppressWarnings("unused")
 	private static class ButtonCell extends ListCell<String> {
 		@Override
 		protected void updateItem(String item, boolean empty) {
@@ -2319,6 +2420,54 @@ public class FermentDataDetailController implements Initializable {
 		}
 	}
 	
+	/*
+	 * allow user to enter only the numeric, find volume system in batch record
+	 */
+	private void onVolumeChange(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {        
+        if (!newValue) 
+        {
+        	HashMap<String, String> codeSet = HelperFunctions.getCodeKeyMappings().get(FamilyCode.ACTIVITYFAMILY.getValue());
+
+        	if (activitySelect.getValue().equals(codeSet.get(ActivityName.CRUSH.getValue())) && !field_2.getText().contains(winemakerModel.getBatchMeasures(1)))
+        		field_2.setText(field_2.getText() + winemakerModel.getBatchMeasures(1));
+
+        	else if (activitySelect.getValue().equals(codeSet.get(ActivityName.CHECKPOINT.getValue())) && !field_6.getText().contains(winemakerModel.getBatchMeasures(1)))
+        		field_6.setText(field_6.getText() + winemakerModel.getBatchMeasures(1));
+
+        	else if (!field_1.getText().contains(winemakerModel.getBatchMeasures(1)))
+        		field_1.setText(field_1.getText() + winemakerModel.getBatchMeasures(1));
+        }
+    }
+
+	/*
+	 * allow user to enter only the numeric, find weight system in batch record
+	 */
+	private void onWeightChange(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {        
+        if (!newValue) 
+        {
+        	HashMap<String, String> codeSet = HelperFunctions.getCodeKeyMappings().get(FamilyCode.ACTIVITYFAMILY.getValue());
+
+        	if (activitySelect.getValue().equals(codeSet.get(ActivityName.CRUSH.getValue())) && !field_1.getText().contains(winemakerModel.getBatchMeasures(0)))
+        		field_1.setText(field_1.getText() + winemakerModel.getBatchMeasures(0));
+        }
+    }
+
+	/*
+	 * allow user to enter only the numeric, find temperature system in batch record
+	 */
+	private void onTempChange(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {        
+        if (!newValue) 
+        {
+        	HashMap<String, String> codeSet = HelperFunctions.getCodeKeyMappings().get(FamilyCode.ACTIVITYFAMILY.getValue());
+
+        	if (activitySelect.getValue().equals(codeSet.get(ActivityName.CRUSH.getValue())) && !field_3.getText().contains(winemakerModel.getBatchMeasures(2)))
+        		field_3.setText(field_3.getText() + winemakerModel.getBatchMeasures(2));
+        	
+        	else if (!field_2.getText().contains(winemakerModel.getBatchMeasures(2)))
+        		field_2.setText(field_2.getText() + winemakerModel.getBatchMeasures(2));
+        }
+    }
+
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) 
 	{
@@ -2342,6 +2491,9 @@ public class FermentDataDetailController implements Initializable {
 				gp.setVgap(4);
 				gp.add(notesLabel, 0, 12);
 				gp.add(fieldNotes, 1, 12);
+				gp.getRowConstraints().get(12).setMinHeight(90);
+				gp.getRowConstraints().get(12).setPrefHeight(90);
+				
 				GridPane.setValignment(notesLabel, VPos.TOP);
 				GridPane.setValignment(fieldNotes, VPos.TOP);
 
@@ -2349,5 +2501,19 @@ public class FermentDataDetailController implements Initializable {
 			}
 		};
 		activitySelect.setOnAction(activitiesHandler);
+		
+		/*
+		 * 
+		field_1.focusedProperty().addListener((observable, oldValue, newValue) -> {
+		    if (!newValue && !field_1.getText().contains("gal")) 
+		    {
+		    	field_1.setText(field_1.getText() + "gal");
+		    }
+		});
+		 */
+
+		
+		
+		
 	}
 }

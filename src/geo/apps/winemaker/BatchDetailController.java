@@ -23,6 +23,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXButton.ButtonType;
+import com.jfoenix.controls.JFXComboBox;
+
 import geo.apps.winemaker.utilities.Constants.ActivityName;
 import geo.apps.winemaker.utilities.Constants.BatchSource;
 import geo.apps.winemaker.utilities.Constants.Blend;
@@ -44,7 +48,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -91,9 +94,9 @@ public class BatchDetailController implements Initializable {
 	@FXML private TextArea vendorNotes;
 	@FXML private TextArea statusUpdates;
 
-	@FXML private Button submitBatch;
-	@FXML private Button addBlendGrape;
-	@FXML private Button doneBlendMix;
+	@FXML private JFXButton submitBatch;
+	@FXML private JFXButton addBlendGrape;
+	@FXML private JFXButton doneBlendMix;
 
 	@FXML private Label batchTypeHeader;
 	@FXML private Label batchTitle;
@@ -141,18 +144,18 @@ public class BatchDetailController implements Initializable {
 	/*
 	 * Scene ComboBoxes
 	 */
-	@FXML private ComboBox<String> grapeSelect;
-	@FXML private ComboBox<String> grapeSelectBlend;
-	@FXML private ComboBox<String> vineyardSelect;
+	@FXML private JFXComboBox<String> grapeSelect;
+	@FXML private JFXComboBox<String> grapeSelectBlend;
+	@FXML private JFXComboBox<String> vineyardSelect;
 	private ChoiceBox<String> vendorSelect = new ChoiceBox<String>();
 	private ChoiceBox<String> batchInputSelect = new ChoiceBox<String>();
 	
 	private ObservableList<String> existingBatchesList = FXCollections.observableArrayList();
-	private	ComboBox<String> usedSourceContainers = new ComboBox<String>();
-	private	ComboBox<String> emptyTargetContainers = new ComboBox<String>();
+	private	JFXComboBox<String> usedSourceContainers = new JFXComboBox<String>();
+	private	JFXComboBox<String> emptyTargetContainers = new JFXComboBox<String>();
 
-	private Button addSourceContainerButton = new Button();
-	private Button addTargetContainerButton = new Button();
+	private JFXButton addSourceContainerButton = new JFXButton();
+	private JFXButton addTargetContainerButton = new JFXButton();
 
 	private HashMap<String, String> saveLastBatchVol = new HashMap<>(1);	
 	private HashMap<String, String> validationMethods = new HashMap<>(3);
@@ -375,9 +378,14 @@ public class BatchDetailController implements Initializable {
 	{
 		winemakerLogger.writeLog(String.format(">> BatchDetailController.batchNotPartOfOldBlend('%s')", wmk.get_batchKey()), debugLogging);
 
+		/*
+		 * 
 		boolean batchIsAvailable = wmk.get_batchBlendKey().length() == 0 && 
 				HelperFunctions.getCodeKeyFamily(FamilyCode.GRAPEFAMILY.getValue())
 				.keySet().contains(wmk.get_batchGrape());
+		 */
+		
+		boolean batchIsAvailable = (wmk.get_batchBlendKey().length() == 0);
 		
 		if (!batchIsAvailable)
 		{
@@ -399,7 +407,7 @@ public class BatchDetailController implements Initializable {
 	{
 		winemakerLogger.writeLog(String.format(">> BatchDetailController.batchNotPartOfNewBlend(wmk '%s') ", wmk.get_batchKey()), debugLogging);
 
-		boolean returnState = createBatch
+		boolean returnState = this.createBatch
 					.stream()
 					.filter(wmkPending -> wmk.get_batchGrape().equals(wmkPending.get_batchGrape()))
 					.collect(Collectors.toList()).size() == 0;
@@ -1015,7 +1023,7 @@ public class BatchDetailController implements Initializable {
 	/*
 	 * Check if the new candidate batch already exists
 	 */
-	private String checkForExisting(ComboBox<String> grapeSelection)
+	private String checkForExisting(JFXComboBox<String> grapeSelection)
 	{
 		winemakerLogger.writeLog(String.format(">> BatchDetailController.checkForExisting(%s)", grapeSelection.getValue()), debugLogging);
 
@@ -1293,7 +1301,7 @@ public class BatchDetailController implements Initializable {
 	 */
 	@FXML
 	public void returnToMain(ActionEvent e) {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("WineMaker.fxml"));
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("WineMakerMD.fxml"));
 
 		try {
 			WineMakerController winemakerController = new WineMakerController();
@@ -1368,10 +1376,10 @@ public class BatchDetailController implements Initializable {
 		
 		loadChoiceBoxSelections(HelperFunctions.getCodeKeyFamily(FamilyCode.BATCHSOURCEFAMILY.getValue()), batchInputSelect, "input type");
 		loadComboBoxSelections(HelperFunctions.getCodeKeyFamily(FamilyCode.GRAPEFAMILY.getValue()), grapeSelect);
-		grapeSelect.setPromptText("Select a Grape");
+		grapeSelect.setPromptText(" Select a Grape");
 
 		loadComboBoxSelections(HelperFunctions.getCodeKeyFamily(FamilyCode.VINEYARDFAMILY.getValue()), vineyardSelect);
-		vineyardSelect.setPromptText("Select the Vineyard");
+		vineyardSelect.setPromptText(" Select the Vineyard");
 
 		loadChoiceBoxSelections(HelperFunctions.getCodeKeyFamily(FamilyCode.GRAPESUPPLYFAMILY.getValue()), vendorSelect, "vendor");
 		
@@ -1434,14 +1442,14 @@ public class BatchDetailController implements Initializable {
 		loadChoiceBoxSelections(HelperFunctions.getCodeKeyFamily(FamilyCode.BATCHSOURCEFAMILY.getValue()), batchInputSelect, "Source");
 		loadComboBoxSelections(HelperFunctions.getCodeKeyFamily(FamilyCode.BLENDFAMILY.getValue()), grapeSelect);
 		batchGrapeLabel.setText("Blend Style");
-		grapeSelect.setPromptText("Select a Blend Style");		
+		grapeSelect.setPromptText(" Select a Blend Style");		
 		
 		loadComboBoxSelections(HelperFunctions.getCodeKeyFamily(FamilyCode.GRAPEFAMILY.getValue()), grapeSelectBlend);
 		blendGrapeLabel.setText("Blend Grape");
-		grapeSelectBlend.setPromptText("Select a Grape");
+		grapeSelectBlend.setPromptText(" Select a Blending Grape");
 		
 		loadComboBoxSelections(HelperFunctions.getCodeKeyFamily(FamilyCode.VINEYARDFAMILY.getValue()), vineyardSelect);
-		vineyardSelect.setPromptText("Select the Vineyard");
+		vineyardSelect.setPromptText(" Select the Vineyard");
 
 		loadChoiceBoxSelections(HelperFunctions.getCodeKeyFamily(FamilyCode.GRAPESUPPLYFAMILY.getValue()), vendorSelect, "vendor");
 		
@@ -1501,7 +1509,7 @@ public class BatchDetailController implements Initializable {
 
 		batchTypeHeader.setText("New Juice Blend Batch");
 		batchGrapeLabel.setText("Blend Style");
-		grapeSelect.setPromptText("Select a Blend Style");
+		grapeSelect.setPromptText(" Select a Blend Style");
 		blendGrapeLabel.setText("Component Batch");
 
 		loadComboBoxSelections(HelperFunctions.getCodeKeyFamily(FamilyCode.BLENDFAMILY.getValue()), grapeSelect);
@@ -1535,8 +1543,8 @@ public class BatchDetailController implements Initializable {
 	{
 		winemakerLogger.writeLog(String.format(">> BatchDetailController.initFieldBlendUI()"),debugLogging);
 	
-		grapeSelectBlend.setPromptText("Select a Blend Style");
-		vineyardSelect.setPromptText("Select the Vineyard");
+		grapeSelectBlend.setPromptText(" Select a Blend Style");
+		vineyardSelect.setPromptText(" Select the Vineyard");
 		
 		itemCount.setText("");
 		itemUnits.setText("");
@@ -1553,8 +1561,8 @@ public class BatchDetailController implements Initializable {
 	{
 		winemakerLogger.writeLog(String.format(">> BatchDetailController.updateJuiceBlendUI()"), debugLogging);
 
-		HelperFunctions.activityDefaultLayoutContainerSetup(usedSourceContainers, HelperFunctions.buildSourceContainerSet(getSelectedBlendBatchesSet(), getLocalInventorySet()), "Select Sourcce Container(s)");	
-		HelperFunctions.activityDefaultLayoutContainerSetup(emptyTargetContainers, buildEligibleContainerSet(), "Select Target Container(s)");
+		HelperFunctions.activityDefaultLayoutContainerSetup(usedSourceContainers, HelperFunctions.buildSourceContainerSet(getSelectedBlendBatchesSet(), getLocalInventorySet()), " Select Sourcce Container(s)");	
+		HelperFunctions.activityDefaultLayoutContainerSetup(emptyTargetContainers, buildEligibleContainerSet(), " Select Target Container(s)");
 		
 		defaultLayoutHBoxSetup(hBox_1, usedSourceContainers, addSourceContainerButton);
 		defaultLayoutHBoxSetup(hBox_2, emptyTargetContainers, addTargetContainerButton);
@@ -1575,7 +1583,7 @@ public class BatchDetailController implements Initializable {
 	}
 	
 	@SuppressWarnings("unused")
-	private void activityDefaultLayoutContainerSetup(ComboBox<String> uiComboBox, ObservableList<String> containerContent, String promptText)
+	private void activityDefaultLayoutContainerSetup(JFXComboBox<String> uiComboBox, ObservableList<String> containerContent, String promptText)
 	{
 		winemakerLogger.writeLog(String.format(">> BatchDetailController.activityDefaultLayoutContainerSetup('%s')", uiComboBox.getId()), debugLogging);
 
@@ -1586,7 +1594,7 @@ public class BatchDetailController implements Initializable {
 		winemakerLogger.writeLog(String.format("<< BatchDetailController.activityDefaultLayoutContainerSetup('%s')", uiComboBox.getId()), debugLogging);
 	}
 
-	private void defaultLayoutHBoxSetup(HBox uiHBox, ComboBox<String> uiComboBox, Button uiButton)
+	private void defaultLayoutHBoxSetup(HBox uiHBox, JFXComboBox<String> uiComboBox, Button uiButton)
 	{
 		winemakerLogger.writeLog(String.format(">> BatchDetailController.defaultLayoutHBoxSetup('%s', '%s', '%s')", uiHBox.getId(), uiComboBox.getId(), uiButton.getId()), debugLogging);
 	
@@ -1600,7 +1608,7 @@ public class BatchDetailController implements Initializable {
 	/*
 	 * 
 	 */
-	private void loadComboBoxSelections(HashMap<String, String> codeSet, ComboBox<String> selectionList) 
+	private void loadComboBoxSelections(HashMap<String, String> codeSet, JFXComboBox<String> selectionList) 
 	{
 		winemakerLogger.writeLog(String.format(">> BatchDetailController.loadComboBoxSelections('%s'...)", codeSet.values().toArray()[0]), debugLogging);
 	
@@ -1663,8 +1671,9 @@ public class BatchDetailController implements Initializable {
 				.collect(Collectors.toList()));
 	
 		grapeSelectBlend.setItems(this.existingBatchesList);
-		grapeSelectBlend.setPromptText((this.existingBatchesList.size() > 0) ? "Select an existing Batch": "No eligible batches");		
-		grapeSelectBlend.setButtonCell(new ButtonCell());
+		grapeSelectBlend.setPromptText((this.existingBatchesList.size() > 0) ? 
+				" Select an existing Batch": " No eligible batches");		
+//		grapeSelectBlend.setButtonCell(new ButtonCell());
 		
 		winemakerLogger.writeLog(String.format("<< BatchDetailController.loadBlendBatchSets() "), debugLogging);
 	} // end of loadBlendBatchSets()
@@ -1702,14 +1711,14 @@ public class BatchDetailController implements Initializable {
 	/*	
 	 * Process the source and target selection buttons
 	 */
-	private void processContainerSelection(ComboBox<String> referencedContainer)
+	private void processContainerSelection(JFXComboBox<String> referencedContainer)
 	{
 		winemakerLogger.writeLog(String.format(">> BatchDetailController.processContainerSelection()"), debugLogging);
 		
 		WineMakerInventory inventoryUpdateRecord = HelperFunctions.findAssetItemRecord(getLocalInventorySet(), referencedContainer.getValue()).get(0);
 		WineMakerInventory inventoryActivityRecord = inventoryUpdateRecord.createActivityRecord();
 
-		inventoryActivityRecord.setItemTaskTime(Timestamp.valueOf(batchDate.getValue().atTime(LocalTime.now())));		
+		inventoryActivityRecord.setItemEntryDate(Timestamp.valueOf(batchDate.getValue().atTime(LocalTime.now())));		
 		inventoryActivityRecord.setItemTaskId(HelperFunctions.getCodeKeyEntry(FamilyCode.ACTIVITYFAMILY.getValue(), ActivityName.TRANSFER.getValue()));
 
 		if (referencedContainer.getId().contains("target"))
@@ -1862,7 +1871,7 @@ public class BatchDetailController implements Initializable {
 	 * Load these values into the UI objects for subsequent processing.
 	 * These values don't need user input, so the UI objects can be preloaded.
 	 */
-	private void blendSelectHandler(ComboBox<String> source)
+	private void blendSelectHandler(JFXComboBox<String> source)
 	{	
 		if (source.getValue() == null || !this.blendSetting.equals(Blend.JUICEBLEND))
 		{
@@ -1927,6 +1936,8 @@ public class BatchDetailController implements Initializable {
 	private static class ButtonCell extends ListCell<String> {
 		@Override
 		protected void updateItem(String item, boolean empty) {
+			System.out.printf("ButtonCell '%s', item = '%s'%n", super.getId(), item);
+			
 			super.updateItem(item, empty);
 			setText(item);
 		}
@@ -1944,17 +1955,24 @@ public class BatchDetailController implements Initializable {
 		setInventoryTypes(HelperFunctions.getCodeKeyFamily(FamilyCode.CONTAINERFAMILY.getValue()));
 		
 		DropShadow dS = new DropShadow();
+		grapeSelect.setEffect(dS);
+		grapeSelectBlend.setEffect(dS);
 		vendorSelect.setEffect(dS);
 		vineyardSelect.setEffect(dS);
 		batchInputSelect.setEffect(dS);
 		usedSourceContainers.setEffect(dS);
 		emptyTargetContainers.setEffect(dS);
 		displayContainerSelections.setEffect(dS);
-		
+				
 		addSourceContainerButton.setId("source");
-		addTargetContainerButton.setId("target");
 		addSourceContainerButton.setText("Add");
+		addSourceContainerButton.setButtonType(ButtonType.RAISED);
+		addSourceContainerButton.setStyle("-fx-background-color: #DCDCDC");
+
+		addTargetContainerButton.setId("target");
 		addTargetContainerButton.setText("Add");
+		addTargetContainerButton.setButtonType(ButtonType.RAISED);
+		addTargetContainerButton.setStyle("-fx-background-color: #DCDCDC");
 		
 		usedSourceContainers.setId("dyn-source");
 		emptyTargetContainers.setId("dyn-target");
@@ -2047,7 +2065,7 @@ public class BatchDetailController implements Initializable {
 		winemakerLogger.writeLog("<< BatchDetailController.initialize()", debugLogging);
 
 		grapeSelectBlend.setOnAction(e -> {
-			blendSelectHandler((ComboBox<String>) e.getSource());
+			blendSelectHandler((JFXComboBox<String>) e.getSource());
 		});
 
 		batchInputSelect.setOnAction(e -> {

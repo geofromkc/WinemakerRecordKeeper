@@ -22,7 +22,7 @@ import geo.apps.winemaker.utilities.Constants.*;
 import geo.apps.winemaker.utilities.WineMakerLogging;
 
 /**
- * @author geofr
+ * @author George Owen
  *
  */
 public class WineMakerModel {
@@ -30,7 +30,7 @@ public class WineMakerModel {
 	private WineMakerLogging winemakerLogger = null;
 	private DatabaseOperations dbOps = null;
 	
-	private static final String appVersion = "1.0.0";
+	private static final String appVersion = "1.2.1";
 
 	private static final String jdbcBase = "jdbc:derby://localhost:1527/";
 	private static final String defaultAppName = "/WineMakerApp";
@@ -45,6 +45,7 @@ public class WineMakerModel {
 	private static final File propsFile = new File(localAppdataHome + propertiesFileName);
 
 	private WineMakerLog wmk;
+	private WineMakerController winemakerController;
 
 	private boolean haveTable = false;
 	private int tableCount = 5;
@@ -55,17 +56,13 @@ public class WineMakerModel {
 	private File inputFile;
 	private Window fxStage;
 
-	/*
-	 * 
-	private File appFilesDir = null;
-	private File backupFilesDir = null;
-	 */
-
 	private Properties appProperties = new Properties();
 	
 	private String codeFilePath = null;
 	private boolean debugActive = false;
 	private boolean debugLogging = true;
+	private String homeDrawerMenuMsg = "";
+	private String[] batchMeasures = new String[3];
 
 	/*
 	 * =======================================================================
@@ -167,6 +164,22 @@ public class WineMakerModel {
 		this.haveTable = haveTable;
 	}
 
+	public String getHomeDrawerMenuMsg() {
+		return homeDrawerMenuMsg;
+	}
+
+	public void setHomeDrawerMenuMsg(String homeDrawerMenuMsg) {
+		this.homeDrawerMenuMsg = homeDrawerMenuMsg;
+	}
+
+	public String getBatchMeasures(int setPosition) {
+		return batchMeasures[setPosition];
+	}
+
+	public void setBatchMeasures(int setPosition, String batchMeasures) {
+		this.batchMeasures[setPosition] = batchMeasures;
+	}
+
 	public Window getFxStage() {
 		return this.fxStage;
 	}
@@ -181,6 +194,14 @@ public class WineMakerModel {
 
 	public void setWmk(WineMakerLog wmk) {
 		this.wmk = wmk;
+	}
+
+	public WineMakerController getWinemakerController() {
+		return winemakerController;
+	}
+
+	public void setWinemakerController(WineMakerController winemakerController) {
+		this.winemakerController = winemakerController;
 	}
 
 	public boolean isDebugProcess() {
@@ -506,11 +527,11 @@ public class WineMakerModel {
 	 */
 	public ArrayList<WineMakerInventory> queryInventoryByBatch(String batchId)
 	{
-		winemakerLogger.writeLog(String.format(">> WineMakerModel.queryInventory(%s)", batchId), debugLogging);
+		winemakerLogger.writeLog(String.format(">> WineMakerModel.queryInventoryByBatch(%s)", batchId), debugLogging);
 
 		ArrayList<WineMakerInventory> returnData = this.dbOps.queryInventoryDataByBatch(batchId);
 		
-		winemakerLogger.writeLog(String.format("<< WineMakerModel.queryInventory()"), debugLogging);
+		winemakerLogger.writeLog(String.format("<< WineMakerModel.queryInventoryByBatch()"), debugLogging);
 		return returnData;
 	} // end of queryInventoryBatch()
 	

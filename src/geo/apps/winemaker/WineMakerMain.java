@@ -9,6 +9,10 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Optional;
@@ -70,6 +74,34 @@ import javafx.scene.control.Alert.AlertType;
  * 
  * 		Then update JavaFX and SceneBuilder paths in Window/Preferences/JavaFX
  * 
+ * 		Import JFoenix library to SceneBuilder
+ * 		Create User Library from JFoenix jar and add to project ModulePath
+ * 
+ * jdk.module.path = 
+ * 		C:\MiscSoftware\javafx-sdk-24.0.1\lib\javafx.base.jar;
+ * 		C:\MiscSoftware\javafx-sdk-24.0.1\lib\javafx.controls.jar;
+ * 		C:\MiscSoftware\javafx-sdk-24.0.1\lib\javafx.fxml.jar;
+ * 		C:\MiscSoftware\javafx-sdk-24.0.1\lib\javafx.graphics.jar;
+ * 		C:\MiscSoftware\javafx-sdk-24.0.1\lib\javafx.media.jar;
+ * 		C:\MiscSoftware\javafx-sdk-24.0.1\lib\javafx.swing.jar;
+ * 		C:\MiscSoftware\javafx-sdk-24.0.1\lib\javafx.web.jar;
+ * 		C:\MiscSoftware\javafx-sdk-24.0.1\lib\javafx-swt.jar;
+ * 		C:\MiscSoftware\jfoenix-9.0.10.jar
+ * 
+ * 	Add JFoenix to run configuration: and buildWinemaker.sh
+ * 			... --add-modules javafx.controls,javafx.fxml,com.jfoenix
+ * 
+ * --module-path "C:\MiscSoftware\javafx-sdk-21.0.2.1\lib" 
+ * --add-modules javafx.controls,javafx.fxml,com.jfoenix 
+ * --enable-native-access=javafx.graphics 
+ * --sun-misc-unsafe-memory-access=allow 
+ * --add-exports javafx.controls/com.sun.javafx.scene.control.behavior=com.jfoenix 
+ * --add-exports javafx.graphics/com.sun.javafx.stage=com.jfoenix 
+ * --add-exports javafx.controls/com.sun.javafx.scene.control=com.jfoenix 
+ * --add-exports javafx.base/com.sun.javafx.binding=com.jfoenix 
+ * --add-exports javafx.base/com.sun.javafx.event=com.jfoenix 
+ * --add-opens java.base/java.lang.reflect=com.jfoenix
+ * 
  * Edit Project Properties
  * 		Run/Debug
  * 			Edit the project start module
@@ -110,7 +142,7 @@ public class WineMakerMain extends Application {
 	static File propsFolder;
 	static File startupLocation;
 	static File startupFile;
-	static boolean isInstalled = true;
+	static boolean isInstalledApp = true;
 	static boolean isFirstTime = true;
 	static boolean performCleanup = true;
 	static long installedTime = 0;
@@ -130,7 +162,7 @@ public class WineMakerMain extends Application {
 		    }
 		});		
 	}
-	
+    
 	@Override
 	public void start(Stage primaryStage) 
 	{	
@@ -147,6 +179,7 @@ public class WineMakerMain extends Application {
 		winemakerModel.setDebugActive(true);
 	
 		winemakerLogger.writeLog(String.format(">> WineMakerMain.start()"), true);
+		
 		
 		/*
 		 * if this is the first time, prompt the user to accept defaults or 
@@ -185,6 +218,7 @@ public class WineMakerMain extends Application {
 		{
 			server = new NetworkServerControl(InetAddress.getByName("localhost"),1527);
 			server.start(null);
+			winemakerLogger.writeLog(String.format("   WineMakerMain.start(): Network Server started"), true);
 		} 
 		catch (Exception e1) 
 		{
@@ -196,7 +230,12 @@ public class WineMakerMain extends Application {
 		/*
 		 * Start the UI Stage
 		 */
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("WineMaker.fxml"));
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("WineMakerMD.fxml"));
+		
+		/*
+		 * MD Update
+		FXMLLoader menuBarLoader = new FXMLLoader(getClass().getResource("DrawerPane.fxml"));
+		 */
 		
 		try 
 		{
@@ -205,6 +244,14 @@ public class WineMakerMain extends Application {
 			
 			WineMakerController winemakerController = new WineMakerController();
 			loader.setController(winemakerController);
+			winemakerModel.setWinemakerController(winemakerController);
+			
+			/*
+			 * MD Update
+			MenuBarController menuBarController = new MenuBarController();
+			menuBarController.setMainController(winemakerController);
+			menuBarLoader.setController(menuBarController);
+			 */
 			
 			Parent batchDetailParent = loader.load();
 			Scene winemakerScene = new Scene(batchDetailParent);
@@ -220,8 +267,24 @@ public class WineMakerMain extends Application {
 		} 
 		catch(Exception e) 
 		{
-			winemakerLogger.displayAlert("The home scene failed, the application will now exit. Check if the applcation is already running.");
-			winemakerLogger.showIOException(e, "Failed starting the initial scene");
+			winemakerLogger.showIOException(e, "Failed initial start");
+			
+			File outputFile;
+			File logDir = HelperFunctions.directoryPrompt("WineMaker App Log Export Directory Selection", "");
+
+			if (logDir != null)
+			{
+				String dayStamp = String.format("%s", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+				String timeStamp = String.format("%s", LocalTime.now().format(DateTimeFormatter.ofPattern("-HHmm")));
+				String fileName = "/WineMakerApp_Log_" + dayStamp + timeStamp + ".txt";
+
+				outputFile = new File(logDir.getPath() + fileName);	
+				File inputFile = new File(winemakerLogger.getLogFile().getPath());
+				
+				HelperFunctions.copyFile(inputFile.toPath(), outputFile.toPath());
+				winemakerLogger.displayAlert(String.format("Fatal error starting the application. Send in the log file located at %s to geofromkc@gmail.com", outputFile.getPath()));
+			}
+			
 			e.printStackTrace();
 			System.exit(8);
 		}
@@ -246,70 +309,78 @@ public class WineMakerMain extends Application {
 		startupFile = new File(propsFolder.getPath() + File.separator + WineMakerModel.getStartupfilename());
 		installedTime = new File(System.getProperty("user.dir")).lastModified();
 
+		Instant installedInstant = Instant.ofEpochSecond(installedTime);
+		
 		winemakerLogger.writeLog(String.format("   WineMakerMain.setStartupState(): propsFolder: %s", propsFolder.getPath()), true);
 		winemakerLogger.writeLog(String.format("   WineMakerMain.setStartupState(): startupFile: %s", startupFile.getPath()), true);
+		winemakerLogger.writeLog(String.format("   WineMakerMain.setStartupState(): compare user.dir and user.home: '%s' & '%s'", System.getProperty("user.dir"), System.getProperty("user.home")), true);			
 
 		boolean isFirstTime = true;
 		
 		/*
 		 * For debugging purposes, log the system properties and environment variables
 		 */
-		winemakerLogger.writeLog("\n   WineMakerMain.setStartupState(): System Properties", true);
+		winemakerLogger.writeLog(" ", true);
+		winemakerLogger.writeLog("   WineMakerMain.setStartupState(): System Properties", true);
 		Properties props = System.getProperties();
 		props.keySet()
 			.stream()
 			.forEach(key -> winemakerLogger.writeLog(String.format("   WineMakerMain.setStartupState(): %s = '%s'", key, props.get(key)), true));
 
-		winemakerLogger.writeLog("\n   WineMakerMain.setStartupState(): Environment Variables", true);
+		winemakerLogger.writeLog(" ", true);
+		winemakerLogger.writeLog("   WineMakerMain.setStartupState(): Environment Variables", true);
 		Map<String, String> env = System.getenv();
 		env
 			.forEach((k, v) -> winemakerLogger.writeLog(String.format("   WineMakerMain.setStartupState(): %s = '%s'", k, v), true));
-
-		winemakerLogger.writeLog(String.format("%n================"), true);
 		
 		/*
 		 * analyze the runtime environment.   if the runtime location is somewhere in the user's
 		 * default document path then this isn't a Windows installation
 		 */
 		if (System.getProperty("user.dir").contains(System.getProperty("user.home")))
-			isInstalled = false;
+		{
+			isInstalledApp = false;
+		}
 		
 		// if running in development environment, existence of startup file is enough 
-		if (!isInstalled && startupFile.exists())
+		if (!isInstalledApp && startupFile.exists())
 		{
-			winemakerLogger.writeLog(String.format("   WineMakerMain.setStartupState(): dev environment, found startup file"), true);
+			winemakerLogger.writeLog(String.format("   WineMakerMain.setStartupState(): dev environment, found startup file %s", startupFile.toPath()), true);
 			return !isFirstTime;
 		}
 		
 		// Scenario 1: no startup file exists, so assume a clean environment
 		if (!startupFile.exists())
 		{
-			winemakerLogger.writeLog(String.format("   WineMakerMain.setStartupState(): any environment, no startup file"), true);
+			winemakerLogger.writeLog(String.format("   WineMakerMain.setStartupState(): no startup file found"), true);
 			return isFirstTime;
 		}
 		
+		Instant startupInstant = Instant.ofEpochSecond(startupFile.lastModified());
+		winemakerLogger.writeLog(String.format("   WineMakerMain.setStartupState(): have startup file and existing environment, installed = %s, startup = %s", installedInstant.toString(), startupInstant.toString()), true);
+
 		// Scenario 2: startup file exists and matches install state, no further action needed
 		if (startupFile.lastModified() == installedTime)
 		{
-			winemakerLogger.writeLog(String.format("   WineMakerMain.setStartupState(): install environment, found synched startup file"), true);
+			winemakerLogger.writeLog(String.format("   WineMakerMain.setStartupState(): installed environment, found synched startup file"), true);
 			return !isFirstTime;
 		}
 		
 		// Scenario 3/4 check: startup file exists but does not match install state, so prompt for next step
-		Optional<ButtonType> result = setupPrompt("WineMaker Found Existing Setup", "Reply YES to keep existing application data.  Reply NO to delete any existing data.");
+		Optional<ButtonType> result = setupPrompt("WineMakerRecordKeeper found existing setup", "Reply YES to keep existing application data.  Reply NO to delete any existing data.");
 
-		// Scenario 3: app was reinstalled, user will keep existing data, and startup file will be synched
+		// Scenario 3: application was reinstalled, user will keep existing data, and startup file will be synched
 		if (result.get() == ButtonType.YES) 
 		{
-			winemakerLogger.writeLog(String.format("   WineMakerMain.setStartupState(): new install environment with old startup file, user will keep data"), true);
+			winemakerLogger.writeLog(String.format("   WineMakerMain.setStartupState(): new installed environment with old startup file in '%s', user will keep data", startupFile.getParent()), true);
 
 			isFirstTime = false;
         	performCleanup = false;
         	startupFile.setLastModified(installedTime);
         }
 
-		// Scenario 4: app was reinstalled, next step will cleanup and create new directories
-		winemakerLogger.writeLog(String.format("   WineMakerMain.setStartupState(): new install environment with old startup file, user will reinit data"), true);
+		// Scenario 4: application was reinstalled, next step will cleanup and create new directories
+		winemakerLogger.writeLog(String.format("   WineMakerMain.setStartupState(): new installed environment with old startup file, user will reinit data"), true);
 		
 		// quit if user cancelled
 		if (result.get() == ButtonType.CANCEL)
@@ -373,6 +444,30 @@ public class WineMakerMain extends Application {
 			System.exit(0);	
 		}
 
+		File testForDb = new File(String.format("%s/%s", appFilesDir.getPath(), "/winemaker/service.properties"));
+		winemakerLogger.writeLog(String.format("   WineMakerMain.setApplicationDir(): test if properties file at %s already exist", testForDb.getPath()), true);
+
+		if (testForDb.exists())
+		{
+			winemakerLogger.writeLog(String.format("   WineMakerMain.setApplicationDir(): data already exists, prompt user for decision"), true);
+			Optional<ButtonType> overwritePrompt = setupPrompt("WineMaker Create Application Files", "It appears that data already exists at the selected location.  Reply YES to use the existing data.  Reply NO to create new data files.");
+
+			if (overwritePrompt.get() == ButtonType.CANCEL)
+			{
+				winemakerLogger.writeLog(String.format("   WineMakerMain.setApplicationDir(): user cancelled startup"), true);
+				winemakerLogger.writeLog(String.format("<< WineMakerMain.setApplicationDir()"), true);
+				System.exit(0);			
+			}
+
+			if (overwritePrompt.get() == ButtonType.YES) 
+			{
+				winemakerLogger.writeLog(String.format("   WineMakerMain.setApplicationDir(): user will reuse data files"), true);
+				performCleanup = false;
+			}
+			else
+				winemakerLogger.writeLog(String.format("   WineMakerMain.setApplicationDir(): user will create new data files"), true);				
+		}
+		
 		winemakerLogger.writeLog(String.format("   WineMakerMain.setApplicationDir(): user selected '%s' and '%s'", appFilesDir.getPath(), appDataBackupDir.getPath()), true);
 		
 		if (performCleanup)
@@ -437,7 +532,7 @@ public class WineMakerMain extends Application {
 		String setDefault = (useDefaults) ? "1" : "0";
 		writePropsAndStartupFile(appFilesDir, appDataBackupDir, propsFile, startupFile, setDefault);
 		
-		if (isInstalled)
+		if (isInstalledApp)
 		{
 			winemakerLogger.writeLog(String.format("   WineMakerMain.createAppFiles(): set timestamp on startup file '%s'", startupFile.getPath()), true);
 
@@ -569,11 +664,5 @@ public class WineMakerMain extends Application {
 	public static void main(String[] args) 
 	{	
 		launch(args);
-	}
-	
-	@SuppressWarnings("unused")
-	private static boolean inputFileArg(String argEntry, String flag)
-	{
-		return argEntry.substring(0, 2).equals(flag);
 	}
 }

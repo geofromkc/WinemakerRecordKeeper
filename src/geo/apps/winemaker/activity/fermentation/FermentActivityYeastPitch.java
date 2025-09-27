@@ -25,6 +25,8 @@ public class FermentActivityYeastPitch implements FermentationActivity {
 	@Override
 	public String apply(WineMakerFerment wmf)
 	{
+		winemakerLogger.writeLog(">> FermentActivityYeastPitch.apply()", true);
+
 		String yeastName = HelperFunctions.getCodeKeyMappings().get(FamilyCode.YEASTFAMILY.getValue()).get(wmf.get_yeastStrain());
 		
 		String displayLine = String.format("Yeast pitch used %.1fg of %s.  Yeast was pitched %s into %d %s of must at %d %s%n", 
@@ -61,6 +63,7 @@ public class FermentActivityYeastPitch implements FermentationActivity {
 			}
 		}
 		
+		winemakerLogger.writeLog("<< FermentActivityYeastPitch.apply()", true);
 		return displayLine;
 	}
 }

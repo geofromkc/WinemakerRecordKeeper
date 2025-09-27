@@ -22,6 +22,8 @@ public class FermentActivityBottle implements FermentationActivity {
 	@Override
 	public String apply(WineMakerFerment wmf)
 	{
+		winemakerLogger.writeLog(">> FermentActivityBottle.apply()", true);
+
 		HashMap<String, String> containerName = HelperFunctions.getCodeKeyMappings().get(FamilyCode.CONTAINERFAMILY.getValue());
 
 		String displayLine = String.format("Bottling party %s%n", 
@@ -41,6 +43,7 @@ public class FermentActivityBottle implements FermentationActivity {
 		if (wmf.get_fermentNotes().length() > 0)
 			displayLine += String.format("%nNotes: %n\t%s", wmf.get_fermentNotes());
 		
+		winemakerLogger.writeLog("<< FermentActivityBottle.apply()", true);
 		return displayLine;
 	}
 }

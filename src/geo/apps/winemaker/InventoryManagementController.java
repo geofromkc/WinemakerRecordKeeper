@@ -20,6 +20,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
+
 import geo.apps.winemaker.utilities.Constants.*;
 import geo.apps.winemaker.utilities.HelperFunctions;
 import geo.apps.winemaker.utilities.WineMakerLogging;
@@ -81,6 +84,7 @@ public class InventoryManagementController implements Initializable {
 	
 	private HashMap<String, String> vendorOptionsMap = new HashMap<>();
 	private HashMap<String, String> removeReasonOptionsMap = new HashMap<>();
+	private HashMap<String, String> codeSet = new HashMap<>(20);
 	
 	private ArrayList<WineMakerInventory> inventoryExistingSetsQueryList = new ArrayList<WineMakerInventory>(100);
 	private ArrayList<WineMakerInventory> inventoryNewRecordsList = new ArrayList<WineMakerInventory>(1);
@@ -95,7 +99,8 @@ public class InventoryManagementController implements Initializable {
 
 	@FXML GridPane gp;
 	
-	@FXML Button buttonDisplaySwitch;
+	@FXML JFXButton buttonDisplaySwitch;
+    @FXML Button submitButton;
 
 	@FXML Label labelItemSelections;
 	@FXML Label labelStockOnHand;
@@ -108,19 +113,21 @@ public class InventoryManagementController implements Initializable {
 	@FXML Label labelPurchaseCost;
 	@FXML Label labelSize;
 	@FXML Label labelSupplier;
+	private Label labelPurchaseTypes = new Label();
 	private Label labelBatchId = new Label();
 	
-	@FXML ComboBox<String> itemExistingSelections;	
+	@FXML JFXComboBox<String> itemExistingSelections;	
 	@FXML TextField itemStockOnHand;
 	@FXML TextField itemRemoveFromStock;
-	@FXML ChoiceBox<String> itemRemovalReason;	
-	@FXML ComboBox<String> itemAvailablePurchaseTypes;	
+	@FXML ChoiceBox<String> itemRemovalReason;
+	@FXML JFXComboBox<String> itemAvailablePurchaseTypes;	
 	@FXML DatePicker itemPurchasedDate;
 	@FXML TextField itemID;
 	@FXML TextField itemPurchaseCount;
 	@FXML TextField itemPurchaseCost;
 	@FXML TextField itemSize;
-	@FXML ComboBox<String> itemSupplierSelections;
+	@FXML JFXComboBox<String> itemSupplierSelections;
+	private JFXComboBox<String> comboPurchaseTypeCategories = new JFXComboBox<String>();
 	private TextField itemBatchId = new TextField();
 	
 	@FXML private TextArea statusUpdates;
@@ -129,7 +136,8 @@ public class InventoryManagementController implements Initializable {
 	ObservableList<String> itemAvailableTypesList = FXCollections.observableArrayList();
 	ObservableList<String> itemRemoveReasonSelectionsList = FXCollections.observableArrayList();
 	ObservableList<String> itemSupplierSelectionsList = FXCollections.observableArrayList();
-		
+	private ObservableList<String> purchaseTypeCategoryList = FXCollections.observableArrayList();
+
 	InventoryScene uiSetting;
 	
 	public InventoryManagementController()
@@ -216,7 +224,7 @@ public class InventoryManagementController implements Initializable {
 		if (itemNameConversion.size() > 1)
 			wmi.setItemId(itemNameConversion.get(1));
 		
-		wmi.setItemTaskTime(Timestamp.valueOf(itemPurchasedDate.getValue().atTime(LocalTime.now())));
+		wmi.setItemEntryDate(Timestamp.valueOf(itemPurchasedDate.getValue().atTime(LocalTime.now())));
 		inventoryNewRecordsList.add(wmi);
 		
 		winemakerLogger.writeLog(String.format("<< InventoryManagementController.createMasterRecord() added to new record list%s%n", wmi), debugLogging);
@@ -233,7 +241,7 @@ public class InventoryManagementController implements Initializable {
 		HashMap<String, String> removalCodeMap = resourceCodesFamilyMap.get(FamilyCode.REMOVALFAMILY.getValue());
 
 	    WineMakerInventory wmiUpdate = new WineMakerInventory();
-		wmiUpdate.setItemTaskTime(Timestamp.valueOf(LocalDateTime.now()));
+		wmiUpdate.setItemEntryDate(Timestamp.valueOf(LocalDateTime.now()));
 
 		wmiUpdate.set_itemName(wmiMaster.get_itemName());
 		wmiUpdate.setItemId(wmiMaster.getItemId());
@@ -281,7 +289,7 @@ public class InventoryManagementController implements Initializable {
 		if (queryCount == 0)
 			purchaseTime.setTime(purchaseTime.getTime() + 1000);
 
-		wmiPurchase.setItemTaskTime(purchaseTime);
+		wmiPurchase.setItemEntryDate(purchaseTime);
 
 		winemakerLogger.writeLog(String.format("   InventoryManagementController.createAssetPurchaseRecord() %nMaster %s%nPurchase %s", wmiMaster, wmiPurchase), debugLogging);		
 		
@@ -342,29 +350,38 @@ public class InventoryManagementController implements Initializable {
 	private ValidationPackage validateUpdateSubmit()
 	{
 		winemakerLogger.writeLog(">> InventoryManagementController.validateUpdateSubmit()", debugLogging);
-
 		ValidationPackage validatePackage = new ValidationPackage();
+		String errorMsg = "";
+		
+		if (itemExistingSelections.getValue() == null)
+		{
+			errorMsg = "Select an asset";
+			validatePackage.setErrorMsg(errorMsg);
+			validatePackage.setTestStatus(Validation.FAILED);
+			winemakerLogger.writeLog(String.format("   InventoryManagementController.validateUpdateSubmit(): '%s'", errorMsg), debugLogging);
+			winemakerLogger.writeLog(String.format("<< InventoryManagementController.validateUpdateSubmit(): returning %n: '%s'", validatePackage.getErrorMsg()), debugLogging);
+			return validatePackage;			
+		}
+		
+		List<WineMakerInventory> filteredQueryList = HelperFunctions.findAssetItemRecord(getInventoryExistingSetsQueryList(), itemExistingSelections.getValue());
+		WineMakerInventory selectedRecord = filteredQueryList.get(0);
+
 		validatePackage.setErrorMsg("");
 		validatePackage.setTestStatus(Validation.PASSED);
 		
-		String errorMsg = (itemExistingSelections.getSelectionModel().isEmpty()) ? 
-				"An asset must be selected\n" : "";
-		errorMsg += (itemRemoveFromStock.getText().length() == 0 && itemBatchId.getText().length() == 0) ?
-				"No update input\n" : "" ;
-		
+		errorMsg += (itemRemovalReason.getValue().equals("Update Reason")) ?
+				"Select an Update Reason\n" : "";
+		errorMsg += (itemRemoveFromStock.getText().length() == 0 && itemBatchId.getText().equals(selectedRecord.getItemBatchId())) ?
+				"No changes were entered\n" : "" ;
+
 		if (itemRemoveFromStock.getText().length() > 0)
 		{
-			errorMsg += (itemRemovalReason.getValue().equals("Update Reason")) ?
-					"An Update Reason must be supplied\n" : "";
 			errorMsg += (itemBatchId.getText().length() > 0) ?
 					"Remove from stock and setting the batch id are mutually exclusive\n" : "";
 		}
 		
 		if (errorMsg.length() == 0)
-		{
-			List<WineMakerInventory> filteredQueryList = HelperFunctions.findAssetItemRecord(getInventoryExistingSetsQueryList(), itemExistingSelections.getValue());
-			WineMakerInventory selectedRecord = filteredQueryList.get(0);
-			
+		{			
 			ValidationPackage validateAssetType = new ValidationPackage();
 			if (selectedRecord.getItemId().length() > 0)
 				validateAssetType = validateCapitalUpdate();				
@@ -752,7 +769,7 @@ public class InventoryManagementController implements Initializable {
 	
 		for (WineMakerInventory wmi: inventoryOldRecordsDeleteList)
 		{
-			if (!winemakerModel.deleteDateRecord(wmi.getItemTaskTime(), DatabaseTables.INVENTORY.getValue()))
+			if (!winemakerModel.deleteDateRecord(wmi.getItemEntryDate(), DatabaseTables.INVENTORY.getValue()))
 				statusUpdates.appendText("Inventory record delete failure\n");
 			else
 				statusUpdates.appendText("Inventory record successfully deleted\n");
@@ -847,8 +864,12 @@ public class InventoryManagementController implements Initializable {
 			}
 
 			this.itemStockOnHand.setText(showDouble);
-			this.itemBatchId.setText(selectedRecord.getItemBatchId());
+			if (selectedRecord.getItemBatchId().length() > 0)
+				this.itemBatchId.setText(HelperFunctions.batchKeyExpand(selectedRecord.getItemBatchId()));
+			else
+				this.itemBatchId.clear();
 			this.setBatchIdReference(selectedRecord.getItemBatchId());
+				
 			this.setInStockReference(selectedRecord.get_itemStockOnHand());
 			this.setSelectedInventoryRecord(selectedRecord);
 			
@@ -948,7 +969,7 @@ public class InventoryManagementController implements Initializable {
 	private void buildUIForUpdates() 
 	{
 		winemakerLogger.writeLog(">> InventoryManagementController.buildUIForUpdates()", debugLogging);
-		
+
 		resetUIFields();
 		uiSetting = InventoryScene.UPDATE;
 				
@@ -981,7 +1002,7 @@ public class InventoryManagementController implements Initializable {
 				.collect(Collectors.toList()));
 		
 		this.itemExistingSelections.setItems(this.itemExistingSelectionsList);
-		this.itemExistingSelections.setPromptText("Select Item");
+		this.itemExistingSelections.setPromptText(" Select Item");
 
 		this.itemRemovalReason.setValue(this.itemRemoveReasonSelectionsList.get(0));
 		
@@ -1013,6 +1034,22 @@ public class InventoryManagementController implements Initializable {
 		
 		itemAvailableTypesList.clear();
 		
+		HashMap<String, String> resourceFamilyCodes = HelperFunctions.getCodeKeyFamily(FamilyCode.USERFAMILIES.getValue());
+		
+		/*
+		 * Setup purchase type categories
+		 */
+		purchaseTypeCategoryList.clear();
+		purchaseTypeCategoryList.add(resourceFamilyCodes.get(FamilyCode.CONTAINERFAMILY.getValue()));
+		purchaseTypeCategoryList.add(resourceFamilyCodes.get(FamilyCode.ADDITIVEFAMILY.getValue()));
+		purchaseTypeCategoryList.add(resourceFamilyCodes.get(FamilyCode.YEASTFAMILY.getValue()));
+		purchaseTypeCategoryList.add(resourceFamilyCodes.get(FamilyCode.LABFAMILY.getValue()));
+
+		comboPurchaseTypeCategories.setPromptText(" Select Asset Category");
+		comboPurchaseTypeCategories.setItems(purchaseTypeCategoryList);
+		
+		/*
+		 * 
 		this.itemAvailableTypesList.addAll(getResourceValues(resourceCodesFamilyMap.get(FamilyCode.LABFAMILY.getValue())));
 		this.itemAvailableTypesList.add(itemSelectSeparator);
 
@@ -1025,36 +1062,82 @@ public class InventoryManagementController implements Initializable {
 		this.itemAvailableTypesList.addAll(getResourceValues(resourceCodesFamilyMap.get(FamilyCode.YEASTFAMILY.getValue())));
 
 		this.itemAvailablePurchaseTypes.setItems(this.itemAvailableTypesList);
+		 */
 		
 		setInventoryExistingSetsQueryList(winemakerModel.queryInventory());
 
-		this.itemAvailablePurchaseTypes.setPromptText("Select type for purchase");
+		//this.itemID.setEditable(false);
+		
+		this.itemAvailablePurchaseTypes.setPromptText(" Select type for purchase");
 		this.itemPurchasedDate.setValue(null);
 		this.itemID.clear();
 		this.itemPurchaseCount.clear();
 		this.itemPurchaseCost.clear();
 		this.itemSize.clear();
-		this.itemSupplierSelections.setPromptText("Select item vendor");
+		this.itemSupplierSelections.setPromptText(" Select item vendor");
 		
-		gp.add(labelPurchaseType, 0, 0);
-		gp.add(labelPurchaseDate, 0,1);
-		gp.add(labelItemID, 0, 2);
-		gp.add(labelPurchaseCount, 0, 3);
-		gp.add(labelPurchaseCost, 0, 4);
-		gp.add(labelSize, 0, 5);		
-		gp.add(labelSupplier, 0, 6);
+		gp.add(labelPurchaseTypes, 0, 0);
+		gp.add(labelPurchaseType, 0, 1);
+		gp.add(labelPurchaseDate, 0,2);
+		gp.add(labelItemID, 0, 3);
+		gp.add(labelPurchaseCount, 0, 4);
+		gp.add(labelPurchaseCost, 0, 5);
+		gp.add(labelSize, 0, 6);
+		gp.add(labelSupplier, 0, 7);
 		
-		gp.add(itemAvailablePurchaseTypes, 1, 0);
-		gp.add(itemPurchasedDate, 1,1);
-		gp.add(itemID, 1, 2);
-		gp.add(itemPurchaseCount, 1, 3);
-		gp.add(itemPurchaseCost, 1, 4);
-		gp.add(itemSize, 1, 5);
-		gp.add(itemSupplierSelections, 1, 6);
-		gp.add(buttonDisplaySwitch, 1, 7);
-		
+		gp.add(comboPurchaseTypeCategories, 1, 0);
+		gp.add(itemAvailablePurchaseTypes, 1, 1);
+		gp.add(itemPurchasedDate, 1,2);
+		gp.add(itemID, 1, 3);
+		gp.add(itemPurchaseCount, 1, 4);
+		gp.add(itemPurchaseCost, 1, 5);
+		gp.add(itemSize, 1, 6);
+		gp.add(itemSupplierSelections, 1, 7);
+		gp.add(buttonDisplaySwitch, 1, 8);
+				
 		winemakerLogger.writeLog("<< InventoryManagementController.buildUIForPurchases()", debugLogging);			
 	} // end of buildUIForPurchases()
+	
+	
+	/*
+	 * Retrieve all of the entry values for the provided resource category
+	 */
+	private void loadCategoryValues(ComboBox<String> assetTypeFamily, String categoryCode)
+	{
+		winemakerLogger.writeLog(String.format(">> InventoryManagementController.loadCategoryValues(String '%s')", categoryCode), debugLogging);
+
+		codeSet = HelperFunctions.getCodeKeyFamily(FamilyCode.USERFAMILIES.getValue());
+		ObservableList<String> valueList = FXCollections.observableArrayList();
+		
+		Optional<String> assetFamilyCode = codeSet.keySet()
+			.stream()
+			.filter(key -> categoryCode.equals(codeSet.get(key)))
+			.findFirst();
+		winemakerLogger.writeLog(String.format("InventoryManagementController.loadCategoryValues(String '%s'): processCode = '%s'", categoryCode, assetFamilyCode.get()), debugLogging);
+		
+		/*
+		 * ID field only for container assets
+		 */
+		HashMap<String, String> resourceFamilyCodes = HelperFunctions.getCodeKeyFamily(FamilyCode.USERFAMILIES.getValue());
+		if (categoryCode.equals(resourceFamilyCodes.get(FamilyCode.CONTAINERFAMILY.getValue())))
+			itemID.setEditable(true);
+		else
+		{
+			this.itemID.clear();
+			this.itemID.setEditable(false);
+		}
+		
+		assetTypeFamily.getItems().clear();
+		codeSet = HelperFunctions.getCodeKeyFamily(assetFamilyCode.get());
+		valueList.addAll(codeSet.values()
+				.stream()
+				.sorted(Comparator.naturalOrder())
+				.collect(Collectors.toList()));
+		assetTypeFamily.setItems(valueList);
+		
+		winemakerLogger.writeLog(String.format("<< ResourceCodesManagementController.loadCategoryValues(String '%s')", categoryCode), debugLogging);
+	} // end of loadCategoryValues()
+	
 	
 	/*
 	 *	Populate the various selection lists.
@@ -1073,12 +1156,13 @@ public class InventoryManagementController implements Initializable {
 		
 		this.itemExistingSelections.setEffect(dS);
 		this.itemExistingSelections.setPrefWidth(300);
+		
 		this.itemAvailablePurchaseTypes.setPrefWidth(240);
 		this.itemID.setPrefWidth(120);
-		itemSupplierSelections.setPrefWidth(200);
-		
+		this.itemSupplierSelections.setPrefWidth(200);
+		this.comboPurchaseTypeCategories.setPrefWidth(240);
+		this.comboPurchaseTypeCategories.setEffect(dS);
 		this.itemStockOnHand.setEditable(false);
-
 		this.itemPurchasedDate.setEffect(dS);
 		this.itemExistingSelections.setEffect(dS);
 		this.itemStockOnHand.setEffect(dS);
@@ -1119,7 +1203,9 @@ public class InventoryManagementController implements Initializable {
 				
 		labelBatchId.setId("labelBatchId");
 		labelBatchId.setText("Batch Id");
-
+		labelPurchaseTypes.setId("labelPurchaseType");
+		labelPurchaseTypes.setText("Asset Family");
+		comboPurchaseTypeCategories.setId("comboAssetFamily");
 		itemBatchId.setId("itemBatchId");
 		
 		buttonDisplaySwitch.setTooltip(HelperFunctions.buildTooltip(NEWASSET));
@@ -1195,10 +1281,21 @@ public class InventoryManagementController implements Initializable {
 				Button buttonField = (Button) oldNode;
 				gp.getChildren().remove(buttonField);
 			}
+			else if (oldNode instanceof JFXButton)
+			{
+				JFXButton buttonField = (JFXButton) oldNode;
+				gp.getChildren().remove(buttonField);
+			}
 			else if (oldNode instanceof ComboBox<?>)
 			{
 				@SuppressWarnings("unchecked")
 				ComboBox<String> cmbBox = (ComboBox<String>) oldNode;
+				gp.getChildren().remove(cmbBox);
+			}
+			else if (oldNode instanceof JFXComboBox<?>)
+			{
+				@SuppressWarnings("unchecked")
+				JFXComboBox<String> cmbBox = (JFXComboBox<String>) oldNode;
 				gp.getChildren().remove(cmbBox);
 			}
 			else if (oldNode instanceof ChoiceBox<?>)
@@ -1218,7 +1315,7 @@ public class InventoryManagementController implements Initializable {
 	@FXML
 	public void returnToMain(ActionEvent e) 
 	{
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("WineMaker.fxml"));
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("WineMakerMD.fxml"));
 	
 		try {
 			WineMakerController winemakerController = new WineMakerController();
@@ -1311,23 +1408,32 @@ public class InventoryManagementController implements Initializable {
 
 		itemRemoveReasonProperty.bind(itemRemovalReason.valueProperty());
 		
-		itemCurrAmountProperty.addListener(new ChangeListener<String>() 
+		/*
+		 * Handle asset purchase category selection
+		comboPurchaseTypeCategories.setOnAction(e -> 
 		{
-			@SuppressWarnings("rawtypes")
-			@Override public void changed(ObservableValue ov, String oldValue, String newValue) { 
-			} 
+			loadCategoryValues(itemAvailablePurchaseTypes, comboPurchaseTypeCategories.getValue());
+		});
+		 */
+		
+		comboPurchaseTypeCategories.valueProperty().addListener(new InvalidationListener() 
+		{
+			@Override
+			public void invalidated(Observable arg0) {
+				if ((comboPurchaseTypeCategories.getValue() != null))
+				{
+					loadCategoryValues(itemAvailablePurchaseTypes, comboPurchaseTypeCategories.getValue());
+				}
+			}
 		});
 		
 		itemExistingSelections.valueProperty().addListener(new InvalidationListener() 
 		{
 			@Override
-			public void invalidated(Observable arg0) {				
+			public void invalidated(Observable arg0) {
 				if ((itemExistingSelections.getValue() != null) && (!itemExistingSelections.getValue().equals(itemSelectSeparator)))
-					itemSelectExistingHandler(itemExistingSelections.getValue());
-				else
 				{
-					itemExistingSelections.getSelectionModel().clearSelection();
-					itemExistingSelections.setValue(null);
+					itemSelectExistingHandler(itemExistingSelections.getValue());
 				}
 			}
 		});
@@ -1337,11 +1443,15 @@ public class InventoryManagementController implements Initializable {
 			@Override
 			public void invalidated(Observable arg0) {				
 				if ((itemAvailablePurchaseTypes.getValue() != null) && (!itemAvailablePurchaseTypes.getValue().equals(itemSelectSeparator)))
+				{
 					itemSelectExistingHandler(itemAvailablePurchaseTypes.getValue());
+					submitButton.setDisable(false);
+				}
 				else
 				{
-					itemAvailablePurchaseTypes.getSelectionModel().clearSelection();
-					itemAvailablePurchaseTypes.setValue(null);
+					submitButton.setDisable(true);
+					//itemAvailablePurchaseTypes.getSelectionModel().clearSelection();
+					//itemAvailablePurchaseTypes.setValue(null);
 				}
 			}
 		});
@@ -1355,6 +1465,13 @@ public class InventoryManagementController implements Initializable {
 			}			
 		});
 
+		itemCurrAmountProperty.addListener(new ChangeListener<String>() 
+		{
+			@SuppressWarnings("rawtypes")
+			@Override public void changed(ObservableValue ov, String oldValue, String newValue) { 
+			} 
+		});
+		
 		itemRemoveFromStock.textProperty().addListener(new ChangeListener<String>() 
 		{
 			@SuppressWarnings("rawtypes")
@@ -1390,6 +1507,5 @@ public class InventoryManagementController implements Initializable {
 				itemPurchasedAmountHandler(newValue);
 			}
 		});
-		
 	}
 }

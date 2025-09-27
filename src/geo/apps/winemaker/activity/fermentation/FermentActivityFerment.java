@@ -29,6 +29,8 @@ public class FermentActivityFerment implements FermentationActivity {
 	@Override
 	public String apply(WineMakerFerment wmf)
 	{
+		winemakerLogger.writeLog(">> FermentActivityFerment.apply()", true);
+
 		HashMap<String, String> amountScale = HelperFunctions.getCodeKeyMappings().get(FamilyCode.MEASURESFAMILY.getValue());
 		
 		String containerDisplay = "";
@@ -63,7 +65,7 @@ public class FermentActivityFerment implements FermentationActivity {
 
 			ArrayList<WineMakerInventory> batchInventory = this.wmiRackSet
 					.stream()
-					.filter(batchWmi -> wmfDate.equals(batchWmi.getItemTaskTime().toLocalDateTime().truncatedTo(ChronoUnit.DAYS)))
+					.filter(batchWmi -> wmfDate.equals(batchWmi.getItemEntryDate().toLocalDateTime().truncatedTo(ChronoUnit.DAYS)))
 					.collect(Collectors.toCollection(ArrayList::new));
 			
 			if (batchInventory.size() > 0)
@@ -79,6 +81,7 @@ public class FermentActivityFerment implements FermentationActivity {
 		if (wmf.get_fermentNotes().length() > 0)
 			displayLine += String.format("%nNotes: %n\t%s", wmf.get_fermentNotes());
 		
+		winemakerLogger.writeLog("<< FermentActivityFerment.apply()", true);
 		return displayLine;
 	}
 }

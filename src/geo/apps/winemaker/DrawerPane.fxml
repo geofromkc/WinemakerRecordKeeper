@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="730.0" prefWidth="160.0" style="-fx-background-color: #F2F2F2;" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="geo.apps.winemaker.MenuBarController">
+   <padding>
+      <Insets left="10.0" />
+   </padding>
+   <children>
+      <JFXButton alignment="TOP_LEFT" buttonType="RAISED" prefWidth="140.0" style="-fx-background-color: #D3D3D3;" text="Manage Batch Data" underline="true">
+         <font>
+            <Font name="Cambria Bold" size="13.0" />
+         </font>
+         <VBox.margin>
+            <Insets right="2.0" top="10.0" />
+         </VBox.margin>
+      </JFXButton>
+      <JFXButton alignment="CENTER_RIGHT" onAction="#exportBatchButton" prefWidth="120.0" style="-fx-background-color: #E6E6E6; -fx-border-color: #CCCCCC;" text="Export">
+         <VBox.margin>
+            <Insets right="2.0" top="4.0" />
+         </VBox.margin>
+         <font>
+            <Font name="Cambria" size="11.0" />
+         </font>
+      </JFXButton>
+      <JFXButton alignment="CENTER_RIGHT" onAction="#reportBatchButton" prefWidth="120.0" style="-fx-background-color: #E6E6E6; -fx-border-color: #CCCCCC;" text="Report">
+         <font>
+            <Font name="Cambria" size="11.0" />
+         </font>
+         <VBox.margin>
+            <Insets right="2.0" top="1.0" />
+         </VBox.margin>
+      </JFXButton>
+      <JFXButton alignment="CENTER_RIGHT" onAction="#exportAllBatches" prefWidth="120.0" style="-fx-background-color: #E6E6E6; -fx-border-color: #CCCCCC;" text="Export All">
+         <font>
+            <Font name="Cambria" size="11.0" />
+         </font>
+         <VBox.margin>
+            <Insets right="2.0" top="1.0" />
+         </VBox.margin>
+      </JFXButton>
+      <JFXButton alignment="TOP_LEFT" buttonType="RAISED" prefWidth="140.0" style="-fx-background-color: #D3D3D3;" text="Manage Resources" underline="true">
+         <font>
+            <Font name="Cambria Bold" size="13.0" />
+         </font>
+         <VBox.margin>
+            <Insets right="2.0" top="8.0" />
+         </VBox.margin>
+      </JFXButton>
+      <JFXButton alignment="CENTER_RIGHT" onAction="#updateCodesTable" prefWidth="120.0" style="-fx-background-color: #E6E6E6; -fx-border-color: #CCCCCC;" text="Create, Delete, Update">
+         <font>
+            <Font name="Cambria" size="11.0" />
+         </font>
+         <VBox.margin>
+            <Insets right="2.0" top="4.0" />
+         </VBox.margin>
+      </JFXButton>
+      <JFXButton alignment="CENTER_RIGHT" onAction="#exportCodesFile" prefWidth="120.0" style="-fx-background-color: #E6E6E6; -fx-border-color: #CCCCCC;" text="Export">
+         <font>
+            <Font name="Cambria" size="11.0" />
+         </font>
+         <VBox.margin>
+            <Insets right="2.0" top="1.0" />
+         </VBox.margin>
+      </JFXButton>
+      <JFXButton alignment="CENTER_RIGHT" onAction="#loadCodes" prefWidth="120.0" style="-fx-background-color: #E6E6E6; -fx-border-color: #CCCCCC;" text="Import">
+         <font>
+            <Font name="Cambria" size="11.0" />
+         </font>
+         <VBox.margin>
+            <Insets right="2.0" top="1.0" />
+         </VBox.margin>
+      </JFXButton>
+      <JFXButton alignment="TOP_LEFT" buttonType="RAISED" prefWidth="140.0" style="-fx-background-color: #D3D3D3;" text="Manage Inventory" underline="true">
+         <font>
+            <Font name="Cambria Bold" size="13.0" />
+         </font>
+         <VBox.margin>
+            <Insets right="2.0" top="8.0" />
+         </VBox.margin>
+      </JFXButton>
+      <JFXButton alignment="CENTER_RIGHT" onAction="#openInventoryManagement" prefWidth="120.0" style="-fx-background-color: #E6E6E6; -fx-border-color: #CCCCCC;" text="Create, Delete, Update">
+         <font>
+            <Font name="Cambria" size="11.0" />
+         </font>
+         <VBox.margin>
+            <Insets right="2.0" top="4.0" />
+         </VBox.margin>
+      </JFXButton>
+      <JFXButton alignment="CENTER_RIGHT" onAction="#exportInventory" prefWidth="120.0" style="-fx-background-color: #E6E6E6; -fx-border-color: #CCCCCC;" text="Export">
+         <font>
+            <Font name="Cambria" size="11.0" />
+         </font>
+         <VBox.margin>
+            <Insets right="2.0" top="1.0" />
+         </VBox.margin>
+      </JFXButton>
+      <JFXButton alignment="CENTER_RIGHT" onAction="#loadInventory" prefWidth="120.0" style="-fx-background-color: #E6E6E6; -fx-border-color: #CCCCCC;" text="Import">
+         <font>
+            <Font name="Cambria" size="11.0" />
+         </font>
+         <VBox.margin>
+            <Insets right="2.0" top="1.0" />
+         </VBox.margin>
+      </JFXButton>
+      <JFXButton alignment="CENTER_RIGHT" onAction="#reportInventory" prefWidth="120.0" style="-fx-background-color: #E6E6E6; -fx-border-color: #CCCCCC;" text="Report">
+         <font>
+            <Font name="Cambria" size="11.0" />
+         </font>
+         <VBox.margin>
+            <Insets right="2.0" top="1.0" />
+         </VBox.margin>
+      </JFXButton>
+      <JFXButton alignment="TOP_LEFT" buttonType="RAISED" prefWidth="140.0" style="-fx-background-color: #D3D3D3;" text="Manage Data" underline="true">
+         <font>
+            <Font name="Cambria Bold" size="13.0" />
+         </font>
+         <VBox.margin>
+            <Insets right="2.0" top="8.0" />
+         </VBox.margin>
+      </JFXButton>
+      <JFXButton alignment="CENTER_RIGHT" onAction="#backUpDatabase" prefWidth="120.0" style="-fx-background-color: #E6E6E6; -fx-border-color: #CCCCCC;" text="Backup">
+         <font>
+            <Font name="Cambria" size="11.0" />
+         </font>
+         <VBox.margin>
+            <Insets right="2.0" top="4.0" />
+         </VBox.margin>
+      </JFXButton>
+      <JFXButton alignment="CENTER_RIGHT" onAction="#restoreDatabase" prefWidth="120.0" style="-fx-background-color: #E6E6E6; -fx-border-color: #CCCCCC;" text="Restore">
+         <font>
+            <Font name="Cambria" size="11.0" />
+         </font>
+         <VBox.margin>
+            <Insets right="2.0" top="1.0" />
+         </VBox.margin>
+      </JFXButton>
+      <JFXButton alignment="CENTER_RIGHT" onAction="#moveDatabase" prefWidth="120.0" style="-fx-background-color: #E6E6E6; -fx-border-color: #CCCCCC;" text="Move">
+         <font>
+            <Font name="Cambria" size="11.0" />
+         </font>
+         <VBox.margin>
+            <Insets right="2.0" top="1.0" />
+         </VBox.margin>
+      </JFXButton>
+      <JFXButton alignment="CENTER_RIGHT" onAction="#tableReset" prefWidth="120.0" style="-fx-background-color: #E6E6E6; -fx-border-color: #CCCCCC;" text="Reset">
+         <font>
+            <Font name="Cambria" size="11.0" />
+         </font>
+         <VBox.margin>
+            <Insets right="2.0" top="1.0" />
+         </VBox.margin>
+      </JFXButton>
+      <JFXButton alignment="TOP_LEFT" buttonType="RAISED" prefWidth="140.0" style="-fx-background-color: #D3D3D3;" text="Help" underline="true">
+         <font>
+            <Font name="Cambria Bold" size="13.0" />
+         </font>
+         <VBox.margin>
+            <Insets right="2.0" top="8.0" />
+         </VBox.margin>
+      </JFXButton>
+      <JFXButton alignment="CENTER_RIGHT" onAction="#exportLogFile" prefWidth="120.0" style="-fx-background-color: #E6E6E6; -fx-border-color: #CCCCCC;" text="Export Log">
+         <font>
+            <Font name="Cambria" size="11.0" />
+         </font>
+         <VBox.margin>
+            <Insets right="2.0" top="4.0" />
+         </VBox.margin>
+      </JFXButton>
+      <JFXButton alignment="CENTER_RIGHT" onAction="#showUserGuide" prefWidth="120.0" style="-fx-background-color: #E6E6E6; -fx-border-color: #CCCCCC;" text="User Guide">
+         <font>
+            <Font name="Cambria" size="11.0" />
+         </font>
+         <VBox.margin>
+            <Insets right="2.0" top="1.0" />
+         </VBox.margin>
+      </JFXButton>
+      <JFXButton alignment="CENTER_RIGHT" onAction="#showAbout" prefWidth="120.0" style="-fx-background-color: #E6E6E6; -fx-border-color: #CCCCCC;" text="About">
+         <font>
+            <Font name="Cambria" size="11.0" />
+         </font>
+         <VBox.margin>
+            <Insets right="2.0" top="1.0" />
+         </VBox.margin>
+      </JFXButton>
+      <JFXButton alignment="CENTER_RIGHT" onAction="#sayGoodbye" prefWidth="120.0" style="-fx-background-color: #E6E6E6; -fx-border-color: #CCCCCC;" text="Exit">
+         <VBox.margin>
+            <Insets right="2.0" top="12.0" />
+         </VBox.margin>
+         <font>
+            <Font name="Cambria" size="11.0" />
+         </font>
+      </JFXButton>
+   </children>
+</VBox>

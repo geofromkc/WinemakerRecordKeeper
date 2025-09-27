@@ -1,14 +1,16 @@
 package geo.apps.winemaker.utilities;
 
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.AccessDeniedException;
+import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -91,9 +93,8 @@ public class DatabaseOperations {
 			" SET inv_stock_on_hand=? " +
 			" WHERE inv_item=? AND inv_activity = ''";
 	private final String UPDATE_INVENTORY_BATCH = "UPDATE " + DatabaseTables.INVENTORY.getValue() +
-			" SET inv_batch_id=?, " +
-			" inv_stock_on_hand=? " +
-			" WHERE inv_item=? AND inv_item_id=? AND inv_activity = ''";
+			" SET inv_batch_id=? " +
+			" WHERE entry_date=?";
 	private final String UPDATE_CODE = "UPDATE " + DatabaseTables.CODES.getValue() +
 			" SET code_desc=? " +
 			" WHERE code_type=? AND code_value=?";	
@@ -163,19 +164,19 @@ public class DatabaseOperations {
 	// Database Table definitions
 	private final String WINEMKR_KEY_TABLE_DEF = "CREATE TABLE " 
 			+ DatabaseTables.PRIMARY.getValue() 
-			+ " (batch VARCHAR(14) NOT NULL, "
-			+ "batch_blend_key VARCHAR(14), "
+			+ " (batch VARCHAR(22) NOT NULL, "
+			+ "batch_blend_key VARCHAR(22), "
 			+ "batch_blend_seq INT, "
-			+ "batch_source VARCHAR(8), "
-			+ "batch_grape VARCHAR(8), "
-			+ "batch_vineyard VARCHAR(8), "
+			+ "batch_source VARCHAR(16), "
+			+ "batch_grape VARCHAR(16), "
+			+ "batch_vineyard VARCHAR(16), "
 			+ "source_count INT, "
 			+ "source_price DOUBLE, "
 			+ "source_measure INT, "
-			+ "source_scale VARCHAR(8), "
+			+ "source_scale VARCHAR(16), "
 			+ "quality_rating INT, "
 			+ "waste_percent INT, "
-			+ "source_vendor VARCHAR(8), "
+			+ "source_vendor VARCHAR(16), "
 			+ "vendor_notes VARCHAR(500), "
 			+ "bottle_count INT, "
 			+ "blend_ratio INT, "
@@ -187,8 +188,8 @@ public class DatabaseOperations {
 			+ "inv_item_id VARCHAR(16) NOT NULL, "
 			+ "entry_date TIMESTAMP NOT NULL, "
 			+ "inv_stock_on_hand DOUBLE, "
-			+ "inv_batch_id VARCHAR(14), "
-			+ "inv_activity VARCHAR(8), "
+			+ "inv_batch_id VARCHAR(22), "
+			+ "inv_activity VARCHAR(16), "
 			+ "inv_activity_amt DOUBLE, "
 			+ "inv_purchase_cost DOUBLE, "
 			+ "inv_item_scale VARCHAR(8), "			
@@ -197,9 +198,9 @@ public class DatabaseOperations {
 			+ ")";
 	private final String WINEMKR_TESTING_TABLE_DEF = "CREATE TABLE " 
 			+ DatabaseTables.TESTS.getValue() 
-			+ " (batch VARCHAR(14) NOT NULL, "
+			+ " (batch VARCHAR(22) NOT NULL, "
 			+ "entry_date TIMESTAMP NOT NULL, "
-			+ "test_type VARCHAR(8), "
+			+ "test_type VARCHAR(16), "
 			+ "test_value DOUBLE, "
 			+ "test_scale VARCHAR(8), "
 			+ "test_temp INT, "
@@ -208,13 +209,13 @@ public class DatabaseOperations {
 			+ "PRIMARY KEY(entry_date))";
 	private final String WINEMKR_FERMENT_TABLE_DEF = "CREATE TABLE " 
 			+ DatabaseTables.ACTIVITY.getValue() 
-			+ " (batch VARCHAR(14) NOT NULL, "
+			+ " (batch VARCHAR(22) NOT NULL, "
 			+ "entry_date TIMESTAMP NOT NULL, "
 			+ "ferm_act VARCHAR(8), "
 			+ "ferm_grape_amt INT, "
 			+ "ferm_must_vol INT, "
-			+ "ferm_yeast_strain VARCHAR(8), "
-			+ "ferm_additive_name VARCHAR(8), "
+			+ "ferm_yeast_strain VARCHAR(16), "
+			+ "ferm_additive_name VARCHAR(16), "
 			+ "ferm_additive_amt DOUBLE, "
 			+ "ferm_additive_scale VARCHAR(8), "
 			+ "ferm_starter_yeast_amt DOUBLE, "
@@ -293,6 +294,7 @@ public class DatabaseOperations {
 	private final String DB_USER = "db2.user_fc4";
 	private final String DB_PASSWORD = "db2.password_fc4";
 	private final String DB_URL = "db2.url_fc4";
+	private final String DEFAULT_CODE_INPUT = "WineMakerApp_ResourceCodes.csv";
 	
 	boolean debugLogging = true;
 	boolean errorLogging = false;
@@ -393,7 +395,7 @@ public class DatabaseOperations {
 	 */
 	private Connection connectDatabaseDerby(String connURL)
 	{
-		winemakerLogger.writeLog(String.format(">> DatabaseOperations.connectDatabaseDerby('%s')", connURL), debugLogging);
+		winemakerLogger.writeLog(String.format(">> DatabaseOperations.connectDatabaseDerby()"), debugLogging);
 
 		String errorMsgStart = "   DatabaseOperations.connectDatabaseDerby(): exception";
 		Connection newConn = null;
@@ -564,11 +566,11 @@ public class DatabaseOperations {
 	 */
 	public void copyDirectory(String sourceDirectoryLocation, String destinationDirectoryLocation) 
 	{
-		winemakerLogger.writeLog(String.format(">> DatabaseOperations.copyDirectory('%s', '%s')", sourceDirectoryLocation, destinationDirectoryLocation), debugLogging);
+		winemakerLogger.writeLog(String.format(">> DatabaseOperations.copyDirectory('%s' > '%s')", sourceDirectoryLocation, destinationDirectoryLocation), debugLogging);
 
 		try {
-			Files.walk(Paths.get(sourceDirectoryLocation))
-			.forEach(source -> {
+			Files.walk(Paths.get(sourceDirectoryLocation)).forEach(source -> 
+			{
 				Path destination = Paths.get(destinationDirectoryLocation, source.toString()
 						.substring(sourceDirectoryLocation.length()));
 				try 
@@ -576,10 +578,28 @@ public class DatabaseOperations {
 					Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
 				} 
 				catch (FileAlreadyExistsException ea)
-				{}
+				{
+					winemakerLogger.showIOException(ea, "1. Copy SecurityException");
+				}
+				catch (SecurityException e)
+				{
+					winemakerLogger.showIOException(e, "2. Copy SecurityException");
+				}
+				catch (DirectoryNotEmptyException e)
+				{
+					winemakerLogger.showIOException(e, "3. Copy DirectoryNotEmptyException");
+				}
+				catch (AccessDeniedException e) 
+				{
+					winemakerLogger.showIOException(e, "4. Copy IOException");
+				}
 				catch (IOException e) 
 				{
-					winemakerLogger.showIOException(e, "1. Copy backup directory");
+					winemakerLogger.showIOException(e, "5. Copy IOException");
+				}
+				catch (Exception e) 
+				{
+					winemakerLogger.showIOException(e, "6. Copy Exception");
 				}
 			});
 		} 
@@ -780,30 +800,40 @@ public class DatabaseOperations {
 
 				String installPath = System.getProperty("user.dir") + File.separator + "Resources" + File.separator;
 
-				File codesFile = new File(installPath + "WineMakerApp_ResourceCodes.csv");
+				File codesFile = new File(installPath + DEFAULT_CODE_INPUT);
 				winemakerLogger.writeLog(String.format("   DatabaseOperations.validateAllTables(): First, try File path from user.dir URL '%s' (%b)", codesFile.getPath(), codesFile.exists()), debugLogging);
 
 				if (!codesFile.exists())
 				{
-					Path classPathResource = null;
-					
 					try
 					{
-						URL classPathURL = getClass().getClassLoader().getResource("WineMakerApp_ResourceCodes.csv");
-						classPathResource = Paths.get(classPathURL.toURI());
-						codesFile = classPathResource.toFile();
-						
-						winemakerLogger.writeLog(String.format("   DatabaseOperations.validateAllTables(): alternate properties of Path resource: '%s' & '%s'", classPathResource.getFileName(), classPathResource.toString()), debugLogging);
+						InputStream resourceStream = DatabaseOperations.class.getClassLoader().getResourceAsStream(DEFAULT_CODE_INPUT);
+
+						winemakerLogger.writeLog(String.format("   DatabaseOperations.validateAllTables(): Failed, now try class resource path"), debugLogging);
+
+						codesFile = new File(System.getProperty("java.io.tmpdir") + DEFAULT_CODE_INPUT);
+						codesFile.deleteOnExit();
+						Files.copy(resourceStream, codesFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+						winemakerLogger.writeLog(String.format("   DatabaseOperations.validateAllTables(): Copied resource stream to temp file '%s'", codesFile.getPath()), debugLogging);
 					}
-					catch (URISyntaxException e)
+					catch (FileNotFoundException e2)
 					{
-						winemakerLogger.showIOException(e, "Failed to find WineMakerApp_ResourceCodes.csv");						
+						winemakerLogger.showIOException(e2, "Failed to find " + DEFAULT_CODE_INPUT);
+					}
+					catch (IOException e3) 
+					{
+						winemakerLogger.showIOException(e3, "Failed to find " + DEFAULT_CODE_INPUT);
+					}
+					catch (Exception e4) 
+					{
+						winemakerLogger.showIOException(e4, "Failed to find " + DEFAULT_CODE_INPUT);
 					}
 					
-					winemakerLogger.writeLog(String.format("   DatabaseOperations.validateAllTables(): alternate File from Path resource: '%s' (%b)", codesFile.getPath(), codesFile.exists()), debugLogging);
+					winemakerLogger.writeLog(String.format("   DatabaseOperations.validateAllTables(): alternate File from class resource: '%s' (%b)", codesFile.getPath(), codesFile.exists()), debugLogging);
 				}
 
 				insertCodes(HelperFunctions.returnFileContents(codesFile));
+				codesFile.delete();
 			}
 		}
 		else 
@@ -1067,7 +1097,7 @@ public class DatabaseOperations {
 
 				psInsert.setString(1, wmi.get_itemName());
 				psInsert.setString(2, wmi.getItemId());
-				psInsert.setTimestamp(3, wmi.getItemTaskTime());
+				psInsert.setTimestamp(3, wmi.getItemEntryDate());
 				psInsert.setDouble(4, wmi.get_itemStockOnHand());
 				psInsert.setString(5, wmi.getItemBatchId());
 				psInsert.setString(6, wmi.getItemTaskId());
@@ -1087,7 +1117,7 @@ public class DatabaseOperations {
 		{
 			if (sqle.getSQLState().equals("23505"))
 			{
-				winemakerLogger.writeLog(String.format("   DatabaseOperations.insertNewInventoryItem(): duplicate key %s", wmi.getItemTaskTime().toLocalDateTime().format(dateFormatter)), debugLogging);
+				winemakerLogger.writeLog(String.format("   DatabaseOperations.insertNewInventoryItem(): duplicate key %s", wmi.getItemEntryDate().toLocalDateTime().format(dateFormatter)), debugLogging);
 			}
 			winemakerLogger.showSqlException(sqle, "Failure in inventory data insert");
 		}
@@ -1770,7 +1800,7 @@ public class DatabaseOperations {
 		{
 			if (sqle.getSQLState().equals("23505"))
 			{
-				winemakerLogger.writeLog(String.format("   DatabaseOperations.insertNewInventoryItem(): duplicate key %s", wmi.getItemTaskTime().toLocalDateTime().format(dateFormatter)), debugLogging);
+				winemakerLogger.writeLog(String.format("   DatabaseOperations.insertNewInventoryItem(): duplicate key %s", wmi.getItemEntryDate().toLocalDateTime().format(dateFormatter)), debugLogging);
 			}
 			winemakerLogger.showSqlException(sqle, "Failure in inventory update");
 		} 
@@ -1807,17 +1837,15 @@ public class DatabaseOperations {
 				statements.add(psUpdate);
 	
 				psUpdate.setString(1, wmi.getItemBatchId());
-				psUpdate.setDouble(2, wmi.get_itemStockOnHand());
-				psUpdate.setString(3, wmi.get_itemName());
-				psUpdate.setString(4, wmi.getItemId());
-
-				winemakerLogger.writeLog(String.format("   DatabaseOperations.updateInventory(): update values: '%s' '%1.4f' '%s' '%s'", wmi.getItemBatchId(), wmi.get_itemStockOnHand(), wmi.get_itemName(), wmi.getItemId()), debugLogging);
+				psUpdate.setTimestamp(2, wmi.getItemEntryDate());
+				
+				winemakerLogger.writeLog(String.format("   DatabaseOperations.updateInventoryBatch(): update parms: '%s'-'%1.2f'-'%s'-'%s'", wmi.getItemBatchId(), wmi.get_itemStockOnHand(), wmi.get_itemName(), wmi.getItemId()), debugLogging);
 
 				if (psUpdate.executeUpdate() > 0)
 					returnCode = true;
 				else
 				{
-					winemakerLogger.writeLog(String.format("   DatabaseOperations.updateInventory(): no matching records for '%s'", UPDATE_INVENTORY_BATCH), debugLogging);
+					winemakerLogger.writeLog(String.format("   DatabaseOperations.updateInventoryBatch(): no matching records for '%s'", UPDATE_INVENTORY_BATCH), debugLogging);
 					returnCode = false;
 				}
 
@@ -1897,9 +1925,7 @@ public class DatabaseOperations {
 					wmk.set_sourceVendorNotes(resultSet.getString(14));
 					wmk.set_bottleCount(resultSet.getInt(15));
 					wmk.set_blendRatio(resultSet.getInt(16));
-					queryRecords.add(wmk);
-					
-					winemakerLogger.writeLog(String.format("   DatabaseOperations.queryBatch(): Record %d: %s %s %s", rsSize, resultSet.getString(1), resultSet.getString(2), resultSet.getString(3)), debugLogging);
+					queryRecords.add(wmk);					
 				}
 				winemakerLogger.writeLog(String.format("   DatabaseOperations.queryBatch(): resultset size = %d", rsSize), debugLogging);
 				
@@ -2172,7 +2198,7 @@ public class DatabaseOperations {
 
 					inv.set_itemName(resultSet.getString(1));
 					inv.setItemId(resultSet.getString(2));
-					inv.setItemTaskTime(resultSet.getTimestamp(3));
+					inv.setItemEntryDate(resultSet.getTimestamp(3));
 					inv.set_itemStockOnHand(resultSet.getDouble(4));
 					inv.setItemBatchId(resultSet.getString(5));
 					inv.setItemTaskId(resultSet.getString(6));
@@ -2198,7 +2224,7 @@ public class DatabaseOperations {
 			closeResources(conn, statements, resultSet);
 		}	
 		
-		winemakerLogger.writeLog(String.format("<< DatabaseOperations.queryInventoryData('%s')", sqlText), debugLogging);
+		winemakerLogger.writeLog(String.format("<< DatabaseOperations.queryInventoryData() returns %d records", queryRecords.size()), debugLogging);
 		return queryRecords;
 	} // end of queryInventoryData()
 
@@ -2313,7 +2339,7 @@ public class DatabaseOperations {
 			closeResources(conn, statements, resultSet);
 		}
 
-		winemakerLogger.writeLog(String.format("<< DatabaseOperations.queryCodes()"), debugLogging);
+		winemakerLogger.writeLog(String.format("<< DatabaseOperations.queryCodes() returned %d records", queryRecords.size()), debugLogging);
 		return queryRecords;
 	} // end of queryCodes()
 	

@@ -17,10 +17,13 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import geo.apps.winemaker.utilities.WineMakerLogging;
+import geo.apps.winemaker.utilities.Constants.ActivityName;
 import geo.apps.winemaker.utilities.Constants.FamilyCode;
 import geo.apps.winemaker.utilities.Constants.RegistryKeys;
 import geo.apps.winemaker.utilities.Constants.SQLSearch;
 import geo.apps.winemaker.utilities.HelperFunctions;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -33,6 +36,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
@@ -52,7 +56,10 @@ public class TestDataDetailController implements Initializable {
 	private final String regexTemp = "^([-+]?[0-9]*\\.?[0-9]+)\\s*([cCfF]*)$";
 	private Pattern matchAmountPattern = Pattern.compile(regexDouble);
 	private Pattern matchTempPattern = Pattern.compile(regexTemp);
+	
+	ChangeListener<Boolean> tempChangeListener = this::onTempChange ;
 
+	@FXML Label batchTitle;
 	@FXML ComboBox<String> testSelect;
 	ObservableList<String> testsList = FXCollections.observableArrayList();
 	@FXML ComboBox<String> containerSelect;
@@ -80,8 +87,9 @@ public class TestDataDetailController implements Initializable {
 		winemakerLogger.writeLog(String.format(">> TestDataDetailController.setBatchKey(batchKey '%s')", batchKey), debugLogging);
 
 		this.wmk = winemakerModel.queryBatch(batchKey, SQLSearch.PARENTBATCH).get(0);
-
 		containerSelect.setItems(buildSourceContainerSet(getBatchKey()));
+		
+		batchTitle.setText("For batch: " + HelperFunctions.batchKeyExpand(this.wmk));
 		
 		winemakerLogger.writeLog(String.format("<< TestDataDetailController.setBatchKey(batchKey '%s')", batchKey), debugLogging);
 		return;
@@ -274,6 +282,7 @@ public class TestDataDetailController implements Initializable {
 		
 		Collections.sort(testsList);
 		testSelect.setItems(testsList);
+		testTemp.focusedProperty().addListener(tempChangeListener);
 		
 		winemakerLogger.writeLog(String.format("<< TestDataDetailController.setUIDefaults()"), debugLogging);
 		return;
@@ -310,7 +319,7 @@ public class TestDataDetailController implements Initializable {
 	@FXML
 	public void returnToMain(ActionEvent e) 
 	{
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("WineMaker.fxml"));
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("WineMakerMD.fxml"));
 
 		try {
 			WineMakerController winemakerController = new WineMakerController();
@@ -336,6 +345,19 @@ public class TestDataDetailController implements Initializable {
 		}
 	}
 
+	/*
+	 * allow user to enter only the numeric, find temperature system in batch record
+	 */
+	private void onTempChange(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {        
+        if (!newValue) 
+        {
+        	HashMap<String, String> codeSet = HelperFunctions.getCodeKeyMappings().get(FamilyCode.ACTIVITYFAMILY.getValue());
+
+        	if (!testTemp.getText().contains(winemakerModel.getBatchMeasures(2)))
+        		testTemp.setText(testTemp.getText() + winemakerModel.getBatchMeasures(2));
+        }
+    }
+	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) 
 	{

@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalTime;
@@ -17,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.Random;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -24,13 +28,10 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import geo.apps.winemaker.WineMakerInventory;
 import geo.apps.winemaker.WineMakerLog;
+import geo.apps.winemaker.WineMakerModel;
 import geo.apps.winemaker.conversions.ConversionFactory;
 import geo.apps.winemaker.conversions.ConversionTemplate;
 import geo.apps.winemaker.utilities.Constants.*;
-//import geo.apps.winemaker.utilities.Constants.FamilyCode;
-//import geo.apps.winemaker.utilities.Constants.MassAndVolume;
-//import geo.apps.winemaker.utilities.Constants.RegistryKeys;
-//import geo.apps.winemaker.utilities.Constants.Validation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
@@ -38,7 +39,9 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.DirectoryChooser;
 
 /**
  * Provide helper functions to the application modules:
@@ -64,6 +67,8 @@ public final class HelperFunctions {
 	private static String regexTemp = "^([-+]?[0-9]*\\.?[0-9]+)\\s*([cCfF]*)$";
 	private static Pattern matchTempPattern = Pattern.compile(regexTemp);
 	private static Pattern matchDefaultPattern = Pattern.compile("^DEFAULT$");
+	private final static String userGuideName = "WineMakerLog_User_Guide.pdf";
+	private final static String installGuideName = "WineMakerLog_Installation_and_Setup_Guide.pdf";
 
 	private static ArrayList<String> codeRecords = new ArrayList<String>(100);
 	
@@ -103,6 +108,9 @@ public final class HelperFunctions {
 	
 	public static boolean loadCodeRecords(ArrayList<String> resourceCodes)
 	{
+		WineMakerLogging winemakerLogger = (WineMakerLogging) appRegistry.get(RegistryKeys.LOGGER);
+		winemakerLogger.writeLog(String.format(">> HelperFunctions.loadCodeRecords() processing %d records", resourceCodes.size()), true);
+
 		boolean loadTest = true;
 		if (resourceCodes.size() > 0)
 		{
@@ -112,18 +120,25 @@ public final class HelperFunctions {
 		else
 			loadTest = false;
 		
+		winemakerLogger.writeLog(String.format("<< HelperFunctions.loadCodeRecords()"), true);
 		return loadTest;
 	}
 	
 	/*
 	 * Load the ToolTip resources file
 	 */
-	public static void loadPropertiesFile()
+	public static void loadTooltipPropertiesFile()
 	{
 		WineMakerLogging winemakerLogger = (WineMakerLogging) appRegistry.get(RegistryKeys.LOGGER);
-		winemakerLogger.writeLog(String.format(">> HelperFunctions.loadPropertiesFile()"), true);
-	
-		InputStream ins = HelperFunctions.class.getClassLoader().getResourceAsStream("tooltips.properties");
+		winemakerLogger.writeLog(String.format(">> HelperFunctions.loadTooltipPropertiesFile()"), true);
+
+		/*
+		 * 
+		URL tipsGuideURI = HelperFunctions.class.getClassLoader().getResource("tooltips.properties");
+		winemakerLogger.writeLog(String.format("   HelperFunctions.loadPropertiesFile(): Tooltip properties file URL: %s", tipsGuideURI.getPath()), true);
+		 */
+		
+		InputStream ins = HelperFunctions.class.getClassLoader().getResourceAsStream("tooltips.properties");  
 		if (ins == null)
 		{
 			winemakerLogger.writeLog(String.format("   HelperFunctions.loadPropertiesFile(): Could not find Tooltip properties file"), true);
@@ -147,8 +162,8 @@ public final class HelperFunctions {
 			}
 		}
 		
-		winemakerLogger.writeLog(String.format("<< HelperFunctions.loadPropertiesFile()"), true);
-	} // end of loadPropertiesFile()
+		winemakerLogger.writeLog(String.format("<< HelperFunctions.loadTooltipPropertiesFile(): loaded %d properties", prop.size()), true);
+	} // end of loadTooltipPropertiesFile()
     
 	/*
 	 * Initialize the resource definition mappings
@@ -158,17 +173,21 @@ public final class HelperFunctions {
 	 */
 	private static void stageCodes() 
 	{
+		WineMakerLogging winemakerLogger = (WineMakerLogging) appRegistry.get(RegistryKeys.LOGGER);
+		winemakerLogger.writeLog(String.format(">> HelperFunctions.stageCodes()"), true);
+
 		String[] codeTokens = null;
 		String codeFamily, codeKey, codeValue;
 		HashMap<String, String> codeMap = null;
 		HashMap<String, String> valueMap = null;
-	
+		codeFamilies.clear();
+		
 		for (String codeEntry : codeRecords) {
 			codeTokens = codeEntry.split(",");
 			codeFamily = codeTokens[0];
 			codeKey = codeTokens[1];
 			codeValue = codeTokens[2];
-	
+			
 			if (codeFamilies.containsKey(codeFamily))
 				codeMap = codeFamilies.get(codeFamily);
 			else
@@ -186,10 +205,12 @@ public final class HelperFunctions {
 			valueFamilies.put(codeFamily, valueMap);
 		}
 		
-		assetTypeMap.putAll(codeFamilies.get(FamilyCode.LABFAMILY.getValue()));
 		assetTypeMap.putAll(codeFamilies.get(FamilyCode.CONTAINERFAMILY.getValue()));
+		assetTypeMap.putAll(codeFamilies.get(FamilyCode.LABFAMILY.getValue()));
 		assetTypeMap.putAll(codeFamilies.get(FamilyCode.ADDITIVEFAMILY.getValue()));
-		assetTypeMap.putAll(codeFamilies.get(FamilyCode.YEASTFAMILY.getValue()));	
+		assetTypeMap.putAll(codeFamilies.get(FamilyCode.YEASTFAMILY.getValue()));
+		
+		winemakerLogger.writeLog(String.format("<< HelperFunctions.stageCodes()"), true);
 	}
 
 	public static HashMap<String, HashMap<String, String>> getCodeKeyMappings()
@@ -259,9 +280,6 @@ public final class HelperFunctions {
 	 */
 	public static String batchKeyExpand(String batchKey) 
 	{
-		WineMakerLogging winemakerLogger = (WineMakerLogging) appRegistry.get(RegistryKeys.LOGGER);
-		winemakerLogger.writeLog(String.format(">> HelperFunctions.batchKeyExpand(%s)", batchKey), true);
-
 		String grapeName = (codeFamilies.get(FamilyCode.GRAPEFAMILY.getValue()).containsKey(batchKey.substring(6))) ?
 				codeFamilies.get(FamilyCode.GRAPEFAMILY.getValue()).get(batchKey.substring(6)) : 
 				codeFamilies.get(FamilyCode.BLENDFAMILY.getValue()).get(batchKey.substring(6));
@@ -269,7 +287,6 @@ public final class HelperFunctions {
 		String returnKey = String.format("20%s-%s-%s %s", batchKey.substring(0, 2), batchKey.substring(2, 4),
 				batchKey.substring(4, 6), grapeName);
 
-		winemakerLogger.writeLog(String.format("<< HelperFunctions.batchKeyExpand(): Return %s", returnKey), true);
 		return returnKey;
 	} // end of batchKeyExpand()
 
@@ -478,7 +495,7 @@ public final class HelperFunctions {
 	{
 		uiComboBox.setItems(containerContent);
 		uiComboBox.setPromptText(promptText);
-		uiComboBox.setButtonCell(new ButtonCell());
+		//uiComboBox.setButtonCell(new ButtonCell());
 	}
 	
 	/*
@@ -534,6 +551,7 @@ public final class HelperFunctions {
 	public static String[] returnFileContents(File inputFile)
 	{
 		WineMakerLogging winemakerLogger = (WineMakerLogging) appRegistry.get(RegistryKeys.LOGGER);
+		winemakerLogger.writeLog(String.format(">> HelperFunctions.returnFileContents()"), true);
 
 		List<String> lines = new ArrayList<String>();
 		String oneLine = null;
@@ -547,15 +565,166 @@ public final class HelperFunctions {
 			}
 
 			bufferedReader.close();
+			winemakerLogger.writeLog(String.format("   HelperFunctions.returnFileContents() read %d lines", lines.size()), true);
 		} 
 		catch (IOException e2) 
 		{
 			winemakerLogger.showIOException(e2, String.format("Failure reading file '%s'", inputFile.getPath()));
 		}
 		
+		winemakerLogger.writeLog(String.format("<< HelperFunctions.returnFileContents()"), true);
 		return lines.toArray(new String[lines.size()]);
 	} // end of readSelectedFile(File inputFile)
 	
+	public static void showInstallGuide()
+	{
+		WineMakerLogging winemakerLogger = (WineMakerLogging) appRegistry.get(RegistryKeys.LOGGER);
+		winemakerLogger.writeLog(String.format(">> HelperFunctions.showInstallGuide()"), true);
+
+		File copyDir = directoryPrompt("WineMaker Installation and Setup Guide Directory Selection", "");
+
+		if (copyDir != null)
+		{
+			try {
+				File outputFile = new File(copyDir.getPath() + File.separator + installGuideName);
+				
+				if (copyFile(HelperFunctions.class.getClassLoader().getResourceAsStream(installGuideName), outputFile.toPath()))
+					winemakerLogger.showAlarm("Failure downloading Installation and Setup Guide to " + outputFile.getPath(), AlertType.ERROR);
+				else
+					winemakerLogger.showAlarm(String.format("Installation and Setup Guide downloaded to '%s'", outputFile.getPath()), AlertType.INFORMATION);
+			} 
+			catch (Exception e2) {
+				winemakerLogger.showAlarm("Could not find Install Guide: " + e2.getMessage(), AlertType.ERROR);
+				winemakerLogger.showIOException(e2, "Install Guide");
+				winemakerLogger.writeLog(String.format("   HelperFunctions.showInstallGuide(): couldn't load install guide: message = '%s'", e2.getMessage()), true);
+			}
+		}
+		else
+		{
+			return;
+		}
+
+		winemakerLogger.writeLog(String.format("<< HelperFunctions.showInstallGuide()"), true);
+	}
+
+	public static void showUserGuide()
+	{
+		WineMakerLogging winemakerLogger = (WineMakerLogging) appRegistry.get(RegistryKeys.LOGGER);
+		winemakerLogger.writeLog(String.format(">> HelperFunctions.showUserGuide()"), true);
+
+		File copyDir = directoryPrompt("WineMaker User Guide Directory Selection", "");
+
+		if (copyDir != null)
+		{
+			try {
+				File outputFile = new File(copyDir.getPath() + File.separator + userGuideName);
+	
+				if (copyFile(HelperFunctions.class.getClassLoader().getResourceAsStream(userGuideName), outputFile.toPath()))
+					winemakerLogger.showAlarm("Failure downloading User Guide to " + outputFile.getPath(), AlertType.ERROR);
+				else
+					winemakerLogger.showAlarm(String.format("User Guide downloaded to '%s'", outputFile.getPath()), AlertType.INFORMATION);
+			}
+			catch (Exception e3) {
+				winemakerLogger.showAlarm("Could not find User Guide: " + e3.getMessage(), AlertType.ERROR);
+				winemakerLogger.showIOException(e3, "User Guide");
+				winemakerLogger.writeLog(String.format("   HelperFunctions.showUserGuide(): couldn't load user guide: message = '%s'", e3.getMessage()), true);
+			}		
+		}
+		else
+		{
+			return;
+		}
+
+		winemakerLogger.writeLog(String.format("<< HelperFunctions.showUserGuide()"), true);
+	}
+
+	/*
+	 * Generic method to prompt user for location of an output directory
+	 */
+	public static File directoryPrompt(String promptTitle, String terminalDir)
+	{
+		WineMakerLogging winemakerLogger = (WineMakerLogging) appRegistry.get(RegistryKeys.LOGGER);
+
+		winemakerLogger.writeLog(String.format(">> HelperFunctions.directoryPrompt('%s', '%s')", promptTitle, terminalDir), true);
+
+		File newDir = null;
+		try 
+		{
+			DirectoryChooser dc = new DirectoryChooser();
+			dc.setInitialDirectory(new File(WineMakerModel.getDefaultappsearch()));
+			dc.setTitle(promptTitle);
+
+			WineMakerModel winemakerModel = (WineMakerModel) appRegistry.get(RegistryKeys.MODEL);
+			newDir = dc.showDialog(winemakerModel.getFxStage());
+		}
+		catch (Exception e1) 
+		{
+			winemakerLogger.showIOException(e1, "Failed operation for " + promptTitle);
+		}
+
+		winemakerLogger.writeLog(String.format("<< HelperFunctions.directoryPrompt('%s', '%s'): Set to %s", promptTitle, terminalDir, newDir), true);
+		return newDir;
+	} 
+	
+	public static boolean copyFile(Path inputFile, Path outputFile)
+	{
+		WineMakerLogging winemakerLogger = (WineMakerLogging) appRegistry.get(RegistryKeys.LOGGER);
+		winemakerLogger.writeLog(String.format(">> HelperFunctions.copyFile(<Path>): %n\t\t\t\t\t\t\t'%s' -> %n\t\t\t\t\t\t\t'%s'", inputFile.toString(), outputFile.toString()), true);
+				
+		boolean copyFailed = false;
+
+		try 
+		{
+			Files.copy(inputFile, outputFile, StandardCopyOption.REPLACE_EXISTING);
+			winemakerLogger.writeLog(String.format("   HelperFunctions.copyFile(): successful copy"), true);
+		} 
+		catch (IOException e) 
+		{
+			copyFailed = true;
+			winemakerLogger.showIOException(e, "HelperFunctions.copyFile()");
+			winemakerLogger.displayAlert("Copy for " + inputFile.getFileName() + "failed");
+		}
+		catch (Exception ef)
+		{
+			copyFailed = true;
+			winemakerLogger.showIOException(ef, "HelperFunctions.copyFile()");
+			winemakerLogger.displayAlert("Copy for " + inputFile.getFileName() + "failed");
+		}
+		
+
+		winemakerLogger.writeLog(String.format("<< HelperFunctions.copyFile()"), true);
+		return copyFailed;
+	} 	
+
+	public static boolean copyFile(InputStream inputFile, Path outputFile)
+	{
+		WineMakerLogging winemakerLogger = (WineMakerLogging) appRegistry.get(RegistryKeys.LOGGER);
+		winemakerLogger.writeLog(String.format(">> HelperFunctions.copyFile(<InputStream>): %n\t\t\t\t\t'%s' -> %n\t\t\t\t\t'%s'", inputFile.toString(), outputFile.toString()), true);
+				
+		boolean copyFailed = false;
+
+		try 
+		{
+			Files.copy(inputFile, outputFile, StandardCopyOption.REPLACE_EXISTING);
+			winemakerLogger.writeLog(String.format("   HelperFunctions.copyFile(): successful copy"), true);
+		} 
+		catch (IOException e) 
+		{
+			copyFailed = true;
+			winemakerLogger.showIOException(e, "HelperFunctions.copyFile()");
+			winemakerLogger.displayAlert(String.format("Download of %s failed", outputFile.toString()));
+		}
+		catch (Exception ef)
+		{
+			copyFailed = true;
+			winemakerLogger.showIOException(ef, "HelperFunctions.copyFile()");
+			winemakerLogger.displayAlert(String.format("Download of %s failed", outputFile.toString()));
+		}
+		
+		winemakerLogger.writeLog(String.format("<< HelperFunctions.copyFile()"), true);
+		return copyFailed;
+	} 	
+
 	/*
 	 * When removing or adding stock, convert sizing mismatch between values
 	 * i.e.; remove 14mg from 100g, change '14mg' to '.014g'  
@@ -618,6 +787,77 @@ public final class HelperFunctions {
 		}
 	}
 	
+	public static StringBuilder displayContainersInUse(WineMakerLog sourceRecord, ArrayList<WineMakerInventory> wmiContainers)
+	{
+		WineMakerLogging winemakerLogger = (WineMakerLogging) appRegistry.get(RegistryKeys.LOGGER);
+		winemakerLogger.writeLog(String.format(">> HelperFunctions.displayContainersInUse(%s)", sourceRecord.get_batchKey()), true);
+
+		ArrayList<WineMakerInventory> batchInventory = wmiContainers
+				.stream()
+				.filter(batchWmi -> batchWmi.get_itemStockOnHand() > 0)
+				.collect(Collectors.toCollection(ArrayList::new));
+
+		StringBuilder displayLine = new StringBuilder("");
+		for (WineMakerInventory invRecord: batchInventory)
+		{
+			displayLine.append(String.format("\t%s%n", invRecord.getItemId()));
+		}
+
+		if (displayLine.length() > 0)
+			displayLine.insert(0, "\nContainers in use:\n");
+
+		//		displayLine = (displayLine.length() > 0) ? "\nContainers in use:\n" + displayLine : "";
+
+		winemakerLogger.writeLog(String.format("<< HelperFunctions.displayContainersInUse(%s)", sourceRecord.get_batchKey()), true);
+		return displayLine;
+	}
+	
+	/*
+	 * Display summary of fermentation additives used for the batch
+	 */
+	public static StringBuilder formatAdditivesReport(ArrayList<WineMakerInventory> wmiContainers)
+	{
+		WineMakerLogging winemakerLogger = (WineMakerLogging) appRegistry.get(RegistryKeys.LOGGER);
+		winemakerLogger.writeLog(String.format(">> HelperFunctions.formatAdditivesReport(%s)", wmiContainers.get(0).getItemBatchId()), true);
+
+		StringBuilder displayText = new StringBuilder("");
+		
+		HashMap<String, String> chemKeyMap = HelperFunctions.getCodeKeyFamily(FamilyCode.ADDITIVEFAMILY.getValue());
+		HashMap<String, Double> chemKeySumMap = new HashMap<>();
+		HashMap<String, String> chemKeyScaleMap = new HashMap<>();
+
+		/*
+		 * Initialize map for math operations
+		 */
+		chemKeyMap.keySet()
+			.stream()
+			.forEach(chemName -> chemKeySumMap.put(chemName, 0.0));
+
+		ArrayList<WineMakerInventory> assetActivityCollection = wmiContainers
+				.stream()
+				.filter(wmi -> wmi.getItemTaskId().length() > 0)
+				.filter(wmi -> wmi.get_itemActivityAmount() > 0)
+				.filter(wmi -> wmi.get_itemPurchaseCost() == 0)
+				.collect(Collectors.toCollection(ArrayList::new));
+
+		for (WineMakerInventory wmi: assetActivityCollection)
+		{
+			chemKeySumMap.put(wmi.get_itemName(), chemKeySumMap.get(wmi.get_itemName()) + wmi.get_itemActivityAmount());
+			chemKeyScaleMap.put(wmi.get_itemName(), wmi.get_itemAmountScale());
+		}
+
+		if (assetActivityCollection.size() > 0)
+			displayText.append("\nSummary of additives used in batch:\n");
+
+		chemKeySumMap.keySet()
+			.stream()
+			.filter(chemKey -> chemKeySumMap.get(chemKey) > 0)
+			.forEach(chemName -> displayText.append(String.format("\t%s: %1.2f%s%n", chemKeyMap.get(chemName), chemKeySumMap.get(chemName), chemKeyScaleMap.get(chemName))));
+
+		winemakerLogger.writeLog(String.format("<< HelperFunctions.formatAdditivesReport()"), true);
+		return displayText;
+	} // end of formatAdditivesReport()
+	
 	/*
 	 * Find the matching inventory asset record 
 	 */
@@ -644,7 +884,7 @@ public final class HelperFunctions {
 					.filter(matchItemId)
 					.collect(Collectors.toList());
 
-		winemakerLogger.writeLog(String.format("<< HelperFunctions.findAssetItemRecord('%s'): returning %s", itemSelectedExisting, filteredQueryList), true);
+		winemakerLogger.writeLog(String.format("<< HelperFunctions.findAssetItemRecord()"), true);
 		return filteredQueryList;
 	} // end of findAssetItemRecord()
 
@@ -693,6 +933,23 @@ public final class HelperFunctions {
 		winemakerLogger.writeLog(String.format("<< HelperFunctions.parseTimeString('%s')", uiTime), true);
 		return parsedTime;
 	} // end of parseTimeString()
+	
+	public static String createRandomKey(int keyLength)
+	{
+		String alphaNumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+		StringBuilder sb = new StringBuilder();
+
+		Random random = new Random();
+		int length = keyLength;
+
+		for(int i = 0; i < length; i++) 
+		{
+			int index = random.nextInt(alphaNumeric.length());
+			sb.append(alphaNumeric.charAt(index));
+		}
+		
+		return sb.toString();
+	}
 	
 	/*
 	 * Provided for resetting ComboBox button prompts

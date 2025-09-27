@@ -23,6 +23,8 @@ public class FermentActivityRack implements FermentationActivity {
 	@Override
 	public String apply(WineMakerFerment wmf)
 	{
+		winemakerLogger.writeLog(">> FermentActivityRack.apply()", true);
+
 		HashMap<String, String> amountMeasure = HelperFunctions.getCodeKeyMappings().get(FamilyCode.MEASURESFAMILY.getValue());
 		
 		String displayLine = String.format("Rack performed %s%n", 
@@ -41,6 +43,7 @@ public class FermentActivityRack implements FermentationActivity {
 			}
 		}
 		
+		winemakerLogger.writeLog("<< FermentActivityRack.apply()", true);
 		return displayLine;
 	}
 }

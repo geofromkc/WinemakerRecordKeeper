@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="ap" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="ap" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="740.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox fx:id="batchVbox" alignment="TOP_CENTER" layoutX="17.0" layoutY="10.0" prefHeight="738.0" prefWidth="565.0" spacing="8.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <children>
@@ -63,11 +63,6 @@
                   <Label fx:id="batchNotesLabel" text="Notes" GridPane.rowIndex="10" />
                   <Label fx:id="batchVineyardLabel" text="Vineyard" GridPane.rowIndex="4" />
                   <Label fx:id="blendGrapeLabel" text="Blend Grape" GridPane.rowIndex="3" />
-                  <ComboBox fx:id="vineyardSelect" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
-                     <effect>
-                        <DropShadow />
-                     </effect>
-                  </ComboBox>
                   <TextField fx:id="itemCount" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="90.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
                      <effect>
                         <DropShadow />
@@ -100,16 +95,6 @@
                      </effect>
                   </TextArea>
                   <Label fx:id="blendTypeLabel" text="Blend Type" GridPane.rowIndex="1" />
-                  <ComboBox fx:id="grapeSelectBlend" prefWidth="150.0" visibleRowCount="20" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                     <effect>
-                        <DropShadow />
-                     </effect>
-                  </ComboBox>
-                  <ComboBox fx:id="grapeSelect" prefWidth="150.0" visibleRowCount="20" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                     <effect>
-                        <DropShadow />
-                     </effect>
-                  </ComboBox>
                   <HBox fx:id="hb_BatchMeasurement" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="8" GridPane.valignment="CENTER" />
                   <DatePicker fx:id="batchDate" GridPane.columnIndex="1">
                      <effect>
@@ -122,6 +107,9 @@
                         <DropShadow />
                      </effect>
                   </ChoiceBox>
+                  <JFXComboBox fx:id="grapeSelect" prefWidth="160.0" visibleRowCount="20" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <JFXComboBox fx:id="grapeSelectBlend" prefWidth="160.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <JFXComboBox fx:id="vineyardSelect" prefWidth="160.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                </children>
                <VBox.margin>
                   <Insets left="2.0" right="2.0" top="4.0" />
@@ -130,16 +118,13 @@
                   <Insets left="2.0" right="2.0" />
                </padding>
             </GridPane>
-            <HBox maxHeight="160.0" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="65.0" prefWidth="572.0" spacing="8.0" VBox.vgrow="ALWAYS">
+            <HBox alignment="BOTTOM_CENTER" maxHeight="160.0" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="65.0" prefWidth="572.0" spacing="8.0" VBox.vgrow="ALWAYS">
                <children>
-                  <Button fx:id="submitBatch" mnemonicParsing="false" onAction="#submitBatch" text="Submit" />
-                  <Button fx:id="addBlendGrape" mnemonicParsing="false" onAction="#addBlendButton" text="Add" />
-                  <Button fx:id="doneBlendMix" mnemonicParsing="false" onAction="#doneBuildingBlend" text="Done" />
+                  <JFXButton fx:id="submitBatch" buttonType="RAISED" minWidth="62.0" onAction="#submitBatch" prefWidth="62.0" style="-fx-background-color: #80b380;" text="Submit" />
+                  <JFXButton fx:id="addBlendGrape" buttonType="RAISED" minWidth="44.0" onAction="#addBlendButton" prefWidth="44.0" style="-fx-background-color: #80b380;" text="Add" />
+                  <JFXButton fx:id="doneBlendMix" buttonType="RAISED" minWidth="60.0" onAction="#doneBuildingBlend" prefWidth="60.0" style="-fx-background-color: #80b380;" text="Done" />
                   <TextArea fx:id="statusUpdates" editable="false" maxHeight="160.0" maxWidth="1.7976931348623157E308" minHeight="40.0" prefHeight="65.0" prefWidth="317.0" HBox.hgrow="ALWAYS" />
-                  <Button mnemonicParsing="false" onAction="#returnToMain" text="Home">
-                     <HBox.margin>
-                        <Insets right="4.0" />
-                     </HBox.margin></Button>
+                  <JFXButton buttonType="RAISED" minWidth="60.0" onAction="#returnToMain" prefWidth="60.0" style="-fx-background-color: #80b380;" text="Home" />
                </children>
                <padding>
                   <Insets top="12.0" />

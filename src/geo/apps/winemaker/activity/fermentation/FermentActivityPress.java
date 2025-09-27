@@ -22,6 +22,8 @@ public class FermentActivityPress implements FermentationActivity {
 	@Override
 	public String apply(WineMakerFerment wmf)
 	{
+		winemakerLogger.writeLog(">> FermentActivityPress.apply()", true);
+
 		HashMap<String, String> amountMeasure = HelperFunctions.getCodeKeyMappings().get(FamilyCode.MEASURESFAMILY.getValue());
 		
 		String displayLine = String.format("Press on %s: produced about %d %s of juice.", 
@@ -40,6 +42,7 @@ public class FermentActivityPress implements FermentationActivity {
 			}
 		}
 		
+		winemakerLogger.writeLog("<< FermentActivityPress.apply()", true);
 		return displayLine;
 	}
 }

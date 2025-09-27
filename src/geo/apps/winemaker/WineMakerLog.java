@@ -1,5 +1,7 @@
 package geo.apps.winemaker;
 
+import java.text.NumberFormat;
+
 /**
  * Primary object describing a batch.  A batch could be a single grape, or a blend of multiple grapes.
  * The primary key is "_batchKey".   Its value is constructed from a fixed-length date portion and
@@ -14,7 +16,9 @@ package geo.apps.winemaker;
  */
 
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.HashMap;
+import java.util.Locale;
 
 import geo.apps.winemaker.utilities.Constants.FamilyCode;
 import geo.apps.winemaker.utilities.HelperFunctions;
@@ -327,8 +331,55 @@ public class WineMakerLog {
 	
 	public static String toCSVHeader()
 	{
-		return "Batch Key,BlendKey,Source,Grape,Vineyard,Item Count,Item Price,Units/Item,Scale,Quality,Waste,Vendor,Notes\n";
+		return "Batch Key,BlendKey,Source,Grape,Vineyard,Item Count,Item Price,Units/Item,Scale,Vendor,Notes\n";
 	} // end of toCSVHeader()
+
+	/*
+	 * 	Batch grapes were sourced from Lanza. 
+		Batch contains 10 36-lb units, with a total weight of 360 lbs.
+		The cost was $2.17 per lb, with a total cost of $780.00
+		The batch was purchased from Consumers Produce
+
+		Containers in use:
+		VCT100L02
+
+		Summary of additives used in batch:
+			FT Rouge: 19.50g
+			American Oak Stix: 40.00g
+			Goferm Protect Yeast: 23.10g
+			ESSENTIAL Antioxidant Tannin: 34.00g
+			Scott Color Pro Enzyme: 8.40g
+
+	 */
+	public String toReport()
+	{
+		Currency usd = Currency.getInstance("USD");
+		NumberFormat usdF = NumberFormat.getCurrencyInstance(Locale.US);
+		usdF.setCurrency(usd);
+		
+		String showObject = "";
+		HashMap<String, String> codeSet;
+
+		String grapeName = HelperFunctions.getCodeKeyEntry(FamilyCode.GRAPEFAMILY.getValue(), this.get_batchGrape());
+		if (grapeName == null)
+			grapeName = HelperFunctions.getCodeKeyEntry(FamilyCode.BLENDFAMILY.getValue(), this.get_batchGrape());
+
+		showObject += String.format("Report for batch %s", HelperFunctions.batchKeyExpand(this.get_batchKey()));
+		showObject += (this.get_batchBlendKey().length() > 0) ? 
+				String.format(" (%s)%n", HelperFunctions.batchKeyExpand(this.get_batchBlendKey())) : "\n";
+		
+		codeSet = HelperFunctions.getCodeKeyFamily(FamilyCode.GRAPESUPPLYFAMILY.getValue());
+		showObject += String.format("Grapes were purchased at %s", codeSet.get(this.get_sourceVendor()));
+
+		codeSet = HelperFunctions.getCodeKeyFamily(FamilyCode.VINEYARDFAMILY.getValue());
+		showObject += String.format(" from the %s vineyard%n", codeSet.get(this.get_batchVineyard()));
+
+		codeSet = HelperFunctions.getCodeKeyFamily(FamilyCode.MEASURESFAMILY.getValue());
+		showObject += String.format("Batch comprised of %s %s%s units for %s%n", 
+				this.get_sourceItemCount(), this.get_sourceItemMeasure(), codeSet.get(this.get_sourceScale()), usdF.format(this.get_sourceItemPrice()));
+		
+		return showObject;
+	}
 	
 	public String toCSV()
 	{
@@ -356,8 +407,6 @@ public class WineMakerLog {
 		
 		codeSet = HelperFunctions.getCodeKeyFamily(FamilyCode.MEASURESFAMILY.getValue());
 		showObject += String.format("%s,", codeSet.get(this.get_sourceScale()));
-		showObject += String.format("%s,", this.get_qualityRating());
-		showObject += String.format("%s,", this.get_wastePercent());
 
 		codeSet = HelperFunctions.getCodeKeyFamily(FamilyCode.GRAPESUPPLYFAMILY.getValue());
 		showObject += String.format("%s,", codeSet.get(this.get_sourceVendor()));		

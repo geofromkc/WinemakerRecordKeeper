@@ -22,9 +22,11 @@ public class FermentActivityCrush implements FermentationActivity {
 	@Override
 	public String apply(WineMakerFerment wmf)
 	{
+		winemakerLogger.writeLog(">> FermentActivityCrush.apply()", true);
+
 		HashMap<String, String> codesetMeasure = HelperFunctions.getCodeKeyMappings().get(FamilyCode.MEASURESFAMILY.getValue());
 		
-		String displayLine = String.format("Crush on %s: started with %d %s of grapes. Estimated volume of must was %d %s%n", 
+		String displayLine = String.format("Crush on %s: Started with %d %s of grapes. Estimated volume of juice was %d %s%n", 
 				wmf.get_entry_date().toLocalDateTime().format(DateTimeFormatter.ofPattern("MMMM dd, yyyy")), wmf.get_inputGrapeAmt(), codesetMeasure.get(wmf.get_chemScale()), wmf.get_outputMustVolume(), codesetMeasure.get(wmf.get_outputJuiceScale()));
 		
 		if (wmf.get_fermentNotes().length() > 0)
@@ -38,6 +40,7 @@ public class FermentActivityCrush implements FermentationActivity {
 			}
 		}
 				
+		winemakerLogger.writeLog("<< FermentActivityCrush.apply()", true);
 		return displayLine;
 	}
 }
